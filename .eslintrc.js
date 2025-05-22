@@ -10,14 +10,6 @@ module.exports = {
     node: true,
   },
 
-  parser: "@typescript-eslint/parser",
-
-  parserOptions: {
-    project: ["./tsconfig.json"],
-    sourceType: "module",
-    extraFileExtensions: [".json"],
-  },
-
   ignorePatterns: [
     ".eslintrc.js",
     "**/*.js",
@@ -28,12 +20,23 @@ module.exports = {
   overrides: [
     {
       files: ["package.json"],
+      parser: "@typescript-eslint/parser",
       plugins: ["eslint-plugin-n8n-nodes-base"],
       extends: ["plugin:n8n-nodes-base/community"],
       rules: {
         "n8n-nodes-base/community-package-json-name-still-default": "off",
       },
     },
+    {
+      files: ["**/*.ts", "**/*.js"],
+      parser: "@typescript-eslint/parser",
+      parserOptions: {
+        project: ["./tsconfig.json"],
+        sourceType: "module",
+        extraFileExtensions: [".json"],
+      },
+    },
+
     {
       files: ["./credentials/**/*.ts"],
       plugins: ["eslint-plugin-n8n-nodes-base"],
