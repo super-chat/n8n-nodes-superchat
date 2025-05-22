@@ -6,6 +6,7 @@ import {
   NodeConnectionType,
   IRequestOptions,
 } from "n8n-workflow";
+import { BASE_URL } from "../../shared";
 
 export class Superchat implements INodeType {
   description: INodeTypeDescription = {
@@ -87,7 +88,7 @@ export class Superchat implements INodeType {
             },
             method: "GET",
             body: {},
-            uri: `https://api.superchat.com/v1.0/me`,
+            uri: `${BASE_URL}/me`,
             json: true,
           };
 

@@ -4,6 +4,7 @@ import {
   ICredentialType,
   INodeProperties,
 } from "n8n-workflow";
+import { BASE_URL } from "../shared";
 
 export class SuperchatApi implements ICredentialType {
   name = "superchatApi";
@@ -33,7 +34,7 @@ export class SuperchatApi implements ICredentialType {
 
   test: ICredentialTestRequest = {
     request: {
-      baseURL: "https://api.superchat.com/v1.0",
+      baseURL: BASE_URL,
       url: "/me",
     },
   };
