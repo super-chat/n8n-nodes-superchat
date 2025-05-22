@@ -1,0 +1,18 @@
+{
+  "node": "n8n-nodes-base.Superchat",
+  "nodeVersion": "1.0",
+  "codexVersion": "1.0",
+  "categories": ["Miscellaneous"],
+  "resources": {
+    "credentialDocumentation": [
+      {
+        "url": "https://developers.superchat.com/reference/authentication"
+      }
+    ],
+    "primaryDocumentation": [
+      {
+        "url": "https://developers.superchat.com/"
+      }
+    ]
+  }
+}
