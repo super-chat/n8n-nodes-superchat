@@ -8,6 +8,22 @@ To send requests to the staging API, please update the base url in the [./src/sh
 
 Make sure to not commit the updated base URL.
 
+## Receiving webhooks locally
+
+To receive webhooks locally use a tool like ngrok, then set the `WEBHOOK_URL` environment variable for n8n.
+
+1. Run ngrok with port n8n is running under (default 5678)
+
+```
+ngrok http 5678
+```
+
+2. Set the `WEBHOOK_URL` environment variable when starting n8n.
+
+```
+WEBHOOK_URL=XXX n8n start
+```
+
 # Git hooks
 
 This repository manages git hooks through [pre-commit](https://pre-commit.com). To activate the git hooks, run `pre-commit install`
