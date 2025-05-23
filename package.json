@@ -37,7 +37,8 @@
       "dist/credentials/Superchat.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/Superchat/Superchat.node.js"
+      "dist/nodes/Superchat/Superchat.node.js",
+      "dist/nodes/Superchat/SuperchatTrigger.node.js"
     ]
   },
   "devDependencies": {
