@@ -12,6 +12,8 @@ module.exports = {
 
   ignorePatterns: [
     ".eslintrc.js",
+    ".pre-commit-config.yaml",
+    "**/*.md",
     "**/*.js",
     "**/node_modules/**",
     "**/dist/**",

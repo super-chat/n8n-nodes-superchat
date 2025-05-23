@@ -1,0 +1,24 @@
+default_install_hook_types: [pre-push]
+repos:
+  - repo: local
+    hooks:
+      - id: prettier
+        name: prettier
+        description: Check formatting
+        entry: pnpm prettier src --check
+        language: system
+        pass_filenames: false
+
+      - id: eslint
+        name: eslint
+        description: Lint using eslint
+        entry: pnpm lint
+        language: system
+        pass_filenames: false
+
+      - id: build
+        name: build
+        description: Build the project
+        entry: pnpm build
+        language: system
+        pass_filenames: false
