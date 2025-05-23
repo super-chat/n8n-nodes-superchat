@@ -4,9 +4,8 @@ import {
   INodeTypeDescription,
   IExecuteFunctions,
   NodeConnectionType,
-  IRequestOptions,
 } from "n8n-workflow";
-import { BASE_URL } from "../../shared";
+import { superchatApiRequest } from "./GenericFunctions";
 
 const RESOURCE_OPTIONS = [
   {
@@ -185,22 +184,7 @@ export class Superchat implements INodeType {
         ) as OperationKeyByResource<typeof resource>;
 
         if (operation === "me") {
-          const options: IRequestOptions = {
-            headers: {
-              Accept: "application/json",
-            },
-            method: "GET",
-            body: {},
-            uri: `${BASE_URL}/me`,
-            json: true,
-          };
-
-          responseData = await this.helpers.requestWithAuthentication.call(
-            this,
-            "superchatApi",
-            options
-          );
-
+          responseData = await superchatApiRequest.call(this, "GET", "/me", {});
           returnData.push(responseData);
         }
       }
@@ -215,12 +199,11 @@ export class Superchat implements INodeType {
           const field = this.getNodeParameter("field", i) as string;
           const value = this.getNodeParameter("value", i) as string;
 
-          const options: IRequestOptions = {
-            headers: {
-              Accept: "application/json",
-            },
-            method: "POST",
-            body: {
+          responseData = await superchatApiRequest.call(
+            this,
+            "POST",
+            "/contacts/search",
+            {
               query: {
                 value: [
                   {
@@ -230,15 +213,7 @@ export class Superchat implements INodeType {
                   },
                 ],
               },
-            },
-            uri: `${BASE_URL}/contacts/search`,
-            json: true,
-          };
-
-          responseData = await this.helpers.requestWithAuthentication.call(
-            this,
-            "superchatApi",
-            options
+            }
           );
 
           returnData.push(responseData);

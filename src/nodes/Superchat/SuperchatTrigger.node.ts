@@ -6,9 +6,8 @@ import {
   type INodeTypeDescription,
   type IWebhookResponseData,
   NodeConnectionType,
-  IRequestOptions,
 } from "n8n-workflow";
-import { BASE_URL } from "../../shared";
+import { superchatApiRequest } from "./GenericFunctions";
 
 export class SuperchatTrigger implements INodeType {
   description: INodeTypeDescription = {
@@ -68,20 +67,11 @@ export class SuperchatTrigger implements INodeType {
           return false;
         }
 
-        const options: IRequestOptions = {
-          headers: {
-            Accept: "application/json",
-          },
-          method: "GET",
-          body: {},
-          uri: `${BASE_URL}/webhooks/${webhookId}`,
-          json: true,
-        };
-
-        const data = await this.helpers.requestWithAuthentication.call(
+        const data = await superchatApiRequest.call(
           this,
-          "superchatApi",
-          options
+          "GET",
+          `/webhooks/${webhookId}`,
+          {}
         );
 
         if (
@@ -99,28 +89,14 @@ export class SuperchatTrigger implements INodeType {
         const topic = this.getNodeParameter("topic") as string;
         const webhookUrl = this.getNodeWebhookUrl("default")!!;
 
-        const options: IRequestOptions = {
-          headers: {
-            Accept: "application/json",
-          },
-          method: "POST",
-          body: {
-            target_url: webhookUrl,
-            events: [
-              {
-                type: topic,
-              },
-            ],
-          },
-          uri: `${BASE_URL}/webhooks`,
-          json: true,
-        };
-
-        const data = await this.helpers.requestWithAuthentication.call(
-          this,
-          "superchatApi",
-          options
-        );
+        const data = await superchatApiRequest.call(this, "POST", `/webhooks`, {
+          target_url: webhookUrl,
+          events: [
+            {
+              type: topic,
+            },
+          ],
+        });
 
         if (!("id" in data)) {
           return false;
@@ -133,19 +109,11 @@ export class SuperchatTrigger implements INodeType {
         const webhookData = this.getWorkflowStaticData("node");
         if (webhookData.webhookId !== undefined) {
           try {
-            const options: IRequestOptions = {
-              headers: {
-                Accept: "application/json",
-              },
-              method: "DELETE",
-              uri: `${BASE_URL}/webhooks/${webhookData.webhookId}`,
-              json: true,
-            };
-
-            const data = await this.helpers.requestWithAuthentication.call(
+            const data = await superchatApiRequest.call(
               this,
-              "superchatApi",
-              options
+              "DELETE",
+              `/webhooks/${webhookData.webhookId}`,
+              {}
             );
 
             if (!("id" in data)) {
