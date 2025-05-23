@@ -8,6 +8,44 @@ import {
 } from "n8n-workflow";
 import { BASE_URL } from "../../shared";
 
+const RESOURCE_OPTIONS = [
+  {
+    name: "User",
+    value: "user",
+    description: "A Superchat user",
+  },
+  {
+    name: "Contact",
+    value: "contact",
+    description: "A Superchat contact",
+  },
+] as const;
+
+const USER_OPERATION_OPTIONS = [
+  {
+    value: "me",
+    name: "Identify Yourself",
+    action: "Retrieve the information about yourself as a superchat user",
+  },
+] as const;
+
+const CONTACT_OPERATION_OPTIONS = [
+  {
+    value: "search",
+    name: "Search For A Contact",
+    action: "Search a contact by any field.",
+  },
+] as const;
+
+type ResourceKey = (typeof RESOURCE_OPTIONS)[number]["value"];
+type UserOperationKey = (typeof USER_OPERATION_OPTIONS)[number]["value"];
+type ContactOperationKey = (typeof CONTACT_OPERATION_OPTIONS)[number]["value"];
+
+type OperationKeyByResource<R extends ResourceKey> = {
+  user: UserOperationKey;
+  contact: ContactOperationKey;
+}[R];
+
 export class Superchat implements INodeType {
   description: INodeTypeDescription = {
     displayName: "Superchat",
@@ -32,21 +70,21 @@ export class Superchat implements INodeType {
     ],
 
     properties: [
+      // eslint-disable-next-line n8n-nodes-base/node-param-default-missing
       {
         displayName: "Resource",
         name: "resource",
         type: "options",
-        options: [
-          {
-            name: "User",
-            value: "user",
-            description: "A Superchat user",
-          },
-        ],
-        default: "user",
+        options: [...RESOURCE_OPTIONS],
+        default: "user" satisfies ResourceKey,
         noDataExpression: true,
         required: true,
       },
+
+      // ----------------------------------
+      //         user
+      // ----------------------------------
+      // eslint-disable-next-line n8n-nodes-base/node-param-default-missing
       {
         displayName: "Operation",
         name: "operation",
@@ -55,18 +93,79 @@ export class Superchat implements INodeType {
         noDataExpression: true,
         displayOptions: {
           show: {
-            resource: ["user"],
+            resource: ["user" satisfies ResourceKey],
           },
         },
+        options: [...USER_OPERATION_OPTIONS],
+        default: "me" satisfies UserOperationKey,
+      },
+
+      // ----------------------------------
+      //         contact
+      // ----------------------------------
+      // eslint-disable-next-line n8n-nodes-base/node-param-default-missing
+      {
+        displayName: "Operation",
+        name: "operation",
+        type: "options",
+        required: true,
+        noDataExpression: true,
+        displayOptions: {
+          show: {
+            resource: ["contact" satisfies ResourceKey],
+          },
+        },
+        options: [...CONTACT_OPERATION_OPTIONS],
+        default: "search" satisfies ContactOperationKey,
+      },
+
+      // ----------------------------------
+      //         contact:search
+      // ----------------------------------
+      {
+        displayName: "Search Field",
+        displayOptions: {
+          show: {
+            resource: ["contact" satisfies ResourceKey],
+            operation: ["search" satisfies ContactOperationKey],
+          },
+        },
+        name: "field",
+        type: "options",
         options: [
           {
-            value: "me",
-            name: "Identify Yourself",
-            action:
-              "Retrieve the information about yourself as a superchat user",
+            name: "Email Address",
+            value: "mail",
+            description: "Search by email address",
+          },
+          {
+            name: "Phone Number",
+            value: "phone",
+            description: "Search by phone number",
+          },
+          {
+            name: "Instagram Handle",
+            value: "instagram",
+            description: "Search by Instagram handle",
           },
         ],
-        default: "me",
+        default: "mail",
+        required: true,
+        description: "Field to search by",
+      },
+      {
+        displayName: "Value",
+        displayOptions: {
+          show: {
+            resource: ["contact" satisfies ResourceKey],
+            operation: ["search" satisfies ContactOperationKey],
+          },
+        },
+        name: "value",
+        type: "string",
+        default: "",
+        required: true,
+        description: "Value to search for",
       },
     ],
   };
@@ -76,11 +175,15 @@ export class Superchat implements INodeType {
 
     let responseData;
     const returnData = [];
-    const resource = this.getNodeParameter("resource", 0) as string;
-    const operation = this.getNodeParameter("operation", 0) as string;
+    const resource = this.getNodeParameter("resource", 0) as ResourceKey;
 
     for (let i = 0; i < items.length; i++) {
       if (resource === "user") {
+        const operation = this.getNodeParameter(
+          "operation",
+          0
+        ) as OperationKeyByResource<typeof resource>;
+
         if (operation === "me") {
           const options: IRequestOptions = {
             headers: {
@@ -89,6 +192,46 @@ export class Superchat implements INodeType {
             method: "GET",
             body: {},
             uri: `${BASE_URL}/me`,
+            json: true,
+          };
+
+          responseData = await this.helpers.requestWithAuthentication.call(
+            this,
+            "superchatApi",
+            options
+          );
+
+          returnData.push(responseData);
+        }
+      }
+
+      if (resource === "contact") {
+        const operation = this.getNodeParameter(
+          "operation",
+          0
+        ) as OperationKeyByResource<typeof resource>;
+
+        if (operation === "search") {
+          const field = this.getNodeParameter("field", i) as string;
+          const value = this.getNodeParameter("value", i) as string;
+
+          const options: IRequestOptions = {
+            headers: {
+              Accept: "application/json",
+            },
+            method: "POST",
+            body: {
+              query: {
+                value: [
+                  {
+                    field,
+                    operator: "=",
+                    value,
+                  },
+                ],
+              },
+            },
+            uri: `${BASE_URL}/contacts/search`,
             json: true,
           };
 
