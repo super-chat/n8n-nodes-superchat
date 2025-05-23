@@ -8,6 +8,7 @@ import {
   NodeConnectionType,
 } from "n8n-workflow";
 import { superchatApiRequest } from "./GenericFunctions";
+import { WebhookEventType } from "../../types/WebhookEventType";
 
 export class SuperchatTrigger implements INodeType {
   description: INodeTypeDescription = {
@@ -39,15 +40,20 @@ export class SuperchatTrigger implements INodeType {
       },
     ],
     properties: [
+      // eslint-disable-next-line n8n-nodes-base/node-param-default-missing
       {
         displayName: "Trigger On",
         name: "topic",
         type: "options",
-        default: "contact_created",
+        default: "contact_created" satisfies WebhookEventType,
         options: [
           {
             name: "Contact Created",
-            value: "contact_created",
+            value: "contact_created" satisfies WebhookEventType,
+          },
+          {
+            name: "Contact Updated",
+            value: "contact_updated" satisfies WebhookEventType,
           },
         ],
       },
@@ -59,7 +65,7 @@ export class SuperchatTrigger implements INodeType {
       async checkExists(this: IHookFunctions): Promise<boolean> {
         const webhookUrl = this.getNodeWebhookUrl("default")!!;
         const webhookData = this.getWorkflowStaticData("node");
-        const topic = this.getNodeParameter("topic") as string;
+        const topic = this.getNodeParameter("topic") as WebhookEventType;
 
         const webhookId = webhookData.webhookId;
 
@@ -86,7 +92,7 @@ export class SuperchatTrigger implements INodeType {
       },
       async create(this: IHookFunctions): Promise<boolean> {
         const webhookData = this.getWorkflowStaticData("node");
-        const topic = this.getNodeParameter("topic") as string;
+        const topic = this.getNodeParameter("topic") as WebhookEventType;
         const webhookUrl = this.getNodeWebhookUrl("default")!!;
 
         const data = await superchatApiRequest.call(this, "POST", `/webhooks`, {
