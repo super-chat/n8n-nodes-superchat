@@ -34,6 +34,11 @@ const CONTACT_OPERATION_OPTIONS = [
     name: "Search For A Contact",
     action: "Search a contact by any field.",
   },
+  {
+    value: "delete",
+    name: "Delete A Contact",
+    action: "Delete a contact in Superchat.",
+  },
 ] as const;
 
 type ResourceKey = (typeof RESOURCE_OPTIONS)[number]["value"];
@@ -166,6 +171,24 @@ export class Superchat implements INodeType {
         required: true,
         description: "Value to search for",
       },
+
+      // ----------------------------------
+      //         contact:delete
+      // ----------------------------------
+      {
+        displayName: "ID",
+        displayOptions: {
+          show: {
+            resource: ["contact" satisfies ResourceKey],
+            operation: ["delete" satisfies ContactOperationKey],
+          },
+        },
+        name: "id",
+        type: "string",
+        default: "",
+        required: true,
+        description: "ID of the contact to delete",
+      },
     ],
   };
 
@@ -214,6 +237,19 @@ export class Superchat implements INodeType {
                 ],
               },
             }
+          );
+
+          returnData.push(responseData);
+        }
+
+        if (operation === "delete") {
+          const id = this.getNodeParameter("id", i) as string;
+
+          responseData = await superchatApiRequest.call(
+            this,
+            "DELETE",
+            `/contacts/${id}`,
+            {}
           );
 
           returnData.push(responseData);
