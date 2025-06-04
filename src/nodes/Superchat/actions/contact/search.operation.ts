@@ -7,8 +7,11 @@ import {
 import { ResourceKey } from "../../Superchat.node";
 import { ContactOperationKey } from "./Contact.resource";
 import { superchatApiRequest } from "../../GenericFunctions";
+import { PASearchContactDTO } from "../../../../types/PASearchContactDTO";
+import { PASearchContactQueryExpression } from "../../../../types/PASearchContactQueryExpression";
 
 const properties: INodeProperties[] = [
+  // eslint-disable-next-line n8n-nodes-base/node-param-default-missing
   {
     displayName: "Search Field",
     name: "field",
@@ -16,21 +19,21 @@ const properties: INodeProperties[] = [
     options: [
       {
         name: "Email Address",
-        value: "mail",
+        value: "mail" satisfies PASearchContactQueryExpression["field"],
         description: "Search by email address",
       },
       {
         name: "Phone Number",
-        value: "phone",
+        value: "phone" satisfies PASearchContactQueryExpression["field"],
         description: "Search by phone number",
       },
       {
         name: "Instagram Handle",
-        value: "instagram",
+        value: "instagram" satisfies PASearchContactQueryExpression["field"],
         description: "Search by Instagram handle",
       },
     ],
-    default: "mail",
+    default: "mail" satisfies PASearchContactQueryExpression["field"],
     required: true,
     description: "Field to search by",
   },
@@ -60,24 +63,29 @@ export async function execute(
 ): Promise<INodeExecutionData[]> {
   const returnData: INodeExecutionData[] = [];
 
-  const field = this.getNodeParameter("field", i) as string;
+  const field = this.getNodeParameter(
+    "field",
+    i
+  ) as PASearchContactQueryExpression["field"];
   const value = this.getNodeParameter("value", i) as string;
+
+  const body = {
+    query: {
+      value: [
+        {
+          field,
+          operator: "=",
+          value,
+        },
+      ],
+    },
+  } satisfies PASearchContactDTO;
 
   const responseData = await superchatApiRequest.call(
     this,
     "POST",
     "/contacts/search",
-    {
-      query: {
-        value: [
-          {
-            field,
-            operator: "=",
-            value,
-          },
-        ],
-      },
-    }
+    body
   );
   returnData.push(responseData);
 

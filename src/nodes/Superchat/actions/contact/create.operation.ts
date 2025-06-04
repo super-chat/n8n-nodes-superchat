@@ -27,16 +27,17 @@ const properties: INodeProperties[] = [
     default: "",
     description: "The last name of the contact",
   },
+  // eslint-disable-next-line n8n-nodes-base/node-param-default-missing
   {
     displayName: "Gender",
     name: "gender",
     type: "options",
     options: [
-      { name: "Female", value: "female" },
-      { name: "Male", value: "male" },
-      { name: "Diverse", value: "diverse" },
+      { name: "Female", value: "female" satisfies Gender },
+      { name: "Male", value: "male" satisfies Gender },
+      { name: "Diverse", value: "diverse" satisfies Gender },
     ],
-    default: "female",
+    default: "female" satisfies Gender,
     description: "The gender of the contact",
   },
   {

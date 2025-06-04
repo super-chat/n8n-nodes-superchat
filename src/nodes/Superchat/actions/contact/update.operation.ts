@@ -35,17 +35,18 @@ const properties: INodeProperties[] = [
     default: "",
     description: "The last name of the contact",
   },
+  // eslint-disable-next-line n8n-nodes-base/node-param-default-missing
   {
     displayName: "Gender",
     name: "gender",
     type: "options",
     options: [
-      { name: "Do Not Update", value: "noop" },
-      { name: "Female", value: "female" },
-      { name: "Male", value: "male" },
-      { name: "Diverse", value: "diverse" },
+      { name: "Do Not Update", value: "noop" satisfies Gender | "noop" },
+      { name: "Female", value: "female" satisfies Gender },
+      { name: "Male", value: "male" satisfies Gender },
+      { name: "Diverse", value: "diverse" satisfies Gender },
     ],
-    default: "noop",
+    default: "noop" satisfies Gender | "noop",
     description: "The gender of the contact",
   },
   {
@@ -121,7 +122,7 @@ export async function execute(
   const id = this.getNodeParameter("id", i) as string;
   const firstName = this.getNodeParameter("firstName", i) as string;
   const lastName = this.getNodeParameter("lastName", i) as string;
-  const gender = this.getNodeParameter("gender", i) as string;
+  const gender = this.getNodeParameter("gender", i) as Gender | "noop";
   const emails = this.getNodeParameter("emails", i) as {
     values: { value: string }[];
   };
@@ -149,7 +150,7 @@ export async function execute(
   const body = {
     first_name: firstName !== "" ? firstName : null,
     last_name: lastName !== "" ? lastName : null,
-    gender: gender !== "noop" ? (gender as Gender) : null,
+    gender: gender !== "noop" ? gender : null,
     handles,
     custom_attributes: [],
   } satisfies PAUpdateContactDTO;
