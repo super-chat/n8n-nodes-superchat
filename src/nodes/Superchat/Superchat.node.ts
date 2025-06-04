@@ -6,6 +6,7 @@ import {
   NodeConnectionType,
 } from "n8n-workflow";
 import { superchatApiRequest } from "./GenericFunctions";
+import { match } from "ts-pattern";
 
 const RESOURCE_OPTIONS = [
   {
@@ -196,65 +197,74 @@ export class Superchat implements INodeType {
     const items = this.getInputData();
 
     let responseData;
-    const returnData = [];
+    const returnData: any[] = [];
     const resource = this.getNodeParameter("resource", 0) as ResourceKey;
 
     for (let i = 0; i < items.length; i++) {
-      if (resource === "user") {
-        const operation = this.getNodeParameter(
-          "operation",
-          0
-        ) as OperationKeyByResource<typeof resource>;
+      await match(resource)
+        .with("user", async (resource) => {
+          const operation = this.getNodeParameter(
+            "operation",
+            0
+          ) as OperationKeyByResource<typeof resource>;
 
-        if (operation === "me") {
-          responseData = await superchatApiRequest.call(this, "GET", "/me", {});
-          returnData.push(responseData);
-        }
-      }
+          await match(operation)
+            .with("me", async (operation) => {
+              responseData = await superchatApiRequest.call(
+                this,
+                "GET",
+                "/me",
+                {}
+              );
+              returnData.push(responseData);
+            })
+            .exhaustive();
+        })
+        .with("contact", async (resource) => {
+          const operation = this.getNodeParameter(
+            "operation",
+            0
+          ) as OperationKeyByResource<typeof resource>;
 
-      if (resource === "contact") {
-        const operation = this.getNodeParameter(
-          "operation",
-          0
-        ) as OperationKeyByResource<typeof resource>;
+          await match(operation)
+            .with("search", async () => {
+              const field = this.getNodeParameter("field", i) as string;
+              const value = this.getNodeParameter("value", i) as string;
 
-        if (operation === "search") {
-          const field = this.getNodeParameter("field", i) as string;
-          const value = this.getNodeParameter("value", i) as string;
-
-          responseData = await superchatApiRequest.call(
-            this,
-            "POST",
-            "/contacts/search",
-            {
-              query: {
-                value: [
-                  {
-                    field,
-                    operator: "=",
-                    value,
+              responseData = await superchatApiRequest.call(
+                this,
+                "POST",
+                "/contacts/search",
+                {
+                  query: {
+                    value: [
+                      {
+                        field,
+                        operator: "=",
+                        value,
+                      },
+                    ],
                   },
-                ],
-              },
-            }
-          );
+                }
+              );
 
-          returnData.push(responseData);
-        }
+              returnData.push(responseData);
+            })
+            .with("delete", async () => {
+              const id = this.getNodeParameter("id", i) as string;
 
-        if (operation === "delete") {
-          const id = this.getNodeParameter("id", i) as string;
+              responseData = await superchatApiRequest.call(
+                this,
+                "DELETE",
+                `/contacts/${id}`,
+                {}
+              );
 
-          responseData = await superchatApiRequest.call(
-            this,
-            "DELETE",
-            `/contacts/${id}`,
-            {}
-          );
-
-          returnData.push(responseData);
-        }
-      }
+              returnData.push(responseData);
+            })
+            .exhaustive();
+        })
+        .exhaustive();
     }
 
     return [this.helpers.returnJsonArray(returnData)];
