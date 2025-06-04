@@ -8,14 +8,17 @@ import {
 import { match } from "ts-pattern";
 import * as ContactResource from "./actions/contact/Contact.resource";
 import * as UserResource from "./actions/user/User.resource";
+import * as MessageResource from "./actions/message/Message.resource";
 import { ContactOperationKey } from "./actions/contact/Contact.resource";
 import { UserOperationKey } from "./actions/user/User.resource";
+import { MessageOperationKey } from "./actions/message/Message.resource";
 import * as UserMeOperation from "./actions/user/me.operation";
 import * as ContactSearchOperation from "./actions/contact/search.operation";
 import * as ContactCreateOperation from "./actions/contact/create.operation";
 import * as ContactDeleteOperation from "./actions/contact/delete.operation";
 import * as ContactUpdateOperation from "./actions/contact/update.operation";
 import * as ContactListConversationsOperation from "./actions/contact/listConversations.operation";
+import * as MessageSendOperation from "./actions/message/send.operation";
 
 const RESOURCE_OPTIONS = [
   {
@@ -28,6 +31,11 @@ const RESOURCE_OPTIONS = [
     value: "contact",
     description: "A Superchat contact",
   },
+  {
+    name: "Message",
+    value: "message",
+    description: "A message in Superchat",
+  },
 ] as const;
 
 export type ResourceKey = (typeof RESOURCE_OPTIONS)[number]["value"];
@@ -35,6 +43,7 @@ export type ResourceKey = (typeof RESOURCE_OPTIONS)[number]["value"];
 type OperationKeyByResource<R extends ResourceKey> = {
   user: UserOperationKey;
   contact: ContactOperationKey;
+  message: MessageOperationKey;
 }[R];
 
 export class Superchat implements INodeType {
@@ -74,6 +83,7 @@ export class Superchat implements INodeType {
 
       ...ContactResource.description,
       ...UserResource.description,
+      ...MessageResource.description,
     ],
   };
 
@@ -94,6 +104,19 @@ export class Superchat implements INodeType {
           await match(operation)
             .with("me", async () => {
               const result = await UserMeOperation.execute.call(this, i);
+              returnData.push(result);
+            })
+            .exhaustive();
+        })
+        .with("message", async (resource) => {
+          const operation = this.getNodeParameter(
+            "operation",
+            0
+          ) as OperationKeyByResource<typeof resource>;
+
+          await match(operation)
+            .with("send", async () => {
+              const result = await MessageSendOperation.execute.call(this, i);
               returnData.push(result);
             })
             .exhaustive();
