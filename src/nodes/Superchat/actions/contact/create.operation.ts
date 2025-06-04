@@ -10,6 +10,7 @@ import { ContactHandleType } from "../../../../types/ContactHandleType";
 import { PACreateContactDTO } from "../../../../types/PACreateContactDTO";
 import { PAWriteContactHandleDTO } from "../../../../types/PAWriteContactHandleDTO";
 import { superchatApiRequest } from "../../GenericFunctions";
+import { Gender } from "../../../../types/Gender";
 
 const properties: INodeProperties[] = [
   {
@@ -110,7 +111,7 @@ export async function execute(
 
   const firstName = this.getNodeParameter("firstName", i) as string;
   const lastName = this.getNodeParameter("lastName", i) as string;
-  const gender = this.getNodeParameter("gender", i) as string;
+  const gender = this.getNodeParameter("gender", i) as Gender;
   const emails = this.getNodeParameter("emails", i) as {
     values: { value: string }[];
   };

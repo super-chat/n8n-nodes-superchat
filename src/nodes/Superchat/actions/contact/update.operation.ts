@@ -10,6 +10,7 @@ import { ContactHandleType } from "../../../../types/ContactHandleType";
 import { PAUpdateContactDTO } from "../../../../types/PAUpdateContactDTO";
 import { PAWriteContactHandleDTO } from "../../../../types/PAWriteContactHandleDTO";
 import { superchatApiRequest } from "../../GenericFunctions";
+import { Gender } from "../../../../types/Gender";
 
 const properties: INodeProperties[] = [
   {
@@ -148,7 +149,7 @@ export async function execute(
   const body = {
     first_name: firstName !== "" ? firstName : null,
     last_name: lastName !== "" ? lastName : null,
-    gender: gender !== "noop" ? gender : null,
+    gender: gender !== "noop" ? (gender as Gender) : null,
     handles,
     custom_attributes: [],
   } satisfies PAUpdateContactDTO;
