@@ -1,21 +1,16 @@
-import type {
-  INodeExecutionData,
-  INodeProperties,
-  IExecuteFunctions,
+import {
+  type INodeExecutionData,
+  type INodeProperties,
+  type IExecuteFunctions,
+  updateDisplayOptions,
 } from "n8n-workflow";
 import { ResourceKey } from "../../Superchat.node";
 import { ContactOperationKey } from "./Contact.resource";
 import { superchatApiRequest } from "../../GenericFunctions";
 
-export const description: INodeProperties[] = [
+const properties: INodeProperties[] = [
   {
     displayName: "ID",
-    displayOptions: {
-      show: {
-        resource: ["contact" satisfies ResourceKey],
-        operation: ["delete" satisfies ContactOperationKey],
-      },
-    },
     name: "id",
     type: "string",
     default: "",
@@ -23,6 +18,16 @@ export const description: INodeProperties[] = [
     description: "ID of the contact to delete",
   },
 ];
+
+export const description = updateDisplayOptions(
+  {
+    show: {
+      resource: ["contact" satisfies ResourceKey],
+      operation: ["delete" satisfies ContactOperationKey],
+    },
+  },
+  properties
+);
 
 export async function execute(
   this: IExecuteFunctions,

@@ -1,7 +1,8 @@
-import type {
-  INodeExecutionData,
-  INodeProperties,
-  IExecuteFunctions,
+import {
+  type INodeExecutionData,
+  type INodeProperties,
+  type IExecuteFunctions,
+  updateDisplayOptions,
 } from "n8n-workflow";
 import { ResourceKey } from "../../Superchat.node";
 import { ContactOperationKey } from "./Contact.resource";
@@ -10,15 +11,9 @@ import { PACreateContactDTO } from "../../../../types/PACreateContactDTO";
 import { PAWriteContactHandleDTO } from "../../../../types/PAWriteContactHandleDTO";
 import { superchatApiRequest } from "../../GenericFunctions";
 
-export const description: INodeProperties[] = [
+const properties: INodeProperties[] = [
   {
     displayName: "First Name",
-    displayOptions: {
-      show: {
-        resource: ["contact" satisfies ResourceKey],
-        operation: ["create" satisfies ContactOperationKey],
-      },
-    },
     name: "firstName",
     type: "string",
     default: "",
@@ -26,12 +21,6 @@ export const description: INodeProperties[] = [
   },
   {
     displayName: "Last Name",
-    displayOptions: {
-      show: {
-        resource: ["contact" satisfies ResourceKey],
-        operation: ["create" satisfies ContactOperationKey],
-      },
-    },
     name: "lastName",
     type: "string",
     default: "",
@@ -39,12 +28,6 @@ export const description: INodeProperties[] = [
   },
   {
     displayName: "Gender",
-    displayOptions: {
-      show: {
-        resource: ["contact" satisfies ResourceKey],
-        operation: ["create" satisfies ContactOperationKey],
-      },
-    },
     name: "gender",
     type: "options",
     options: [
@@ -57,12 +40,6 @@ export const description: INodeProperties[] = [
   },
   {
     displayName: "Email Addresses",
-    displayOptions: {
-      show: {
-        resource: ["contact" satisfies ResourceKey],
-        operation: ["create" satisfies ContactOperationKey],
-      },
-    },
     name: "emails",
     type: "fixedCollection",
     default: { values: [] },
@@ -89,12 +66,6 @@ export const description: INodeProperties[] = [
   },
   {
     displayName: "Phone Numbers",
-    displayOptions: {
-      show: {
-        resource: ["contact" satisfies ResourceKey],
-        operation: ["create" satisfies ContactOperationKey],
-      },
-    },
     name: "phoneNumbers",
     type: "fixedCollection",
     default: { values: [] },
@@ -120,6 +91,16 @@ export const description: INodeProperties[] = [
     ],
   },
 ];
+
+export const description = updateDisplayOptions(
+  {
+    show: {
+      resource: ["contact" satisfies ResourceKey],
+      operation: ["create" satisfies ContactOperationKey],
+    },
+  },
+  properties
+);
 
 export async function execute(
   this: IExecuteFunctions,

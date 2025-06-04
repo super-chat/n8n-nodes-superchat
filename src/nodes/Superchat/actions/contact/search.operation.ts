@@ -1,21 +1,16 @@
-import type {
-  INodeExecutionData,
-  INodeProperties,
-  IExecuteFunctions,
+import {
+  type INodeExecutionData,
+  type INodeProperties,
+  type IExecuteFunctions,
+  updateDisplayOptions,
 } from "n8n-workflow";
 import { ResourceKey } from "../../Superchat.node";
 import { ContactOperationKey } from "./Contact.resource";
 import { superchatApiRequest } from "../../GenericFunctions";
 
-export const description: INodeProperties[] = [
+const properties: INodeProperties[] = [
   {
     displayName: "Search Field",
-    displayOptions: {
-      show: {
-        resource: ["contact" satisfies ResourceKey],
-        operation: ["search" satisfies ContactOperationKey],
-      },
-    },
     name: "field",
     type: "options",
     options: [
@@ -41,12 +36,6 @@ export const description: INodeProperties[] = [
   },
   {
     displayName: "Value",
-    displayOptions: {
-      show: {
-        resource: ["contact" satisfies ResourceKey],
-        operation: ["search" satisfies ContactOperationKey],
-      },
-    },
     name: "value",
     type: "string",
     default: "",
@@ -54,6 +43,16 @@ export const description: INodeProperties[] = [
     description: "Value to search for",
   },
 ];
+
+export const description = updateDisplayOptions(
+  {
+    show: {
+      resource: ["contact" satisfies ResourceKey],
+      operation: ["search" satisfies ContactOperationKey],
+    },
+  },
+  properties
+);
 
 export async function execute(
   this: IExecuteFunctions,

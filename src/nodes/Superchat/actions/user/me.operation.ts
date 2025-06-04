@@ -1,11 +1,24 @@
-import type {
-  INodeExecutionData,
-  INodeProperties,
-  IExecuteFunctions,
+import {
+  type INodeExecutionData,
+  type INodeProperties,
+  type IExecuteFunctions,
+  updateDisplayOptions,
 } from "n8n-workflow";
 import { superchatApiRequest } from "../../GenericFunctions";
+import { ResourceKey } from "../../Superchat.node";
+import { UserOperationKey } from "./User.resource";
 
-export const description: INodeProperties[] = [];
+const properties: INodeProperties[] = [];
+
+export const description = updateDisplayOptions(
+  {
+    show: {
+      resource: ["user" satisfies ResourceKey],
+      operation: ["me" satisfies UserOperationKey],
+    },
+  },
+  properties
+);
 
 export async function execute(
   this: IExecuteFunctions,

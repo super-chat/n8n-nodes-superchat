@@ -1,13 +1,14 @@
-import type {
-  INodeExecutionData,
-  INodeProperties,
-  IExecuteFunctions,
+import {
+  type INodeExecutionData,
+  type INodeProperties,
+  type IExecuteFunctions,
+  updateDisplayOptions,
 } from "n8n-workflow";
 import { superchatApiRequest } from "../../GenericFunctions";
 import { ResourceKey } from "../../Superchat.node";
 import { ContactOperationKey } from "./Contact.resource";
 
-export const description: INodeProperties[] = [
+const properties: INodeProperties[] = [
   {
     displayName: "Contact ID",
     name: "contactId",
@@ -15,14 +16,18 @@ export const description: INodeProperties[] = [
     required: true,
     default: "",
     description: "The ID of the contact whose conversations you want to list",
-    displayOptions: {
-      show: {
-        resource: ["contact" satisfies ResourceKey],
-        operation: ["listConversations" satisfies ContactOperationKey],
-      },
-    },
   },
 ];
+
+export const description = updateDisplayOptions(
+  {
+    show: {
+      resource: ["contact" satisfies ResourceKey],
+      operation: ["listConversations" satisfies ContactOperationKey],
+    },
+  },
+  properties
+);
 
 export async function execute(
   this: IExecuteFunctions,
