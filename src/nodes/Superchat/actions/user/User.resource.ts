@@ -12,7 +12,11 @@ const USER_OPERATION_OPTIONS = [
 
 export type UserOperationKey = (typeof USER_OPERATION_OPTIONS)[number]["value"];
 
-export const description: INodeProperties[] = [
+const OPERATION_DESCRIPTIONS: Record<UserOperationKey, INodeProperties[]> = {
+  me: meOperation.description,
+};
+
+export const description = [
   // eslint-disable-next-line n8n-nodes-base/node-param-default-missing
   {
     displayName: "Operation",
@@ -29,5 +33,5 @@ export const description: INodeProperties[] = [
     default: "me" satisfies UserOperationKey,
   },
 
-  ...meOperation.description,
-];
+  ...Object.values(OPERATION_DESCRIPTIONS).flat(),
+] as const satisfies INodeProperties[];

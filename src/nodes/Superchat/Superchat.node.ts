@@ -4,6 +4,7 @@ import {
   INodeTypeDescription,
   IExecuteFunctions,
   NodeConnectionType,
+  INodeProperties,
 } from "n8n-workflow";
 import { match } from "ts-pattern";
 import * as ContactResource from "./actions/contact/Contact.resource";
@@ -46,6 +47,12 @@ type OperationKeyByResource<R extends ResourceKey> = {
   message: MessageOperationKey;
 }[R];
 
+const RESOURCE_PROPERTIES: Record<ResourceKey, INodeProperties[]> = {
+  user: UserResource.description,
+  contact: ContactResource.description,
+  message: MessageResource.description,
+};
+
 export class Superchat implements INodeType {
   description: INodeTypeDescription = {
     displayName: "Superchat",
@@ -81,9 +88,7 @@ export class Superchat implements INodeType {
         required: true,
       },
 
-      ...ContactResource.description,
-      ...UserResource.description,
-      ...MessageResource.description,
+      ...Object.values(RESOURCE_PROPERTIES).flat(),
     ],
   };
 

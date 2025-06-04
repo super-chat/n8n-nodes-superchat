@@ -37,6 +37,14 @@ const CONTACT_OPERATION_OPTIONS = [
 export type ContactOperationKey =
   (typeof CONTACT_OPERATION_OPTIONS)[number]["value"];
 
+const OPERATION_DESCRIPTIONS: Record<ContactOperationKey, INodeProperties[]> = {
+  search: searchOperation.description,
+  delete: deleteOperation.description,
+  create: createOperation.description,
+  update: updateOperation.description,
+  listConversations: listConversationsOperation.description,
+};
+
 export const description: INodeProperties[] = [
   // eslint-disable-next-line n8n-nodes-base/node-param-default-missing
   {
@@ -53,10 +61,5 @@ export const description: INodeProperties[] = [
     options: [...CONTACT_OPERATION_OPTIONS],
     default: "search" satisfies ContactOperationKey,
   },
-
-  ...createOperation.description,
-  ...updateOperation.description,
-  ...deleteOperation.description,
-  ...searchOperation.description,
-  ...listConversationsOperation.description,
+  ...Object.values(OPERATION_DESCRIPTIONS).flat(),
 ];

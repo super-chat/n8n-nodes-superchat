@@ -13,6 +13,10 @@ const MESSAGE_OPERATION_OPTIONS = [
 export type MessageOperationKey =
   (typeof MESSAGE_OPERATION_OPTIONS)[number]["value"];
 
+const OPERATION_DESCRIPTIONS: Record<MessageOperationKey, INodeProperties[]> = {
+  send: sendOperation.description,
+};
+
 export const description: INodeProperties[] = [
   // eslint-disable-next-line n8n-nodes-base/node-param-default-missing
   {
@@ -30,5 +34,5 @@ export const description: INodeProperties[] = [
     default: "send" satisfies MessageOperationKey,
   },
 
-  ...sendOperation.description,
+  ...Object.values(OPERATION_DESCRIPTIONS).flat(),
 ];
