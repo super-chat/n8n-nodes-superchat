@@ -15,6 +15,7 @@ import * as ContactSearchOperation from "./actions/contact/search.operation";
 import * as ContactCreateOperation from "./actions/contact/create.operation";
 import * as ContactDeleteOperation from "./actions/contact/delete.operation";
 import * as ContactUpdateOperation from "./actions/contact/update.operation";
+import * as ContactListConversationsOperation from "./actions/contact/listConversations.operation";
 
 const RESOURCE_OPTIONS = [
   {
@@ -118,6 +119,11 @@ export class Superchat implements INodeType {
             })
             .with("update", async () => {
               const result = await ContactUpdateOperation.execute.call(this, i);
+              returnData.push(result);
+            })
+            .with("listConversations", async () => {
+              const result =
+                await ContactListConversationsOperation.execute.call(this, i);
               returnData.push(result);
             })
             .exhaustive();

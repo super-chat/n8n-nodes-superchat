@@ -3,6 +3,7 @@ import * as createOperation from "./create.operation";
 import * as deleteOperation from "./delete.operation";
 import * as searchOperation from "./search.operation";
 import * as updateOperation from "./update.operation";
+import * as listConversationsOperation from "./listConversations.operation";
 import { ResourceKey } from "../../Superchat.node";
 
 const CONTACT_OPERATION_OPTIONS = [
@@ -25,6 +26,11 @@ const CONTACT_OPERATION_OPTIONS = [
     value: "update",
     name: "Update A Contact",
     action: "Update an existing contact in Superchat.",
+  },
+  {
+    value: "listConversations",
+    name: "List Conversations",
+    action: "List all conversations of a contact.",
   },
 ] as const;
 
@@ -52,4 +58,5 @@ export const description: INodeProperties[] = [
   ...updateOperation.description,
   ...deleteOperation.description,
   ...searchOperation.description,
+  ...listConversationsOperation.description,
 ];
