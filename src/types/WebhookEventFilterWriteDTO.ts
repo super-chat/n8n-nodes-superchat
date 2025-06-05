@@ -1,8 +1,11 @@
 import { WebhookEventFilterWriteChannelDTO } from "./WebhookEventFilterWriteChannelDTO";
+import { WebhookEventFilterWriteCustomAttributeDTO } from "./WebhookEventFilterWriteCustomAttributeDTO";
+import { WebhookEventFilterWriteDefaultAttributeDTO } from "./WebhookEventFilterWriteDefaultAttributeDTO";
 import { WebhookEventFilterWriteInboxDTO } from "./WebhookEventFilterWriteInboxDTO";
 
 export type WebhookEventFilterWriteDTO =
-  // | WebhookEventFilterWriteCustomAttributeDTO
-  // | WebhookEventFilterWriteDefaultAttributeDTO
   // | WebhookEventFilterWriteHandleDTO;
-  WebhookEventFilterWriteInboxDTO | WebhookEventFilterWriteChannelDTO;
+  | WebhookEventFilterWriteCustomAttributeDTO
+  | WebhookEventFilterWriteDefaultAttributeDTO
+  | WebhookEventFilterWriteInboxDTO
+  | WebhookEventFilterWriteChannelDTO;

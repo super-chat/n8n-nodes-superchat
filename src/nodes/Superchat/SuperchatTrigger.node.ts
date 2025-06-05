@@ -12,6 +12,7 @@ import { WebhookEventType } from "../../types/WebhookEventType";
 import { match } from "ts-pattern";
 import { WebhookEventWriteDTO } from "../../types/WebhookEventWriteDTO";
 import { WebhookEventFilterWriteDTO } from "../../types/WebhookEventFilterWriteDTO";
+import { ContactWriteDefaultAttributeField } from "../../types/ContactWriteDefaultAttributeField";
 
 const TOPIC_OPTIONS = [
   {
@@ -138,6 +139,63 @@ export class SuperchatTrigger implements INodeType {
           },
         ],
       },
+
+      {
+        displayName: "Filter by Custom Attribute",
+        name: "customAttributeIds",
+        type: "fixedCollection",
+        default: { values: [] },
+        placeholder: "Add Custom Attribute",
+        description:
+          "Only listen for updated contacts based on the changed custom attributes",
+        typeOptions: {
+          multipleValues: true,
+        },
+        options: [
+          {
+            displayName: "Values",
+            name: "values",
+            values: [
+              {
+                displayName: "ID",
+                name: "id",
+                type: "string",
+                default: "",
+                description: "A custom attribute ID",
+                hint: "Only applicable for contact updated events",
+              },
+            ],
+          },
+        ],
+      },
+
+      // eslint-disable-next-line n8n-nodes-base/node-param-default-missing
+      {
+        displayName: "Filter by Built-in Attribute",
+        name: "builtinAttributes",
+        type: "options",
+        options: [
+          {
+            name: "Fist Name",
+            value: "first_name" satisfies ContactWriteDefaultAttributeField,
+          },
+          {
+            name: "Last Name",
+            value: "last_name" satisfies ContactWriteDefaultAttributeField,
+          },
+          {
+            name: "Gender",
+            value: "gender" satisfies ContactWriteDefaultAttributeField,
+          },
+        ],
+        default: "first_name" satisfies ContactWriteDefaultAttributeField,
+        description:
+          "Only listen for updated contacts based on the changed built-in attributes",
+        typeOptions: {
+          multipleValues: true,
+        },
+        hint: "Only applicable for contact updated events",
+      },
     ],
   };
 
@@ -178,14 +236,46 @@ export class SuperchatTrigger implements INodeType {
 
         const event = match(topic)
           .with(
-            "contact_created",
-            "contact_updated",
             "note_created",
+            "contact_created",
             (type): WebhookEventWriteDTO => ({
               type,
               filters: [],
             })
           )
+          .with("contact_updated", (type): WebhookEventWriteDTO => {
+            const customAttributeIds = this.getNodeParameter(
+              "customAttributeIds",
+              ""
+            ) as {
+              values: { id: string }[];
+            };
+            const builtinAttributes = this.getNodeParameter(
+              "builtinAttributes",
+              ""
+            ) as ContactWriteDefaultAttributeField[];
+
+            const filters: WebhookEventFilterWriteDTO[] = [];
+
+            if (customAttributeIds.values.length > 0) {
+              filters.push({
+                type: "custom_attribute",
+                ids: customAttributeIds.values.map(({ id }) => id),
+              });
+            }
+
+            if (builtinAttributes.length > 0) {
+              filters.push({
+                type: "default_attribute",
+                attributes: builtinAttributes,
+              });
+            }
+
+            return {
+              type,
+              filters,
+            };
+          })
           .with(
             "message_inbound",
             "message_outbound",
