@@ -14,6 +14,8 @@ import { WebhookEventWriteDTO } from "../../types/WebhookEventWriteDTO";
 import { WebhookEventFilterWriteDTO } from "../../types/WebhookEventFilterWriteDTO";
 import { ContactWriteDefaultAttributeField } from "../../types/ContactWriteDefaultAttributeField";
 
+type ConversationStatus = "open" | "done" | "snoozed";
+
 const TOPIC_OPTIONS = [
   {
     name: "Contact Created",
@@ -38,6 +40,10 @@ const TOPIC_OPTIONS = [
   {
     name: "Failed Message",
     value: "message_failed" satisfies WebhookEventType,
+  },
+  {
+    name: "Conversation Status Changed",
+    value: "conversation_status_changed",
   },
 ] as const;
 
@@ -89,7 +95,7 @@ export class SuperchatTrigger implements INodeType {
         default: { values: [] },
         placeholder: "Add Channel",
         description:
-          "Only listen for inbound messages, outbound messages or failed messages on specified channels",
+          "Only listen for inbound messages, outbound messages, failed messages or conversation status changes on specified channels",
         typeOptions: {
           multipleValues: true,
         },
@@ -104,7 +110,7 @@ export class SuperchatTrigger implements INodeType {
                 type: "string",
                 default: "",
                 description: "A channel ID",
-                hint: "Only applicable for inbound message, outbound message or or failed message events",
+                hint: "Only applicable for inbound message, outbound message, failed message or conversation status change events",
               },
             ],
           },
@@ -118,7 +124,7 @@ export class SuperchatTrigger implements INodeType {
         default: { values: [] },
         placeholder: "Add Channel",
         description:
-          "Only listen for inbound messages, outbound messages or failed messages on specified inboxes",
+          "Only listen for inbound messages, outbound messages, failed messages or conversation status changes on specified inboxes",
         typeOptions: {
           multipleValues: true,
         },
@@ -133,7 +139,7 @@ export class SuperchatTrigger implements INodeType {
                 type: "string",
                 default: "",
                 description: "An inbox ID",
-                hint: "Only applicable for inbound message, outbound message or failed message events",
+                hint: "Only applicable for inbound message, outbound message, failed message or conversation status change events",
               },
             ],
           },
@@ -196,6 +202,34 @@ export class SuperchatTrigger implements INodeType {
         },
         hint: "Only applicable for contact updated events",
       },
+
+      // eslint-disable-next-line n8n-nodes-base/node-param-default-missing
+      {
+        displayName: "Filter by Conversation Status",
+        name: "conversationStatus",
+        type: "options",
+        options: [
+          {
+            name: "Done",
+            value: "done" satisfies ConversationStatus,
+          },
+          {
+            name: "Open",
+            value: "open" satisfies ConversationStatus,
+          },
+          {
+            name: "Snoozed",
+            value: "snoozed" satisfies ConversationStatus,
+          },
+        ],
+        description:
+          "Only listen for conversation status changes based on the status they changed to",
+        typeOptions: {
+          multipleValues: true,
+        },
+        hint: "Only applicable for conversation status changed events",
+        default: [] as ConversationStatus[],
+      },
     ],
   };
 
@@ -234,88 +268,153 @@ export class SuperchatTrigger implements INodeType {
         const topic = this.getNodeParameter("topic") as Topic;
         const webhookUrl = this.getNodeWebhookUrl("default")!!;
 
-        const event = match(topic)
-          .with(
-            "note_created",
-            "contact_created",
-            (type): WebhookEventWriteDTO => ({
-              type,
-              filters: [],
-            })
-          )
-          .with("contact_updated", (type): WebhookEventWriteDTO => {
-            const customAttributeIds = this.getNodeParameter(
-              "customAttributeIds",
+        const events = match(topic)
+          .with("conversation_status_changed", (): WebhookEventWriteDTO[] => {
+            const conversationStatuses = this.getNodeParameter(
+              "conversationStatus",
               ""
-            ) as {
+            ) as ConversationStatus[];
+
+            const actualStatuses =
+              conversationStatuses.length > 0
+                ? conversationStatuses
+                : (["open", "done", "snoozed"] as const);
+
+            const channelIds = this.getNodeParameter("channelIds", "") as {
               values: { id: string }[];
             };
-            const builtinAttributes = this.getNodeParameter(
-              "builtinAttributes",
-              ""
-            ) as ContactWriteDefaultAttributeField[];
+
+            const inboxIds = this.getNodeParameter("inboxIds", "") as {
+              values: { id: string }[];
+            };
 
             const filters: WebhookEventFilterWriteDTO[] = [];
 
-            if (customAttributeIds.values.length > 0) {
+            if (channelIds.values.length > 0) {
               filters.push({
-                type: "custom_attribute",
-                ids: customAttributeIds.values.map(({ id }) => id),
+                type: "channel",
+                ids: channelIds.values.map(({ id }) => id),
               });
             }
 
-            if (builtinAttributes.length > 0) {
+            if (inboxIds.values.length > 0) {
               filters.push({
-                type: "default_attribute",
-                attributes: builtinAttributes,
+                type: "inbox",
+                ids: inboxIds.values.map(({ id }) => id),
               });
             }
 
-            return {
-              type,
-              filters,
-            };
+            return actualStatuses.map(
+              (status): WebhookEventWriteDTO => ({
+                type: (
+                  {
+                    open: "conversation_opened",
+                    done: "conversation_done",
+                    snoozed: "conversation_snoozed",
+                  } as const
+                )[status],
+                filters,
+              })
+            );
           })
           .with(
+            "contact_created",
+            "contact_updated",
+            "note_created",
             "message_inbound",
             "message_outbound",
             "message_failed",
-            (type): WebhookEventWriteDTO => {
-              const channelIds = this.getNodeParameter("channelIds", "") as {
-                values: { id: string }[];
-              };
+            (topic) => {
+              const event = match(topic)
+                .with(
+                  "note_created",
+                  "contact_created",
+                  (type): WebhookEventWriteDTO => ({
+                    type,
+                    filters: [],
+                  })
+                )
+                .with("contact_updated", (type): WebhookEventWriteDTO => {
+                  const customAttributeIds = this.getNodeParameter(
+                    "customAttributeIds",
+                    ""
+                  ) as {
+                    values: { id: string }[];
+                  };
+                  const builtinAttributes = this.getNodeParameter(
+                    "builtinAttributes",
+                    ""
+                  ) as ContactWriteDefaultAttributeField[];
 
-              const inboxIds = this.getNodeParameter("inboxIds", "") as {
-                values: { id: string }[];
-              };
+                  const filters: WebhookEventFilterWriteDTO[] = [];
 
-              const filters: WebhookEventFilterWriteDTO[] = [];
+                  if (customAttributeIds.values.length > 0) {
+                    filters.push({
+                      type: "custom_attribute",
+                      ids: customAttributeIds.values.map(({ id }) => id),
+                    });
+                  }
 
-              if (channelIds.values.length > 0) {
-                filters.push({
-                  type: "channel",
-                  ids: channelIds.values.map(({ id }) => id),
-                });
-              }
+                  if (builtinAttributes.length > 0) {
+                    filters.push({
+                      type: "default_attribute",
+                      attributes: builtinAttributes,
+                    });
+                  }
 
-              if (inboxIds.values.length > 0) {
-                filters.push({
-                  type: "inbox",
-                  ids: inboxIds.values.map(({ id }) => id),
-                });
-              }
+                  return {
+                    type,
+                    filters,
+                  };
+                })
+                .with(
+                  "message_inbound",
+                  "message_outbound",
+                  "message_failed",
+                  (type): WebhookEventWriteDTO => {
+                    const channelIds = this.getNodeParameter(
+                      "channelIds",
+                      ""
+                    ) as {
+                      values: { id: string }[];
+                    };
 
-              return {
-                type,
-                filters,
-              };
+                    const inboxIds = this.getNodeParameter("inboxIds", "") as {
+                      values: { id: string }[];
+                    };
+
+                    const filters: WebhookEventFilterWriteDTO[] = [];
+
+                    if (channelIds.values.length > 0) {
+                      filters.push({
+                        type: "channel",
+                        ids: channelIds.values.map(({ id }) => id),
+                      });
+                    }
+
+                    if (inboxIds.values.length > 0) {
+                      filters.push({
+                        type: "inbox",
+                        ids: inboxIds.values.map(({ id }) => id),
+                      });
+                    }
+
+                    return {
+                      type,
+                      filters,
+                    };
+                  }
+                )
+                .exhaustive();
+
+              return [event];
             }
           )
           .exhaustive();
 
         const body = {
           target_url: webhookUrl,
-          events: [event],
+          events,
         };
 
         const data = await superchatJsonApiRequest.call(
