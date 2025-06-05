@@ -1,18 +1,18 @@
 import {
-  type IHookFunctions,
-  type IWebhookFunctions,
   type IDataObject,
+  type IHookFunctions,
   type INodeType,
   type INodeTypeDescription,
+  type IWebhookFunctions,
   type IWebhookResponseData,
   NodeConnectionType,
 } from "n8n-workflow";
-import { superchatJsonApiRequest } from "./GenericFunctions";
-import { WebhookEventType } from "../../types/WebhookEventType";
 import { match } from "ts-pattern";
-import { WebhookEventWriteDTO } from "../../types/WebhookEventWriteDTO";
-import { WebhookEventFilterWriteDTO } from "../../types/WebhookEventFilterWriteDTO";
 import { ContactWriteDefaultAttributeField } from "../../types/ContactWriteDefaultAttributeField";
+import { WebhookEventFilterWriteDTO } from "../../types/WebhookEventFilterWriteDTO";
+import { WebhookEventType } from "../../types/WebhookEventType";
+import { WebhookEventWriteDTO } from "../../types/WebhookEventWriteDTO";
+import { superchatJsonApiRequest } from "./GenericFunctions";
 
 type ConversationStatus = "open" | "done" | "snoozed";
 

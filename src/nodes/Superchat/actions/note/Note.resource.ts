@@ -1,8 +1,8 @@
 import type { INodeProperties } from "n8n-workflow";
 import { ResourceKey } from "../../Superchat.node";
 import * as createOperation from "./create.operation";
-import * as getOperation from "./get.operation";
 import * as deleteOperation from "./delete.operation";
+import * as getOperation from "./get.operation";
 
 const NOTE_OPERATION_OPTIONS = [
   {

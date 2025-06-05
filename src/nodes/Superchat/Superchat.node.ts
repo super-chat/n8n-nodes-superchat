@@ -1,43 +1,43 @@
 import {
+  IExecuteFunctions,
   INodeExecutionData,
+  INodeProperties,
   INodeType,
   INodeTypeDescription,
-  IExecuteFunctions,
   NodeConnectionType,
-  INodeProperties,
 } from "n8n-workflow";
 import { match } from "ts-pattern";
 import * as ContactResource from "./actions/contact/Contact.resource";
-import * as UserResource from "./actions/user/User.resource";
-import * as MessageResource from "./actions/message/Message.resource";
-import * as ConversationResource from "./actions/conversation/Conversation.resource";
-import * as NoteResource from "./actions/note/Note.resource";
-import * as FileResource from "./actions/file/File.resource";
 import { ContactOperationKey } from "./actions/contact/Contact.resource";
-import { UserOperationKey } from "./actions/user/User.resource";
-import { MessageOperationKey } from "./actions/message/Message.resource";
-import * as UserMeOperation from "./actions/user/me.operation";
-import * as ContactSearchOperation from "./actions/contact/search.operation";
 import * as ContactCreateOperation from "./actions/contact/create.operation";
 import * as ContactDeleteOperation from "./actions/contact/delete.operation";
-import * as ContactUpdateOperation from "./actions/contact/update.operation";
 import * as ContactListConversationsOperation from "./actions/contact/listConversations.operation";
-import * as MessageSendMessageOperation from "./actions/message/sendMessage.operation";
-import * as MessageSendMailOperation from "./actions/message/sendMail.operation";
-import * as MessageSendWhatsAppTemplateOperation from "./actions/message/sendWhatsAppTemplate.operation";
+import * as ContactSearchOperation from "./actions/contact/search.operation";
+import * as ContactUpdateOperation from "./actions/contact/update.operation";
+import * as ConversationResource from "./actions/conversation/Conversation.resource";
+import { ConversationOperationKey } from "./actions/conversation/Conversation.resource";
 import * as ConversationGetOperation from "./actions/conversation/get.operation";
+import * as ConversationUpdateAssigneesOperation from "./actions/conversation/updateAssignees.operation";
 import * as ConversationUpdateLabelsOperation from "./actions/conversation/updateLabels.operation";
 import * as ConversationUpdateStatusOperation from "./actions/conversation/updateStatus.operation";
-import * as ConversationUpdateAssigneesOperation from "./actions/conversation/updateAssignees.operation";
-import * as NoteCreateOperation from "./actions/note/create.operation";
-import * as NoteGetOperation from "./actions/note/get.operation";
-import * as NoteDeleteOperation from "./actions/note/delete.operation";
 import * as FileCreateOperation from "./actions/file/create.operation";
 import * as FileDeleteOperation from "./actions/file/delete.operation";
 import * as FileDownloadOperation from "./actions/file/download.operation";
-import { ConversationOperationKey } from "./actions/conversation/Conversation.resource";
-import { NoteOperationKey } from "./actions/note/Note.resource";
+import * as FileResource from "./actions/file/File.resource";
 import { FileOperationKey } from "./actions/file/File.resource";
+import * as MessageResource from "./actions/message/Message.resource";
+import { MessageOperationKey } from "./actions/message/Message.resource";
+import * as MessageSendMailOperation from "./actions/message/sendMail.operation";
+import * as MessageSendMessageOperation from "./actions/message/sendMessage.operation";
+import * as MessageSendWhatsAppTemplateOperation from "./actions/message/sendWhatsAppTemplate.operation";
+import * as NoteCreateOperation from "./actions/note/create.operation";
+import * as NoteDeleteOperation from "./actions/note/delete.operation";
+import * as NoteGetOperation from "./actions/note/get.operation";
+import * as NoteResource from "./actions/note/Note.resource";
+import { NoteOperationKey } from "./actions/note/Note.resource";
+import * as UserMeOperation from "./actions/user/me.operation";
+import * as UserResource from "./actions/user/User.resource";
+import { UserOperationKey } from "./actions/user/User.resource";
 
 const RESOURCE_OPTIONS = [
   {

@@ -1,12 +1,12 @@
 import {
+  type IExecuteFunctions,
   type INodeExecutionData,
   type INodeProperties,
-  type IExecuteFunctions,
   updateDisplayOptions,
 } from "n8n-workflow";
+import { superchatJsonApiRequest } from "../../GenericFunctions";
 import { ResourceKey } from "../../Superchat.node";
 import { FileOperationKey } from "./File.resource";
-import { superchatJsonApiRequest } from "../../GenericFunctions";
 
 const properties: INodeProperties[] = [
   {

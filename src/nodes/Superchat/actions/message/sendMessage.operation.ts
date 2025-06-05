@@ -1,13 +1,13 @@
 import {
+  type IExecuteFunctions,
   type INodeExecutionData,
   type INodeProperties,
-  type IExecuteFunctions,
   updateDisplayOptions,
 } from "n8n-workflow";
+import { PASendMessageDTO } from "../../../../types/PASendMessageDTO";
+import { superchatJsonApiRequest } from "../../GenericFunctions";
 import { ResourceKey } from "../../Superchat.node";
 import { MessageOperationKey } from "./Message.resource";
-import { superchatJsonApiRequest } from "../../GenericFunctions";
-import { PASendMessageDTO } from "../../../../types/PASendMessageDTO";
 
 const properties: INodeProperties[] = [
   {

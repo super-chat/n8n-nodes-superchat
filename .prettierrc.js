@@ -33,4 +33,6 @@ module.exports = {
    * https://prettier.io/docs/en/options.html#tabs
    */
   useTabs: false,
+
+  plugins: ["prettier-plugin-organize-imports"],
 };

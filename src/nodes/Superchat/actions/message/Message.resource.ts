@@ -1,7 +1,7 @@
 import type { INodeProperties } from "n8n-workflow";
 import { ResourceKey } from "../../Superchat.node";
-import * as sendMessageOperation from "./sendMessage.operation";
 import * as sendMailOperation from "./sendMail.operation";
+import * as sendMessageOperation from "./sendMessage.operation";
 import * as sendWhatsAppTemplateOperation from "./sendWhatsAppTemplate.operation";
 
 const MESSAGE_OPERATION_OPTIONS = [

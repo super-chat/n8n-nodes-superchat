@@ -1,7 +1,7 @@
 import {
+  type IExecuteFunctions,
   type INodeExecutionData,
   type INodeProperties,
-  type IExecuteFunctions,
   updateDisplayOptions,
 } from "n8n-workflow";
 import { superchatJsonApiRequest } from "../../GenericFunctions";

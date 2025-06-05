@@ -1,16 +1,16 @@
 import {
+  type IExecuteFunctions,
   type INodeExecutionData,
   type INodeProperties,
-  type IExecuteFunctions,
   updateDisplayOptions,
 } from "n8n-workflow";
-import { ResourceKey } from "../../Superchat.node";
-import { ContactOperationKey } from "./Contact.resource";
 import { ContactHandleType } from "../../../../types/ContactHandleType";
+import { Gender } from "../../../../types/Gender";
 import { PACreateContactDTO } from "../../../../types/PACreateContactDTO";
 import { PAWriteContactHandleDTO } from "../../../../types/PAWriteContactHandleDTO";
 import { superchatJsonApiRequest } from "../../GenericFunctions";
-import { Gender } from "../../../../types/Gender";
+import { ResourceKey } from "../../Superchat.node";
+import { ContactOperationKey } from "./Contact.resource";
 
 const properties: INodeProperties[] = [
   {

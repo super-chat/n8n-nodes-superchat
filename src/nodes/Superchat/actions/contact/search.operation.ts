@@ -1,14 +1,14 @@
 import {
+  type IExecuteFunctions,
   type INodeExecutionData,
   type INodeProperties,
-  type IExecuteFunctions,
   updateDisplayOptions,
 } from "n8n-workflow";
-import { ResourceKey } from "../../Superchat.node";
-import { ContactOperationKey } from "./Contact.resource";
-import { superchatJsonApiRequest } from "../../GenericFunctions";
 import { PASearchContactDTO } from "../../../../types/PASearchContactDTO";
 import { PASearchContactQueryExpression } from "../../../../types/PASearchContactQueryExpression";
+import { superchatJsonApiRequest } from "../../GenericFunctions";
+import { ResourceKey } from "../../Superchat.node";
+import { ContactOperationKey } from "./Contact.resource";
 
 const properties: INodeProperties[] = [
   // eslint-disable-next-line n8n-nodes-base/node-param-default-missing
