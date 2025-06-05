@@ -25,6 +25,7 @@ import * as MessageSendMailOperation from "./actions/message/sendMail.operation"
 import * as ConversationGetOperation from "./actions/conversation/get.operation";
 import * as ConversationUpdateLabelsOperation from "./actions/conversation/updateLabels.operation";
 import * as ConversationUpdateStatusOperation from "./actions/conversation/updateStatus.operation";
+import * as ConversationUpdateAssigneesOperation from "./actions/conversation/updateAssignees.operation";
 import { ConversationOperationKey } from "./actions/conversation/Conversation.resource";
 
 const RESOURCE_OPTIONS = [
@@ -201,6 +202,14 @@ export class Superchat implements INodeType {
             .with("updateStatus", async () => {
               const result =
                 await ConversationUpdateStatusOperation.execute.call(this, i);
+              returnData.push(result);
+            })
+            .with("updateAssignees", async () => {
+              const result =
+                await ConversationUpdateAssigneesOperation.execute.call(
+                  this,
+                  i
+                );
               returnData.push(result);
             })
             .exhaustive();

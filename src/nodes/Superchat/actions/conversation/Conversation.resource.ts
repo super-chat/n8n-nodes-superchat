@@ -3,6 +3,7 @@ import { ResourceKey } from "../../Superchat.node";
 import * as getOperation from "./get.operation";
 import * as updateLabelsOperation from "./updateLabels.operation";
 import * as updateStatusOperation from "./updateStatus.operation";
+import * as updateAssigneesOperation from "./updateAssignees.operation";
 
 const CONVERSATION_OPERATION_OPTIONS = [
   {
@@ -20,6 +21,11 @@ const CONVERSATION_OPERATION_OPTIONS = [
     name: "Update Status",
     action: "Update the status of a conversation",
   },
+  {
+    value: "updateAssignees",
+    name: "Update Assigned Users",
+    action: "Update the users assigned to a conversation",
+  },
 ] as const;
 
 export type ConversationOperationKey =
@@ -32,6 +38,7 @@ const OPERATION_DESCRIPTIONS: Record<
   get: getOperation.description,
   updateLabels: updateLabelsOperation.description,
   updateStatus: updateStatusOperation.description,
+  updateAssignees: updateAssigneesOperation.description,
 };
 
 export const description = [
