@@ -10,6 +10,7 @@ import { match } from "ts-pattern";
 import * as ContactResource from "./actions/contact/Contact.resource";
 import * as UserResource from "./actions/user/User.resource";
 import * as MessageResource from "./actions/message/Message.resource";
+import * as ConversationResource from "./actions/conversation/Conversation.resource";
 import { ContactOperationKey } from "./actions/contact/Contact.resource";
 import { UserOperationKey } from "./actions/user/User.resource";
 import { MessageOperationKey } from "./actions/message/Message.resource";
@@ -21,6 +22,8 @@ import * as ContactUpdateOperation from "./actions/contact/update.operation";
 import * as ContactListConversationsOperation from "./actions/contact/listConversations.operation";
 import * as MessageSendMessageOperation from "./actions/message/sendMessage.operation";
 import * as MessageSendMailOperation from "./actions/message/sendMail.operation";
+import * as ConversationGetOperation from "./actions/conversation/get.operation";
+import { ConversationOperationKey } from "./actions/conversation/Conversation.resource";
 
 const RESOURCE_OPTIONS = [
   {
@@ -38,6 +41,11 @@ const RESOURCE_OPTIONS = [
     value: "message",
     description: "A message in Superchat",
   },
+  {
+    name: "Conversation",
+    value: "conversation",
+    description: "A conversation in Superchat",
+  },
 ] as const;
 
 export type ResourceKey = (typeof RESOURCE_OPTIONS)[number]["value"];
@@ -46,12 +54,14 @@ type OperationKeyByResource<R extends ResourceKey> = {
   user: UserOperationKey;
   contact: ContactOperationKey;
   message: MessageOperationKey;
+  conversation: ConversationOperationKey;
 }[R];
 
 const RESOURCE_PROPERTIES: Record<ResourceKey, INodeProperties[]> = {
   user: UserResource.description,
   contact: ContactResource.description,
   message: MessageResource.description,
+  conversation: ConversationResource.description,
 };
 
 export class Superchat implements INodeType {
@@ -163,6 +173,22 @@ export class Superchat implements INodeType {
             .with("listConversations", async () => {
               const result =
                 await ContactListConversationsOperation.execute.call(this, i);
+              returnData.push(result);
+            })
+            .exhaustive();
+        })
+        .with("conversation", async (resource) => {
+          const operation = this.getNodeParameter(
+            "operation",
+            0
+          ) as OperationKeyByResource<typeof resource>;
+
+          await match(operation)
+            .with("get", async () => {
+              const result = await ConversationGetOperation.execute.call(
+                this,
+                i
+              );
               returnData.push(result);
             })
             .exhaustive();
