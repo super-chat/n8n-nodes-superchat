@@ -34,6 +34,10 @@ const TOPIC_OPTIONS = [
     name: "Outbound Message",
     value: "message_outbound" satisfies WebhookEventType,
   },
+  {
+    name: "Failed Message",
+    value: "message_failed" satisfies WebhookEventType,
+  },
 ] as const;
 
 export type Topic = (typeof TOPIC_OPTIONS)[number]["value"];
@@ -84,7 +88,7 @@ export class SuperchatTrigger implements INodeType {
         default: { values: [] },
         placeholder: "Add Channel",
         description:
-          "Only listen for inbound messages or outbound messages on specified channels",
+          "Only listen for inbound messages, outbound messages or failed messages on specified channels",
         typeOptions: {
           multipleValues: true,
         },
@@ -99,7 +103,7 @@ export class SuperchatTrigger implements INodeType {
                 type: "string",
                 default: "",
                 description: "A channel ID",
-                hint: "Only applicable for inbound message and outbound message events",
+                hint: "Only applicable for inbound message, outbound message or or failed message events",
               },
             ],
           },
@@ -113,7 +117,7 @@ export class SuperchatTrigger implements INodeType {
         default: { values: [] },
         placeholder: "Add Channel",
         description:
-          "Only listen for inbound messages or outbound messages on specified inboxes",
+          "Only listen for inbound messages, outbound messages or failed messages on specified inboxes",
         typeOptions: {
           multipleValues: true,
         },
@@ -128,7 +132,7 @@ export class SuperchatTrigger implements INodeType {
                 type: "string",
                 default: "",
                 description: "An inbox ID",
-                hint: "Only applicable for inbound message and outbound message events",
+                hint: "Only applicable for inbound message, outbound message or failed message events",
               },
             ],
           },
@@ -185,6 +189,7 @@ export class SuperchatTrigger implements INodeType {
           .with(
             "message_inbound",
             "message_outbound",
+            "message_failed",
             (type): WebhookEventWriteDTO => {
               const channelIds = this.getNodeParameter("channelIds", "") as {
                 values: { id: string }[];
