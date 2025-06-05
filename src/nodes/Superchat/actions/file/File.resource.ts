@@ -1,6 +1,7 @@
 import type { INodeProperties } from "n8n-workflow";
 import { ResourceKey } from "../../Superchat.node";
 import * as createOperation from "./create.operation";
+import * as deleteOperation from "./delete.operation";
 
 const FILE_OPERATION_OPTIONS = [
   {
@@ -8,12 +9,18 @@ const FILE_OPERATION_OPTIONS = [
     name: "Create A File",
     action: "Create a file in Superchat.",
   },
+  {
+    value: "delete",
+    name: "Delete A File",
+    action: "Delete a file in Superchat.",
+  },
 ] as const;
 
 export type FileOperationKey = (typeof FILE_OPERATION_OPTIONS)[number]["value"];
 
 const OPERATION_DESCRIPTIONS: Record<FileOperationKey, INodeProperties[]> = {
   create: createOperation.description,
+  delete: deleteOperation.description,
 };
 
 export const description: INodeProperties[] = [
