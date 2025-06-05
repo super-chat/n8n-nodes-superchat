@@ -9,6 +9,30 @@ import {
 } from "n8n-workflow";
 import { superchatJsonApiRequest } from "./GenericFunctions";
 import { WebhookEventType } from "../../types/WebhookEventType";
+import { match } from "ts-pattern";
+import { WebhookEventWriteDTO } from "../../types/WebhookEventWriteDTO";
+import { WebhookEventFilterWriteDTO } from "../../types/WebhookEventFilterWriteDTO";
+
+const TOPIC_OPTIONS = [
+  {
+    name: "Contact Created",
+    value: "contact_created" satisfies WebhookEventType,
+  },
+  {
+    name: "Contact Updated",
+    value: "contact_updated" satisfies WebhookEventType,
+  },
+  {
+    name: "Note Created",
+    value: "note_created" satisfies WebhookEventType,
+  },
+  {
+    name: "Inbound Message",
+    value: "message_inbound" satisfies WebhookEventType,
+  },
+] as const;
+
+export type Topic = (typeof TOPIC_OPTIONS)[number]["value"];
 
 export class SuperchatTrigger implements INodeType {
   description: INodeTypeDescription = {
@@ -46,18 +70,61 @@ export class SuperchatTrigger implements INodeType {
         name: "topic",
         type: "options",
         default: "contact_created" satisfies WebhookEventType,
+        options: [...TOPIC_OPTIONS],
+      },
+
+      {
+        displayName: "Filter by Channel",
+        name: "channelIds",
+        type: "fixedCollection",
+        default: { values: [] },
+        placeholder: "Add Channel",
+        description: "Only listen for inbound messages on specified channels",
+        typeOptions: {
+          multipleValues: true,
+        },
         options: [
           {
-            name: "Contact Created",
-            value: "contact_created" satisfies WebhookEventType,
+            displayName: "Values",
+            name: "values",
+            values: [
+              {
+                displayName: "ID",
+                name: "id",
+                type: "string",
+                default: "",
+                description: "A channel ID",
+                hint: "Only applicable for inbound message events",
+              },
+            ],
           },
+        ],
+      },
+
+      {
+        displayName: "Filter by Inbox",
+        name: "inboxIds",
+        type: "fixedCollection",
+        default: { values: [] },
+        placeholder: "Add Channel",
+        description: "Only listen for inbound messages on specified inboxes",
+        typeOptions: {
+          multipleValues: true,
+        },
+        options: [
           {
-            name: "Contact Updated",
-            value: "contact_updated" satisfies WebhookEventType,
-          },
-          {
-            name: "Note Created",
-            value: "note_created" satisfies WebhookEventType,
+            displayName: "Values",
+            name: "values",
+            values: [
+              {
+                displayName: "ID",
+                name: "id",
+                type: "string",
+                default: "",
+                description: "An inbox ID",
+                hint: "Only applicable for inbound message events",
+              },
+            ],
           },
         ],
       },
@@ -96,21 +163,61 @@ export class SuperchatTrigger implements INodeType {
       },
       async create(this: IHookFunctions): Promise<boolean> {
         const webhookData = this.getWorkflowStaticData("node");
-        const topic = this.getNodeParameter("topic") as WebhookEventType;
+        const topic = this.getNodeParameter("topic") as Topic;
         const webhookUrl = this.getNodeWebhookUrl("default")!!;
+
+        const event = match(topic)
+          .with(
+            "contact_created",
+            "contact_updated",
+            "note_created",
+            (type): WebhookEventWriteDTO => ({
+              type,
+              filters: [],
+            })
+          )
+          .with("message_inbound", (type): WebhookEventWriteDTO => {
+            const channelIds = this.getNodeParameter("channelIds", "") as {
+              values: { id: string }[];
+            };
+
+            const inboxIds = this.getNodeParameter("inboxIds", "") as {
+              values: { id: string }[];
+            };
+
+            const filters: WebhookEventFilterWriteDTO[] = [];
+
+            if (channelIds.values.length > 0) {
+              filters.push({
+                type: "channel",
+                ids: channelIds.values.map(({ id }) => id),
+              });
+            }
+
+            if (inboxIds.values.length > 0) {
+              filters.push({
+                type: "inbox",
+                ids: inboxIds.values.map(({ id }) => id),
+              });
+            }
+
+            return {
+              type,
+              filters,
+            };
+          })
+          .exhaustive();
+
+        const body = {
+          target_url: webhookUrl,
+          events: [event],
+        };
 
         const data = await superchatJsonApiRequest.call(
           this,
           "POST",
           `/webhooks`,
-          {
-            target_url: webhookUrl,
-            events: [
-              {
-                type: topic,
-              },
-            ],
-          }
+          body
         );
 
         if (!("id" in data)) {
