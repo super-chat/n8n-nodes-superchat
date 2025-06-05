@@ -55,6 +55,10 @@ export class SuperchatTrigger implements INodeType {
             name: "Contact Updated",
             value: "contact_updated" satisfies WebhookEventType,
           },
+          {
+            name: "Note Created",
+            value: "note_created" satisfies WebhookEventType,
+          },
         ],
       },
     ],
