@@ -2,6 +2,7 @@ import type { INodeProperties } from "n8n-workflow";
 import { ResourceKey } from "../../Superchat.node";
 import * as sendMessageOperation from "./sendMessage.operation";
 import * as sendMailOperation from "./sendMail.operation";
+import * as sendWhatsAppTemplateOperation from "./sendWhatsAppTemplate.operation";
 
 const MESSAGE_OPERATION_OPTIONS = [
   {
@@ -14,6 +15,11 @@ const MESSAGE_OPERATION_OPTIONS = [
     name: "Send An Email",
     action: "Send an email via Superchat.",
   },
+  {
+    value: "sendWhatsAppTemplate",
+    name: "Send WhatsApp Template",
+    action: "Send a WhatsApp Template via Superchat.",
+  },
 ] as const;
 
 export type MessageOperationKey =
@@ -21,6 +27,7 @@ export type MessageOperationKey =
 
 const OPERATION_DESCRIPTIONS: Record<MessageOperationKey, INodeProperties[]> = {
   sendMessage: sendMessageOperation.description,
+  sendWhatsAppTemplate: sendWhatsAppTemplateOperation.description,
   sendMail: sendMailOperation.description,
 };
 

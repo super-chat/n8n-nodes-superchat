@@ -24,6 +24,7 @@ import * as ContactUpdateOperation from "./actions/contact/update.operation";
 import * as ContactListConversationsOperation from "./actions/contact/listConversations.operation";
 import * as MessageSendMessageOperation from "./actions/message/sendMessage.operation";
 import * as MessageSendMailOperation from "./actions/message/sendMail.operation";
+import * as MessageSendWhatsAppTemplateOperation from "./actions/message/sendWhatsAppTemplate.operation";
 import * as ConversationGetOperation from "./actions/conversation/get.operation";
 import * as ConversationUpdateLabelsOperation from "./actions/conversation/updateLabels.operation";
 import * as ConversationUpdateStatusOperation from "./actions/conversation/updateStatus.operation";
@@ -170,6 +171,14 @@ export class Superchat implements INodeType {
                 this,
                 i
               );
+              returnData.push(result);
+            })
+            .with("sendWhatsAppTemplate", async () => {
+              const result =
+                await MessageSendWhatsAppTemplateOperation.execute.call(
+                  this,
+                  i
+                );
               returnData.push(result);
             })
             .exhaustive();
