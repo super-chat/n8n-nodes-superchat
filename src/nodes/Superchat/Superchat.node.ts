@@ -11,6 +11,7 @@ import * as ContactResource from "./actions/contact/Contact.resource";
 import * as UserResource from "./actions/user/User.resource";
 import * as MessageResource from "./actions/message/Message.resource";
 import * as ConversationResource from "./actions/conversation/Conversation.resource";
+import * as NoteResource from "./actions/note/Note.resource";
 import { ContactOperationKey } from "./actions/contact/Contact.resource";
 import { UserOperationKey } from "./actions/user/User.resource";
 import { MessageOperationKey } from "./actions/message/Message.resource";
@@ -26,7 +27,9 @@ import * as ConversationGetOperation from "./actions/conversation/get.operation"
 import * as ConversationUpdateLabelsOperation from "./actions/conversation/updateLabels.operation";
 import * as ConversationUpdateStatusOperation from "./actions/conversation/updateStatus.operation";
 import * as ConversationUpdateAssigneesOperation from "./actions/conversation/updateAssignees.operation";
+import * as NoteCreateOperation from "./actions/note/create.operation";
 import { ConversationOperationKey } from "./actions/conversation/Conversation.resource";
+import { NoteOperationKey } from "./actions/note/Note.resource";
 
 const RESOURCE_OPTIONS = [
   {
@@ -49,6 +52,11 @@ const RESOURCE_OPTIONS = [
     value: "conversation",
     description: "A conversation in Superchat",
   },
+  {
+    name: "Note",
+    value: "note",
+    description: "A note in Superchat",
+  },
 ] as const;
 
 export type ResourceKey = (typeof RESOURCE_OPTIONS)[number]["value"];
@@ -58,6 +66,7 @@ type OperationKeyByResource<R extends ResourceKey> = {
   contact: ContactOperationKey;
   message: MessageOperationKey;
   conversation: ConversationOperationKey;
+  note: NoteOperationKey;
 }[R];
 
 const RESOURCE_PROPERTIES: Record<ResourceKey, INodeProperties[]> = {
@@ -65,6 +74,7 @@ const RESOURCE_PROPERTIES: Record<ResourceKey, INodeProperties[]> = {
   contact: ContactResource.description,
   message: MessageResource.description,
   conversation: ConversationResource.description,
+  note: NoteResource.description,
 };
 
 export class Superchat implements INodeType {
@@ -210,6 +220,19 @@ export class Superchat implements INodeType {
                   this,
                   i
                 );
+              returnData.push(result);
+            })
+            .exhaustive();
+        })
+        .with("note", async (resource) => {
+          const operation = this.getNodeParameter(
+            "operation",
+            0
+          ) as OperationKeyByResource<typeof resource>;
+
+          await match(operation)
+            .with("create", async () => {
+              const result = await NoteCreateOperation.execute.call(this, i);
               returnData.push(result);
             })
             .exhaustive();
