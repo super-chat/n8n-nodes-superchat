@@ -23,6 +23,7 @@ import * as ContactListConversationsOperation from "./actions/contact/listConver
 import * as MessageSendMessageOperation from "./actions/message/sendMessage.operation";
 import * as MessageSendMailOperation from "./actions/message/sendMail.operation";
 import * as ConversationGetOperation from "./actions/conversation/get.operation";
+import * as ConversationUpdateLabelsOperation from "./actions/conversation/updateLabels.operation";
 import { ConversationOperationKey } from "./actions/conversation/Conversation.resource";
 
 const RESOURCE_OPTIONS = [
@@ -189,6 +190,11 @@ export class Superchat implements INodeType {
                 this,
                 i
               );
+              returnData.push(result);
+            })
+            .with("updateLabels", async () => {
+              const result =
+                await ConversationUpdateLabelsOperation.execute.call(this, i);
               returnData.push(result);
             })
             .exhaustive();

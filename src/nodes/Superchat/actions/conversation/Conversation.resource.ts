@@ -1,12 +1,18 @@
 import type { INodeProperties } from "n8n-workflow";
 import { ResourceKey } from "../../Superchat.node";
 import * as getOperation from "./get.operation";
+import * as updateLabelsOperation from "./updateLabels.operation";
 
 const CONVERSATION_OPERATION_OPTIONS = [
   {
     value: "get",
     name: "Get A Conversation By ID",
     action: "Retrieve the information about a conversation by ID",
+  },
+  {
+    value: "updateLabels",
+    name: "Update Labels",
+    action: "Update the labels of a conversation",
   },
 ] as const;
 
@@ -18,6 +24,7 @@ const OPERATION_DESCRIPTIONS: Record<
   INodeProperties[]
 > = {
   get: getOperation.description,
+  updateLabels: updateLabelsOperation.description,
 };
 
 export const description = [
