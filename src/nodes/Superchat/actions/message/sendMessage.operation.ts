@@ -78,7 +78,7 @@ export const description = updateDisplayOptions(
   {
     show: {
       resource: ["message" satisfies ResourceKey],
-      operation: ["send" satisfies MessageOperationKey],
+      operation: ["sendMessage" satisfies MessageOperationKey],
     },
   },
   properties

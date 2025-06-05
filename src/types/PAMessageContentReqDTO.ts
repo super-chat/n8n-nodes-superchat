@@ -1,3 +1,4 @@
+import { PAMessageContentReqEmailDTO } from "./PAMessageContentReqEmailDTO";
 import { PAMessageContentReqMediaDTO } from "./PAMessageContentReqMediaDTO";
 import { PAMessageContentReqTextDTO } from "./PAMessageContentReqTextDTO";
 
@@ -6,5 +7,6 @@ export type PAMessageContentReqDTO =
   // | PAMessageContentReqWhatsAppListDTO
   // | PAMessageContentReqGenericTemplateDTO
   // | PAMessageContentReqWhatsAppTemplateDTO
-  // | PAMessageContentReqEmailDTO
-  PAMessageContentReqTextDTO | PAMessageContentReqMediaDTO;
+  | PAMessageContentReqEmailDTO
+  | PAMessageContentReqTextDTO
+  | PAMessageContentReqMediaDTO;

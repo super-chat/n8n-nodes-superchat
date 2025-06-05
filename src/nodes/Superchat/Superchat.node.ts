@@ -19,7 +19,8 @@ import * as ContactCreateOperation from "./actions/contact/create.operation";
 import * as ContactDeleteOperation from "./actions/contact/delete.operation";
 import * as ContactUpdateOperation from "./actions/contact/update.operation";
 import * as ContactListConversationsOperation from "./actions/contact/listConversations.operation";
-import * as MessageSendOperation from "./actions/message/send.operation";
+import * as MessageSendMessageOperation from "./actions/message/sendMessage.operation";
+import * as MessageSendMailOperation from "./actions/message/sendMail.operation";
 
 const RESOURCE_OPTIONS = [
   {
@@ -120,8 +121,18 @@ export class Superchat implements INodeType {
           ) as OperationKeyByResource<typeof resource>;
 
           await match(operation)
-            .with("send", async () => {
-              const result = await MessageSendOperation.execute.call(this, i);
+            .with("sendMessage", async () => {
+              const result = await MessageSendMessageOperation.execute.call(
+                this,
+                i
+              );
+              returnData.push(result);
+            })
+            .with("sendMail", async () => {
+              const result = await MessageSendMailOperation.execute.call(
+                this,
+                i
+              );
               returnData.push(result);
             })
             .exhaustive();
