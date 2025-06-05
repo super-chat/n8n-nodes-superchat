@@ -28,6 +28,7 @@ import * as ConversationUpdateLabelsOperation from "./actions/conversation/updat
 import * as ConversationUpdateStatusOperation from "./actions/conversation/updateStatus.operation";
 import * as ConversationUpdateAssigneesOperation from "./actions/conversation/updateAssignees.operation";
 import * as NoteCreateOperation from "./actions/note/create.operation";
+import * as NoteGetOperation from "./actions/note/get.operation";
 import { ConversationOperationKey } from "./actions/conversation/Conversation.resource";
 import { NoteOperationKey } from "./actions/note/Note.resource";
 
@@ -233,6 +234,10 @@ export class Superchat implements INodeType {
           await match(operation)
             .with("create", async () => {
               const result = await NoteCreateOperation.execute.call(this, i);
+              returnData.push(result);
+            })
+            .with("get", async () => {
+              const result = await NoteGetOperation.execute.call(this, i);
               returnData.push(result);
             })
             .exhaustive();
