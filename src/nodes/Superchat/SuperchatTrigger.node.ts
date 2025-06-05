@@ -30,6 +30,10 @@ const TOPIC_OPTIONS = [
     name: "Inbound Message",
     value: "message_inbound" satisfies WebhookEventType,
   },
+  {
+    name: "Outbound Message",
+    value: "message_outbound" satisfies WebhookEventType,
+  },
 ] as const;
 
 export type Topic = (typeof TOPIC_OPTIONS)[number]["value"];
@@ -79,7 +83,8 @@ export class SuperchatTrigger implements INodeType {
         type: "fixedCollection",
         default: { values: [] },
         placeholder: "Add Channel",
-        description: "Only listen for inbound messages on specified channels",
+        description:
+          "Only listen for inbound messages or outbound messages on specified channels",
         typeOptions: {
           multipleValues: true,
         },
@@ -94,7 +99,7 @@ export class SuperchatTrigger implements INodeType {
                 type: "string",
                 default: "",
                 description: "A channel ID",
-                hint: "Only applicable for inbound message events",
+                hint: "Only applicable for inbound message and outbound message events",
               },
             ],
           },
@@ -107,7 +112,8 @@ export class SuperchatTrigger implements INodeType {
         type: "fixedCollection",
         default: { values: [] },
         placeholder: "Add Channel",
-        description: "Only listen for inbound messages on specified inboxes",
+        description:
+          "Only listen for inbound messages or outbound messages on specified inboxes",
         typeOptions: {
           multipleValues: true,
         },
@@ -122,7 +128,7 @@ export class SuperchatTrigger implements INodeType {
                 type: "string",
                 default: "",
                 description: "An inbox ID",
-                hint: "Only applicable for inbound message events",
+                hint: "Only applicable for inbound message and outbound message events",
               },
             ],
           },
@@ -176,36 +182,40 @@ export class SuperchatTrigger implements INodeType {
               filters: [],
             })
           )
-          .with("message_inbound", (type): WebhookEventWriteDTO => {
-            const channelIds = this.getNodeParameter("channelIds", "") as {
-              values: { id: string }[];
-            };
+          .with(
+            "message_inbound",
+            "message_outbound",
+            (type): WebhookEventWriteDTO => {
+              const channelIds = this.getNodeParameter("channelIds", "") as {
+                values: { id: string }[];
+              };
 
-            const inboxIds = this.getNodeParameter("inboxIds", "") as {
-              values: { id: string }[];
-            };
+              const inboxIds = this.getNodeParameter("inboxIds", "") as {
+                values: { id: string }[];
+              };
 
-            const filters: WebhookEventFilterWriteDTO[] = [];
+              const filters: WebhookEventFilterWriteDTO[] = [];
 
-            if (channelIds.values.length > 0) {
-              filters.push({
-                type: "channel",
-                ids: channelIds.values.map(({ id }) => id),
-              });
+              if (channelIds.values.length > 0) {
+                filters.push({
+                  type: "channel",
+                  ids: channelIds.values.map(({ id }) => id),
+                });
+              }
+
+              if (inboxIds.values.length > 0) {
+                filters.push({
+                  type: "inbox",
+                  ids: inboxIds.values.map(({ id }) => id),
+                });
+              }
+
+              return {
+                type,
+                filters,
+              };
             }
-
-            if (inboxIds.values.length > 0) {
-              filters.push({
-                type: "inbox",
-                ids: inboxIds.values.map(({ id }) => id),
-              });
-            }
-
-            return {
-              type,
-              filters,
-            };
-          })
+          )
           .exhaustive();
 
         const body = {
