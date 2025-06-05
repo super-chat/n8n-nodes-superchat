@@ -2,6 +2,7 @@ import type { INodeProperties } from "n8n-workflow";
 import { ResourceKey } from "../../Superchat.node";
 import * as createOperation from "./create.operation";
 import * as getOperation from "./get.operation";
+import * as deleteOperation from "./delete.operation";
 
 const NOTE_OPERATION_OPTIONS = [
   {
@@ -14,6 +15,11 @@ const NOTE_OPERATION_OPTIONS = [
     name: "Get A Note By ID",
     action: "Retrieve the information about a note by ID",
   },
+  {
+    value: "delete",
+    name: "Delete A Note",
+    action: "Delete a note in Superchat.",
+  },
 ] as const;
 
 export type NoteOperationKey = (typeof NOTE_OPERATION_OPTIONS)[number]["value"];
@@ -21,6 +27,7 @@ export type NoteOperationKey = (typeof NOTE_OPERATION_OPTIONS)[number]["value"];
 const OPERATION_DESCRIPTIONS: Record<NoteOperationKey, INodeProperties[]> = {
   create: createOperation.description,
   get: getOperation.description,
+  delete: deleteOperation.description,
 };
 
 export const description: INodeProperties[] = [
