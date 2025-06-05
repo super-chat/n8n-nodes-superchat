@@ -4,7 +4,7 @@ import {
   type IExecuteFunctions,
   updateDisplayOptions,
 } from "n8n-workflow";
-import { superchatApiRequest } from "../../GenericFunctions";
+import { superchatJsonApiRequest } from "../../GenericFunctions";
 import { ResourceKey } from "../../Superchat.node";
 import { ContactOperationKey } from "./Contact.resource";
 
@@ -36,7 +36,7 @@ export async function execute(
   const returnData: INodeExecutionData[] = [];
   const contactId = this.getNodeParameter("contactId", i) as string;
 
-  const responseData = await superchatApiRequest.call(
+  const responseData = await superchatJsonApiRequest.call(
     this,
     "GET",
     `/contacts/${contactId}/conversations`,

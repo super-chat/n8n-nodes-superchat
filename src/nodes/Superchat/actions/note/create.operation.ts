@@ -5,7 +5,7 @@ import {
   updateDisplayOptions,
 } from "n8n-workflow";
 import { ResourceKey } from "../../Superchat.node";
-import { superchatApiRequest } from "../../GenericFunctions";
+import { superchatJsonApiRequest } from "../../GenericFunctions";
 import { PACreateNoteDTO } from "../../../../types/PACreateNoteDTO";
 import { NoteOperationKey } from "./Note.resource";
 
@@ -51,7 +51,7 @@ export async function execute(
     content,
   } satisfies PACreateNoteDTO;
 
-  const responseData = await superchatApiRequest.call(
+  const responseData = await superchatJsonApiRequest.call(
     this,
     "POST",
     `/conversations/${conversationId}/notes`,

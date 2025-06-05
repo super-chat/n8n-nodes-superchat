@@ -6,7 +6,7 @@ import {
 } from "n8n-workflow";
 import { ResourceKey } from "../../Superchat.node";
 import { MessageOperationKey } from "./Message.resource";
-import { superchatApiRequest } from "../../GenericFunctions";
+import { superchatJsonApiRequest } from "../../GenericFunctions";
 import { PASendMessageDTO } from "../../../../types/PASendMessageDTO";
 
 const properties: INodeProperties[] = [
@@ -119,7 +119,7 @@ export async function execute(
           },
   } satisfies PASendMessageDTO;
 
-  const responseData = await superchatApiRequest.call(
+  const responseData = await superchatJsonApiRequest.call(
     this,
     "POST",
     "/messages",

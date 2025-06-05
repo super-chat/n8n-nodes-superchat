@@ -7,7 +7,7 @@ import {
   type IWebhookResponseData,
   NodeConnectionType,
 } from "n8n-workflow";
-import { superchatApiRequest } from "./GenericFunctions";
+import { superchatJsonApiRequest } from "./GenericFunctions";
 import { WebhookEventType } from "../../types/WebhookEventType";
 
 export class SuperchatTrigger implements INodeType {
@@ -73,7 +73,7 @@ export class SuperchatTrigger implements INodeType {
           return false;
         }
 
-        const data = await superchatApiRequest.call(
+        const data = await superchatJsonApiRequest.call(
           this,
           "GET",
           `/webhooks/${webhookId}`,
@@ -95,14 +95,19 @@ export class SuperchatTrigger implements INodeType {
         const topic = this.getNodeParameter("topic") as WebhookEventType;
         const webhookUrl = this.getNodeWebhookUrl("default")!!;
 
-        const data = await superchatApiRequest.call(this, "POST", `/webhooks`, {
-          target_url: webhookUrl,
-          events: [
-            {
-              type: topic,
-            },
-          ],
-        });
+        const data = await superchatJsonApiRequest.call(
+          this,
+          "POST",
+          `/webhooks`,
+          {
+            target_url: webhookUrl,
+            events: [
+              {
+                type: topic,
+              },
+            ],
+          }
+        );
 
         if (!("id" in data)) {
           return false;
@@ -115,7 +120,7 @@ export class SuperchatTrigger implements INodeType {
         const webhookData = this.getWorkflowStaticData("node");
         if (webhookData.webhookId !== undefined) {
           try {
-            const data = await superchatApiRequest.call(
+            const data = await superchatJsonApiRequest.call(
               this,
               "DELETE",
               `/webhooks/${webhookData.webhookId}`,

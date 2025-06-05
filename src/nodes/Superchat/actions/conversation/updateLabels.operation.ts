@@ -6,7 +6,7 @@ import {
 } from "n8n-workflow";
 import { ResourceKey } from "../../Superchat.node";
 import { ConversationOperationKey } from "./Conversation.resource";
-import { superchatApiRequest } from "../../GenericFunctions";
+import { superchatJsonApiRequest } from "../../GenericFunctions";
 import { PAUpdateConversationDTO } from "../../../../types/PAUpdateConversationDTO";
 
 const properties: INodeProperties[] = [
@@ -70,7 +70,7 @@ export async function execute(
     labels: labelIds.values.map(({ id }) => id),
   } satisfies PAUpdateConversationDTO;
 
-  const responseData = await superchatApiRequest.call(
+  const responseData = await superchatJsonApiRequest.call(
     this,
     "PATCH",
     `/conversations/${id}`,

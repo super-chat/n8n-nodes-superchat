@@ -12,6 +12,7 @@ import * as UserResource from "./actions/user/User.resource";
 import * as MessageResource from "./actions/message/Message.resource";
 import * as ConversationResource from "./actions/conversation/Conversation.resource";
 import * as NoteResource from "./actions/note/Note.resource";
+import * as FileResource from "./actions/file/File.resource";
 import { ContactOperationKey } from "./actions/contact/Contact.resource";
 import { UserOperationKey } from "./actions/user/User.resource";
 import { MessageOperationKey } from "./actions/message/Message.resource";
@@ -30,8 +31,10 @@ import * as ConversationUpdateAssigneesOperation from "./actions/conversation/up
 import * as NoteCreateOperation from "./actions/note/create.operation";
 import * as NoteGetOperation from "./actions/note/get.operation";
 import * as NoteDeleteOperation from "./actions/note/delete.operation";
+import * as FileCreateOperation from "./actions/file/create.operation";
 import { ConversationOperationKey } from "./actions/conversation/Conversation.resource";
 import { NoteOperationKey } from "./actions/note/Note.resource";
+import { FileOperationKey } from "./actions/file/File.resource";
 
 const RESOURCE_OPTIONS = [
   {
@@ -59,6 +62,11 @@ const RESOURCE_OPTIONS = [
     value: "note",
     description: "A note in Superchat",
   },
+  {
+    name: "File",
+    value: "file",
+    description: "A file in Superchat",
+  },
 ] as const;
 
 export type ResourceKey = (typeof RESOURCE_OPTIONS)[number]["value"];
@@ -69,6 +77,7 @@ type OperationKeyByResource<R extends ResourceKey> = {
   message: MessageOperationKey;
   conversation: ConversationOperationKey;
   note: NoteOperationKey;
+  file: FileOperationKey;
 }[R];
 
 const RESOURCE_PROPERTIES: Record<ResourceKey, INodeProperties[]> = {
@@ -77,6 +86,7 @@ const RESOURCE_PROPERTIES: Record<ResourceKey, INodeProperties[]> = {
   message: MessageResource.description,
   conversation: ConversationResource.description,
   note: NoteResource.description,
+  file: FileResource.description,
 };
 
 export class Superchat implements INodeType {
@@ -243,6 +253,19 @@ export class Superchat implements INodeType {
             })
             .with("delete", async () => {
               const result = await NoteDeleteOperation.execute.call(this, i);
+              returnData.push(result);
+            })
+            .exhaustive();
+        })
+        .with("file", async (resource) => {
+          const operation = this.getNodeParameter(
+            "operation",
+            0
+          ) as OperationKeyByResource<typeof resource>;
+
+          await match(operation)
+            .with("create", async () => {
+              const result = await FileCreateOperation.execute.call(this, i);
               returnData.push(result);
             })
             .exhaustive();

@@ -6,7 +6,7 @@ import {
 } from "n8n-workflow";
 import { ResourceKey } from "../../Superchat.node";
 import { ContactOperationKey } from "./Contact.resource";
-import { superchatApiRequest } from "../../GenericFunctions";
+import { superchatJsonApiRequest } from "../../GenericFunctions";
 import { PASearchContactDTO } from "../../../../types/PASearchContactDTO";
 import { PASearchContactQueryExpression } from "../../../../types/PASearchContactQueryExpression";
 
@@ -81,7 +81,7 @@ export async function execute(
     },
   } satisfies PASearchContactDTO;
 
-  const responseData = await superchatApiRequest.call(
+  const responseData = await superchatJsonApiRequest.call(
     this,
     "POST",
     "/contacts/search",

@@ -10,10 +10,54 @@ import {
 } from "n8n-workflow";
 import { BASE_URL, N8N_VERSION, NODE_VERSION } from "../../shared";
 
+const BASE_HEADERS = {
+  "X-Superchat-Platform": "n8n",
+  "X-Superchat-n8n-Version": N8N_VERSION,
+  "X-Superchat-n8n-Node-Version": NODE_VERSION,
+};
+
 /**
- * Make an API request to Superchat
+ * Make an API request with a multipart/form-data body to Superchat
  */
-export async function superchatApiRequest(
+export async function superchatFormDataApiRequest(
+  this: IHookFunctions | IExecuteFunctions | ILoadOptionsFunctions,
+  method: IHttpRequestMethods,
+  endpoint: string,
+  body: IDataObject
+): Promise<any> {
+  const options: IRequestOptions = {
+    headers: {
+      ...BASE_HEADERS,
+      Accept: "application/json",
+      "Content-Type": "multipart/form-data",
+    },
+    method,
+    uri: `${BASE_URL}${endpoint}`,
+    json: true,
+    body,
+  };
+
+  try {
+    const responseData = await this.helpers.requestWithAuthentication.call(
+      this,
+      "superchatApi",
+      options
+    );
+
+    if (responseData.success === false) {
+      throw new NodeApiError(this.getNode(), responseData as JsonObject);
+    }
+
+    return responseData;
+  } catch (error) {
+    throw new NodeApiError(this.getNode(), error as JsonObject);
+  }
+}
+
+/**
+ * Make an API request with a json body to Superchat.
+ */
+export async function superchatJsonApiRequest(
   this: IHookFunctions | IExecuteFunctions | ILoadOptionsFunctions,
   method: IHttpRequestMethods,
   endpoint: string,
@@ -27,15 +71,13 @@ export async function superchatApiRequest(
 
   const options: IRequestOptions = {
     headers: {
+      ...BASE_HEADERS,
       Accept: "application/json",
-      "X-Superchat-Platform": "n8n",
-      "X-Superchat-n8n-Version": N8N_VERSION,
-      "X-Superchat-n8n-Node-Version": NODE_VERSION,
     },
     method,
     qs: query,
     uri: `${BASE_URL}${endpoint}`,
-    json: true,
+    json: "formData" in body ? false : true,
   };
 
   if (Object.keys(body).length > 0) {

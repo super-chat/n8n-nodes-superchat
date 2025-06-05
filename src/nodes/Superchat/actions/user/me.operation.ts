@@ -4,7 +4,7 @@ import {
   type IExecuteFunctions,
   updateDisplayOptions,
 } from "n8n-workflow";
-import { superchatApiRequest } from "../../GenericFunctions";
+import { superchatJsonApiRequest } from "../../GenericFunctions";
 import { ResourceKey } from "../../Superchat.node";
 import { UserOperationKey } from "./User.resource";
 
@@ -26,7 +26,12 @@ export async function execute(
 ): Promise<INodeExecutionData[]> {
   const returnData: INodeExecutionData[] = [];
 
-  const responseData = await superchatApiRequest.call(this, "GET", "/me", {});
+  const responseData = await superchatJsonApiRequest.call(
+    this,
+    "GET",
+    "/me",
+    {}
+  );
   returnData.push(responseData);
 
   return returnData;

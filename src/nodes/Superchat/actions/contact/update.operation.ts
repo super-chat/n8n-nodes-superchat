@@ -9,7 +9,7 @@ import { ContactOperationKey } from "./Contact.resource";
 import { ContactHandleType } from "../../../../types/ContactHandleType";
 import { PAUpdateContactDTO } from "../../../../types/PAUpdateContactDTO";
 import { PAWriteContactHandleDTO } from "../../../../types/PAWriteContactHandleDTO";
-import { superchatApiRequest } from "../../GenericFunctions";
+import { superchatJsonApiRequest } from "../../GenericFunctions";
 import { Gender } from "../../../../types/Gender";
 
 const properties: INodeProperties[] = [
@@ -155,7 +155,7 @@ export async function execute(
     custom_attributes: [],
   } satisfies PAUpdateContactDTO;
 
-  const responseData = await superchatApiRequest.call(
+  const responseData = await superchatJsonApiRequest.call(
     this,
     "PATCH",
     `/contacts/${id}`,

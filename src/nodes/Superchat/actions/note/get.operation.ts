@@ -5,7 +5,7 @@ import {
   updateDisplayOptions,
 } from "n8n-workflow";
 import { ResourceKey } from "../../Superchat.node";
-import { superchatApiRequest } from "../../GenericFunctions";
+import { superchatJsonApiRequest } from "../../GenericFunctions";
 import { NoteOperationKey } from "./Note.resource";
 
 const properties: INodeProperties[] = [
@@ -46,7 +46,7 @@ export async function execute(
   const conversationId = this.getNodeParameter("conversationId", i) as string;
   const noteId = this.getNodeParameter("noteId", i) as string;
 
-  const responseData = await superchatApiRequest.call(
+  const responseData = await superchatJsonApiRequest.call(
     this,
     "GET",
     `/conversations/${conversationId}/notes/${noteId}`,
