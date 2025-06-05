@@ -92,6 +92,17 @@ const RESOURCE_PROPERTIES: Record<ResourceKey, INodeProperties[]> = {
   file: FileResource.description,
 };
 
+function getIdentifierForResource<R extends ResourceKey>(
+  resource: R,
+  getNodeParameter: IExecuteFunctions["getNodeParameter"]
+) {
+  const operation = getNodeParameter(
+    "operation",
+    0
+  ) as OperationKeyByResource<R>;
+  return `${resource}:${operation}` as const;
+}
+
 export class Superchat implements INodeType {
   description: INodeTypeDescription = {
     displayName: "Superchat",
@@ -137,159 +148,56 @@ export class Superchat implements INodeType {
 
     const resource = this.getNodeParameter("resource", 0) as ResourceKey;
 
+    const identifier = match(resource)
+      .with("user", (resource) => {
+        return getIdentifierForResource(resource, this.getNodeParameter);
+      })
+      .with("message", (resource) => {
+        return getIdentifierForResource(resource, this.getNodeParameter);
+      })
+      .with("contact", (resource) => {
+        return getIdentifierForResource(resource, this.getNodeParameter);
+      })
+      .with("conversation", (resource) => {
+        return getIdentifierForResource(resource, this.getNodeParameter);
+      })
+      .with("file", (resource) => {
+        return getIdentifierForResource(resource, this.getNodeParameter);
+      })
+      .with("note", (resource) => {
+        return getIdentifierForResource(resource, this.getNodeParameter);
+      })
+      .exhaustive();
+
+    const execute = (
+      {
+        "user:me": UserMeOperation.execute,
+        "message:sendMessage": MessageSendMessageOperation.execute,
+        "message:sendMail": MessageSendMailOperation.execute,
+        "message:sendWhatsAppTemplate":
+          MessageSendWhatsAppTemplateOperation.execute,
+        "contact:search": ContactSearchOperation.execute,
+        "contact:create": ContactCreateOperation.execute,
+        "contact:delete": ContactDeleteOperation.execute,
+        "contact:update": ContactUpdateOperation.execute,
+        "contact:listConversations": ContactListConversationsOperation.execute,
+        "conversation:get": ConversationGetOperation.execute,
+        "conversation:updateLabels": ConversationUpdateLabelsOperation.execute,
+        "conversation:updateStatus": ConversationUpdateStatusOperation.execute,
+        "conversation:updateAssignees":
+          ConversationUpdateAssigneesOperation.execute,
+        "note:create": NoteCreateOperation.execute,
+        "note:get": NoteGetOperation.execute,
+        "note:delete": NoteDeleteOperation.execute,
+        "file:create": FileCreateOperation.execute,
+        "file:delete": FileDeleteOperation.execute,
+        "file:download": FileDownloadOperation.execute,
+      } as const
+    )[identifier];
+
     for (let i = 0; i < items.length; i++) {
-      await match(resource)
-        .with("user", async (resource) => {
-          const operation = this.getNodeParameter(
-            "operation",
-            0
-          ) as OperationKeyByResource<typeof resource>;
-
-          await match(operation)
-            .with("me", async () => {
-              const result = await UserMeOperation.execute.call(this, i);
-              returnData.push(result);
-            })
-            .exhaustive();
-        })
-        .with("message", async (resource) => {
-          const operation = this.getNodeParameter(
-            "operation",
-            0
-          ) as OperationKeyByResource<typeof resource>;
-
-          await match(operation)
-            .with("sendMessage", async () => {
-              const result = await MessageSendMessageOperation.execute.call(
-                this,
-                i
-              );
-              returnData.push(result);
-            })
-            .with("sendMail", async () => {
-              const result = await MessageSendMailOperation.execute.call(
-                this,
-                i
-              );
-              returnData.push(result);
-            })
-            .with("sendWhatsAppTemplate", async () => {
-              const result =
-                await MessageSendWhatsAppTemplateOperation.execute.call(
-                  this,
-                  i
-                );
-              returnData.push(result);
-            })
-            .exhaustive();
-        })
-        .with("contact", async (resource) => {
-          const operation = this.getNodeParameter(
-            "operation",
-            0
-          ) as OperationKeyByResource<typeof resource>;
-
-          await match(operation)
-            .with("search", async () => {
-              const result = await ContactSearchOperation.execute.call(this, i);
-              returnData.push(result);
-            })
-            .with("delete", async () => {
-              const result = await ContactDeleteOperation.execute.call(this, i);
-              returnData.push(result);
-            })
-            .with("create", async () => {
-              const result = await ContactCreateOperation.execute.call(this, i);
-              returnData.push(result);
-            })
-            .with("update", async () => {
-              const result = await ContactUpdateOperation.execute.call(this, i);
-              returnData.push(result);
-            })
-            .with("listConversations", async () => {
-              const result =
-                await ContactListConversationsOperation.execute.call(this, i);
-              returnData.push(result);
-            })
-            .exhaustive();
-        })
-        .with("conversation", async (resource) => {
-          const operation = this.getNodeParameter(
-            "operation",
-            0
-          ) as OperationKeyByResource<typeof resource>;
-
-          await match(operation)
-            .with("get", async () => {
-              const result = await ConversationGetOperation.execute.call(
-                this,
-                i
-              );
-              returnData.push(result);
-            })
-            .with("updateLabels", async () => {
-              const result =
-                await ConversationUpdateLabelsOperation.execute.call(this, i);
-              returnData.push(result);
-            })
-            .with("updateStatus", async () => {
-              const result =
-                await ConversationUpdateStatusOperation.execute.call(this, i);
-              returnData.push(result);
-            })
-            .with("updateAssignees", async () => {
-              const result =
-                await ConversationUpdateAssigneesOperation.execute.call(
-                  this,
-                  i
-                );
-              returnData.push(result);
-            })
-            .exhaustive();
-        })
-        .with("note", async (resource) => {
-          const operation = this.getNodeParameter(
-            "operation",
-            0
-          ) as OperationKeyByResource<typeof resource>;
-
-          await match(operation)
-            .with("create", async () => {
-              const result = await NoteCreateOperation.execute.call(this, i);
-              returnData.push(result);
-            })
-            .with("get", async () => {
-              const result = await NoteGetOperation.execute.call(this, i);
-              returnData.push(result);
-            })
-            .with("delete", async () => {
-              const result = await NoteDeleteOperation.execute.call(this, i);
-              returnData.push(result);
-            })
-            .exhaustive();
-        })
-        .with("file", async (resource) => {
-          const operation = this.getNodeParameter(
-            "operation",
-            0
-          ) as OperationKeyByResource<typeof resource>;
-
-          await match(operation)
-            .with("create", async () => {
-              const result = await FileCreateOperation.execute.call(this, i);
-              returnData.push(result);
-            })
-            .with("delete", async () => {
-              const result = await FileDeleteOperation.execute.call(this, i);
-              returnData.push(result);
-            })
-            .with("download", async () => {
-              const result = await FileDownloadOperation.execute.call(this, i);
-              returnData.push(result);
-            })
-            .exhaustive();
-        })
-        .exhaustive();
+      const result = await execute.call(this, i);
+      returnData.push(result);
     }
 
     return [this.helpers.returnJsonArray(returnData)];
