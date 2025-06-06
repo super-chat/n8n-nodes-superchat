@@ -61,7 +61,7 @@ export async function superchatJsonApiRequest(
   this: IHookFunctions | IExecuteFunctions | ILoadOptionsFunctions,
   method: IHttpRequestMethods,
   endpoint: string,
-  body: IDataObject,
+  body?: IDataObject,
   query?: IDataObject,
   dataKey?: string
 ): Promise<any> {
@@ -77,10 +77,10 @@ export async function superchatJsonApiRequest(
     method,
     qs: query,
     uri: `${BASE_URL}${endpoint}`,
-    json: "formData" in body ? false : true,
+    json: body && "formData" in body ? false : true,
   };
 
-  if (Object.keys(body).length > 0) {
+  if (body && Object.keys(body).length > 0) {
     options.body = body;
   }
 

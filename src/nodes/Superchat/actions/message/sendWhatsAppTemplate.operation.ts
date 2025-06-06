@@ -6,7 +6,7 @@ import {
 } from "n8n-workflow";
 import { PASendMessageDTO } from "../../../../types/PASendMessageDTO";
 import { superchatJsonApiRequest } from "../../GenericFunctions";
-import { ResourceKey } from "../../Superchat.node";
+import { ResourceKey, SearchFunction } from "../../Superchat.node";
 import { MessageOperationKey } from "./Message.resource";
 
 const properties: INodeProperties[] = [
@@ -37,10 +37,28 @@ const properties: INodeProperties[] = [
   {
     displayName: "Template ID",
     name: "templateId",
-    type: "string",
+    type: "resourceLocator",
     default: "",
     description: "The ID of the WhatsApp template you want to use",
     required: true,
+    modes: [
+      {
+        displayName: "ID",
+        name: "id",
+        type: "string",
+        hint: "Enter an ID",
+      },
+      {
+        displayName: "List",
+        name: "list",
+        type: "list",
+        typeOptions: {
+          searchListMethod: "templateSearch" satisfies SearchFunction,
+          searchable: true,
+          searchFilterRequired: false,
+        },
+      },
+    ],
   },
   {
     displayName: "Header File ID",

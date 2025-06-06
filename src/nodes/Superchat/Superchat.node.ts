@@ -38,6 +38,7 @@ import { NoteOperationKey } from "./actions/note/Note.resource";
 import * as UserMeOperation from "./actions/user/me.operation";
 import * as UserResource from "./actions/user/User.resource";
 import { UserOperationKey } from "./actions/user/User.resource";
+import { templateSearch } from "./methods/templateSearch";
 
 const RESOURCE_OPTIONS = [
   {
@@ -103,7 +104,17 @@ function getIdentifierForResource<R extends ResourceKey>(
   return `${resource}:${operation}` as const;
 }
 
+const LIST_SEARCH_METHODS = {
+  templateSearch,
+} as const;
+
+export type SearchFunction = keyof typeof LIST_SEARCH_METHODS;
+
 export class Superchat implements INodeType {
+  methods = {
+    listSearch: LIST_SEARCH_METHODS,
+  };
+
   description: INodeTypeDescription = {
     displayName: "Superchat",
     name: "superchat",
