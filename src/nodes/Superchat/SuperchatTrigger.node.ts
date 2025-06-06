@@ -13,6 +13,7 @@ import { WebhookEventFilterWriteDTO } from "../../types/WebhookEventFilterWriteD
 import { WebhookEventType } from "../../types/WebhookEventType";
 import { WebhookEventWriteDTO } from "../../types/WebhookEventWriteDTO";
 import { superchatJsonApiRequest } from "./GenericFunctions";
+import { LIST_SEARCH_METHODS, SearchFunction } from "./Superchat.node";
 
 type ConversationStatus = "open" | "done" | "snoozed";
 
@@ -50,6 +51,10 @@ const TOPIC_OPTIONS = [
 export type Topic = (typeof TOPIC_OPTIONS)[number]["value"];
 
 export class SuperchatTrigger implements INodeType {
+  methods = {
+    listSearch: LIST_SEARCH_METHODS,
+  };
+
   description: INodeTypeDescription = {
     displayName: "Superchat Trigger",
     name: "superchatTrigger",
@@ -107,10 +112,29 @@ export class SuperchatTrigger implements INodeType {
               {
                 displayName: "ID",
                 name: "id",
-                type: "string",
+                type: "resourceLocator",
                 default: "",
                 description: "A channel ID",
                 hint: "Only applicable for inbound message, outbound message, failed message or conversation status change events",
+                modes: [
+                  {
+                    displayName: "ID",
+                    name: "id",
+                    type: "string",
+                    hint: "Enter an ID",
+                  },
+                  {
+                    displayName: "List",
+                    name: "list",
+                    type: "list",
+                    typeOptions: {
+                      searchListMethod:
+                        "messageChannelSearch" satisfies SearchFunction,
+                      searchable: true,
+                      searchFilterRequired: false,
+                    },
+                  },
+                ],
               },
             ],
           },

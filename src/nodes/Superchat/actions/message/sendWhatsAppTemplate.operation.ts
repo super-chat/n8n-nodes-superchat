@@ -29,10 +29,28 @@ const properties: INodeProperties[] = [
   {
     displayName: "Channel ID",
     name: "channelId",
-    type: "string",
+    type: "resourceLocator",
     default: "",
     description: "The ID of the channel to send the message from",
     required: true,
+    modes: [
+      {
+        displayName: "ID",
+        name: "id",
+        type: "string",
+        hint: "Enter an ID",
+      },
+      {
+        displayName: "List",
+        name: "list",
+        type: "list",
+        typeOptions: {
+          searchListMethod: "messageChannelSearch" satisfies SearchFunction,
+          searchable: true,
+          searchFilterRequired: false,
+        },
+      },
+    ],
   },
   {
     displayName: "Template ID",
