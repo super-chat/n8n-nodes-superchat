@@ -41,6 +41,7 @@ import { UserOperationKey } from "./actions/user/User.resource";
 import { inboxSearch } from "./methods/inboxSearch";
 import { messageChannelSearch } from "./methods/messageChannelSearch";
 import { templateSearch } from "./methods/templateSearch";
+import { userSearch } from "./methods/userSearch";
 
 const RESOURCE_OPTIONS = [
   {
@@ -110,6 +111,7 @@ export const LIST_SEARCH_METHODS = {
   templateSearch,
   messageChannelSearch,
   inboxSearch,
+  userSearch,
 } as const;
 
 export type SearchFunction = keyof typeof LIST_SEARCH_METHODS;
