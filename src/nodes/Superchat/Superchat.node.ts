@@ -38,6 +38,7 @@ import { NoteOperationKey } from "./actions/note/Note.resource";
 import * as UserMeOperation from "./actions/user/me.operation";
 import * as UserResource from "./actions/user/User.resource";
 import { UserOperationKey } from "./actions/user/User.resource";
+import { inboxSearch } from "./methods/inboxSearch";
 import { messageChannelSearch } from "./methods/messageChannelSearch";
 import { templateSearch } from "./methods/templateSearch";
 
@@ -108,6 +109,7 @@ function getIdentifierForResource<R extends ResourceKey>(
 export const LIST_SEARCH_METHODS = {
   templateSearch,
   messageChannelSearch,
+  inboxSearch,
 } as const;
 
 export type SearchFunction = keyof typeof LIST_SEARCH_METHODS;

@@ -160,10 +160,28 @@ export class SuperchatTrigger implements INodeType {
               {
                 displayName: "ID",
                 name: "id",
-                type: "string",
+                type: "resourceLocator",
                 default: "",
                 description: "An inbox ID",
                 hint: "Only applicable for inbound message, outbound message, failed message or conversation status change events",
+                modes: [
+                  {
+                    displayName: "ID",
+                    name: "id",
+                    type: "string",
+                    hint: "Enter an ID",
+                  },
+                  {
+                    displayName: "List",
+                    name: "list",
+                    type: "list",
+                    typeOptions: {
+                      searchListMethod: "inboxSearch" satisfies SearchFunction,
+                      searchable: true,
+                      searchFilterRequired: false,
+                    },
+                  },
+                ],
               },
             ],
           },
