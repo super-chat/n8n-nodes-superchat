@@ -207,10 +207,29 @@ export class SuperchatTrigger implements INodeType {
               {
                 displayName: "ID",
                 name: "id",
-                type: "string",
+                type: "resourceLocator",
                 default: "",
                 description: "A custom attribute ID",
                 hint: "Only applicable for contact updated events",
+                modes: [
+                  {
+                    displayName: "ID",
+                    name: "id",
+                    type: "string",
+                    hint: "Enter an ID",
+                  },
+                  {
+                    displayName: "List",
+                    name: "list",
+                    type: "list",
+                    typeOptions: {
+                      searchListMethod:
+                        "customAttributeSearch" satisfies SearchFunction,
+                      searchable: true,
+                      searchFilterRequired: false,
+                    },
+                  },
+                ],
               },
             ],
           },

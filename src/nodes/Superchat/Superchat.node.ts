@@ -38,6 +38,7 @@ import { NoteOperationKey } from "./actions/note/Note.resource";
 import * as UserMeOperation from "./actions/user/me.operation";
 import * as UserResource from "./actions/user/User.resource";
 import { UserOperationKey } from "./actions/user/User.resource";
+import { customAttributeSearch } from "./methods/customAttributeSearch";
 import { fileSearch } from "./methods/fileSearch";
 import { inboxSearch } from "./methods/inboxSearch";
 import { labelSearch } from "./methods/labelSearch";
@@ -116,6 +117,7 @@ export const LIST_SEARCH_METHODS = {
   userSearch,
   labelSearch,
   fileSearch,
+  customAttributeSearch,
 } as const;
 
 export type SearchFunction = keyof typeof LIST_SEARCH_METHODS;
