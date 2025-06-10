@@ -81,10 +81,28 @@ const properties: INodeProperties[] = [
   {
     displayName: "Header File ID",
     name: "headerFileId",
-    type: "string",
+    type: "resourceLocator",
     default: "",
     description:
       "The ID of the file you want to use as a header in the template (Only set this if the template has a header)",
+    modes: [
+      {
+        displayName: "ID",
+        name: "id",
+        type: "string",
+        hint: "Enter an ID",
+      },
+      {
+        displayName: "List",
+        name: "list",
+        type: "list",
+        typeOptions: {
+          searchListMethod: "fileSearch" satisfies SearchFunction,
+          searchable: true,
+          searchFilterRequired: false,
+        },
+      },
+    ],
   },
   {
     // eslint-disable-next-line n8n-nodes-base/node-param-display-name-miscased

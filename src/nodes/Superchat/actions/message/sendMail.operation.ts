@@ -88,11 +88,29 @@ const properties: INodeProperties[] = [
         name: "values",
         values: [
           {
-            displayName: "Value",
-            name: "value",
-            type: "string",
+            displayName: "ID",
+            name: "id",
+            type: "resourceLocator",
             default: "",
             description: "A file ID",
+            modes: [
+              {
+                displayName: "ID",
+                name: "id",
+                type: "string",
+                hint: "Enter an ID",
+              },
+              {
+                displayName: "List",
+                name: "list",
+                type: "list",
+                typeOptions: {
+                  searchListMethod: "fileSearch" satisfies SearchFunction,
+                  searchable: true,
+                  searchFilterRequired: false,
+                },
+              },
+            ],
           },
         ],
       },

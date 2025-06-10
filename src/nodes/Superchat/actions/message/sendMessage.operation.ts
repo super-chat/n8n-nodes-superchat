@@ -81,10 +81,29 @@ const properties: INodeProperties[] = [
         displayName: "Media",
         values: [
           {
-            displayName: "File ID",
-            name: "fileId",
-            type: "string",
-            default: "The ID of the file to send",
+            displayName: "ID",
+            name: "id",
+            type: "resourceLocator",
+            default: "",
+            description: "A file ID",
+            modes: [
+              {
+                displayName: "ID",
+                name: "id",
+                type: "string",
+                hint: "Enter an ID",
+              },
+              {
+                displayName: "List",
+                name: "list",
+                type: "list",
+                typeOptions: {
+                  searchListMethod: "fileSearch" satisfies SearchFunction,
+                  searchable: true,
+                  searchFilterRequired: false,
+                },
+              },
+            ],
           },
         ],
       },
