@@ -39,6 +39,7 @@ import * as UserMeOperation from "./actions/user/me.operation";
 import * as UserResource from "./actions/user/User.resource";
 import { UserOperationKey } from "./actions/user/User.resource";
 import { inboxSearch } from "./methods/inboxSearch";
+import { labelSearch } from "./methods/labelSearch";
 import { messageChannelSearch } from "./methods/messageChannelSearch";
 import { templateSearch } from "./methods/templateSearch";
 import { userSearch } from "./methods/userSearch";
@@ -112,6 +113,7 @@ export const LIST_SEARCH_METHODS = {
   messageChannelSearch,
   inboxSearch,
   userSearch,
+  labelSearch,
 } as const;
 
 export type SearchFunction = keyof typeof LIST_SEARCH_METHODS;

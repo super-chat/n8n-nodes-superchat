@@ -6,7 +6,7 @@ import {
 } from "n8n-workflow";
 import { PAUpdateConversationDTO } from "../../../../types/PAUpdateConversationDTO";
 import { superchatJsonApiRequest } from "../../GenericFunctions";
-import { ResourceKey } from "../../Superchat.node";
+import { ResourceKey, SearchFunction } from "../../Superchat.node";
 import { ConversationOperationKey } from "./Conversation.resource";
 
 const properties: INodeProperties[] = [
@@ -35,9 +35,27 @@ const properties: INodeProperties[] = [
           {
             displayName: "ID",
             name: "id",
-            type: "string",
+            type: "resourceLocator",
             default: "",
             description: "A label ID",
+            modes: [
+              {
+                displayName: "ID",
+                name: "id",
+                type: "string",
+                hint: "Enter an ID",
+              },
+              {
+                displayName: "List",
+                name: "list",
+                type: "list",
+                typeOptions: {
+                  searchListMethod: "labelSearch" satisfies SearchFunction,
+                  searchable: true,
+                  searchFilterRequired: false,
+                },
+              },
+            ],
           },
         ],
       },
