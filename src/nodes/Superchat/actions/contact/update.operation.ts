@@ -9,7 +9,8 @@ import { Gender } from "../../../../types/Gender";
 import { PAUpdateContactDTO } from "../../../../types/PAUpdateContactDTO";
 import { PAWriteContactHandleDTO } from "../../../../types/PAWriteContactHandleDTO";
 import { superchatJsonApiRequest } from "../../GenericFunctions";
-import { ResourceKey } from "../../Superchat.node";
+import { getCustomAttributesNodeParameter } from "../../methods/resourceMapping/getCustomContactAttributeFields";
+import { ResourceKey, ResourceMappingFunction } from "../../Superchat.node";
 import { ContactOperationKey } from "./Contact.resource";
 
 const properties: INodeProperties[] = [
@@ -101,6 +102,30 @@ const properties: INodeProperties[] = [
       },
     ],
   },
+  {
+    displayName: "Custom Attributes",
+    name: "customAttributes",
+    type: "resourceMapper",
+    noDataExpression: true,
+    default: {
+      mappingMode: "defineBelow",
+      value: null,
+    },
+    typeOptions: {
+      resourceMapper: {
+        resourceMapperMethod:
+          "getCustomContactAttributeFields" satisfies ResourceMappingFunction,
+        mode: "map",
+        fieldWords: {
+          singular: "Custom Attribute",
+          plural: "Custom Attributes",
+        },
+        addAllFields: false,
+        multiKeyMatch: true,
+        supportAutoMap: false,
+      },
+    },
+  },
 ];
 
 export const description = updateDisplayOptions(
@@ -130,6 +155,12 @@ export async function execute(
     values: { value: string }[];
   };
 
+  const customAttributes = await getCustomAttributesNodeParameter.call(
+    this,
+    "customAttributes",
+    i
+  );
+
   const handles = [
     ...emails.values.map(
       ({ value }) =>
@@ -152,7 +183,7 @@ export async function execute(
     last_name: lastName !== "" ? lastName : null,
     gender: gender !== "noop" ? gender : null,
     handles,
-    custom_attributes: [],
+    custom_attributes: customAttributes,
   } satisfies PAUpdateContactDTO;
 
   const responseData = await superchatJsonApiRequest.call(

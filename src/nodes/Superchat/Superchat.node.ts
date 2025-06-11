@@ -43,6 +43,7 @@ import { fileSearch } from "./methods/fileSearch";
 import { inboxSearch } from "./methods/inboxSearch";
 import { labelSearch } from "./methods/labelSearch";
 import { messageChannelSearch } from "./methods/messageChannelSearch";
+import { getCustomContactAttributeFields } from "./methods/resourceMapping/getCustomContactAttributeFields";
 import { templateSearch } from "./methods/templateSearch";
 import { userSearch } from "./methods/userSearch";
 
@@ -122,9 +123,16 @@ export const LIST_SEARCH_METHODS = {
 
 export type SearchFunction = keyof typeof LIST_SEARCH_METHODS;
 
+export const RESOURCE_MAPPING_METHODS = {
+  getCustomContactAttributeFields,
+} as const;
+
+export type ResourceMappingFunction = keyof typeof RESOURCE_MAPPING_METHODS;
+
 export class Superchat implements INodeType {
   methods = {
     listSearch: LIST_SEARCH_METHODS,
+    resourceMapping: RESOURCE_MAPPING_METHODS,
   };
 
   description: INodeTypeDescription = {
