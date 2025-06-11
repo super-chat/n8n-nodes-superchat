@@ -26,7 +26,7 @@
     "format": "prettier src --write",
     "lint": "eslint ./src/**/*.ts package.json",
     "lintfix": "eslint ./src/**/*.ts package.json --fix",
-    "prepublishOnly": "npm build && npm lint -c .eslintrc.prepublish.js ./src/**/*.ts package.json"
+    "prepublishOnly": "npm run build && npm run lint -c .eslintrc.prepublish.js ./src/**/*.ts package.json"
   },
   "files": [
     "dist"
