@@ -27,3 +27,13 @@ WEBHOOK_URL=XXX n8n start
 # Git hooks
 
 This repository manages git hooks through [pre-commit](https://pre-commit.com). To activate the git hooks, run `pre-commit install`
+
+# Release process
+
+To release a new version follow the following process.
+
+1. Update the version in the package.json and code manually
+2. Update the [./CHANGELOG.md](./CHANGELOG.md) file to document the changes. Make sure the changelog mentions the exact version prefixed with a v (e.g. v0.1.0). The CI pipeline will later validate this!
+3. Add a git tag for the version prefixed with v (e.g. v0.1.0)
+4. Push the commit and tag
+5. The release CI pipeline should now do the rest, see [./.github/workflows/release.yml](./.github/workflows/release.yml)
