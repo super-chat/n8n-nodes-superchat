@@ -1,0 +1,65 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+*"
+        # Push events to any matching semantic version tag.
+        # For example, 1.10.1 or 2.0.0 or 3.0.0-alpha.
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get the version
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      # Check if the version matches the one in package.json
+      - name: Check version in package.json
+        env:
+          VERSION: ${{ env.VERSION }}
+        run: |
+          PACKAGE_VERSION=$(jq -r '.version' package.json)
+          if [ "v$PACKAGE_VERSION" != "$VERSION" ]; then
+            echo "Version mismatch: expected $VERSION, got $PACKAGE_VERSION"
+            exit 1
+          fi
+
+      # Check if the release version is mentioned in the changelog
+      - name: Check changelog for version
+        env:
+          VERSION: ${{ env.VERSION }}
+        run: |
+          if ! grep -q "$VERSION" CHANGELOG.md; then
+            echo "Changelog does not mention version $VERSION"
+            exit 1
+          fi
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ENV: ${{ github.event.repository.full_name }}
+        with:
+          tag_name: ${{ env.VERSION }}
+          body: |
+            [Changelog](https://github.com/${{ github.repository }}/blob/${{ github.ref }}/CHANGELOG.md)
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - run: npm install
+
+      - run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
