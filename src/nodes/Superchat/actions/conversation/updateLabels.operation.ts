@@ -51,7 +51,7 @@ const properties: INodeProperties[] = [
                 type: "list",
                 typeOptions: {
                   searchListMethod: "labelSearch" satisfies SearchFunction,
-                  searchable: true,
+                  searchable: false,
                   searchFilterRequired: false,
                 },
               },

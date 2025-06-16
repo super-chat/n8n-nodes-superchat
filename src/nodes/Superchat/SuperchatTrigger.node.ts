@@ -130,7 +130,7 @@ export class SuperchatTrigger implements INodeType {
                     typeOptions: {
                       searchListMethod:
                         "messageChannelSearch" satisfies SearchFunction,
-                      searchable: true,
+                      searchable: false,
                       searchFilterRequired: false,
                     },
                   },
@@ -177,7 +177,7 @@ export class SuperchatTrigger implements INodeType {
                     type: "list",
                     typeOptions: {
                       searchListMethod: "inboxSearch" satisfies SearchFunction,
-                      searchable: true,
+                      searchable: false,
                       searchFilterRequired: false,
                     },
                   },
@@ -225,7 +225,7 @@ export class SuperchatTrigger implements INodeType {
                     typeOptions: {
                       searchListMethod:
                         "customAttributeSearch" satisfies SearchFunction,
-                      searchable: true,
+                      searchable: false,
                       searchFilterRequired: false,
                     },
                   },

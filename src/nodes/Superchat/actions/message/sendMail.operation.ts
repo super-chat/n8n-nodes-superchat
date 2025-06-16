@@ -46,7 +46,7 @@ const properties: INodeProperties[] = [
         type: "list",
         typeOptions: {
           searchListMethod: "messageChannelSearch" satisfies SearchFunction,
-          searchable: true,
+          searchable: false,
           searchFilterRequired: false,
         },
       },
@@ -106,7 +106,7 @@ const properties: INodeProperties[] = [
                 type: "list",
                 typeOptions: {
                   searchListMethod: "fileSearch" satisfies SearchFunction,
-                  searchable: true,
+                  searchable: false,
                   searchFilterRequired: false,
                 },
               },
