@@ -7,18 +7,18 @@ import * as getOperation from "./get.operation";
 const NOTE_OPERATION_OPTIONS = [
   {
     value: "create",
-    name: "Create A Note",
-    action: "Create a note in Superchat.",
+    name: "Create A Conversation Note",
+    action: "Create a conversation note in Superchat",
   },
   {
     value: "get",
-    name: "Get A Note By ID",
-    action: "Retrieve the information about a note by ID",
+    name: "Get A Conversation Note By ID",
+    action: "Retrieve a conversation note in Superchat",
   },
   {
     value: "delete",
-    name: "Delete A Note",
-    action: "Delete a note in Superchat.",
+    name: "Delete A Conversation Note",
+    action: "Delete a conversation note in Superchat",
   },
 ] as const;
 

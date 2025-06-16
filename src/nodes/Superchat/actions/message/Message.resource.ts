@@ -8,17 +8,17 @@ const MESSAGE_OPERATION_OPTIONS = [
   {
     value: "sendMessage",
     name: "Send A Message",
-    action: "Send a message via Superchat.",
+    action: "Send a message via Superchat",
   },
   {
     value: "sendMail",
     name: "Send An Email",
-    action: "Send an email via Superchat.",
+    action: "Send an email via Superchat",
   },
   {
     value: "sendWhatsAppTemplate",
     name: "Send WhatsApp Template",
-    action: "Send a WhatsApp Template via Superchat.",
+    action: "Send a WhatsApp Template via Superchat",
   },
 ] as const;
 

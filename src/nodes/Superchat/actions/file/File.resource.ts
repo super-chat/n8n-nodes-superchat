@@ -8,17 +8,17 @@ const FILE_OPERATION_OPTIONS = [
   {
     value: "create",
     name: "Create A File",
-    action: "Create a file in Superchat.",
+    action: "Create a file in Superchat",
   },
   {
     value: "delete",
     name: "Delete A File",
-    action: "Delete a file in Superchat.",
+    action: "Delete a file in Superchat",
   },
   {
     value: "download",
     name: "Download A File",
-    action: "Download a file in Superchat.",
+    action: "Download a file from Superchat",
   },
 ] as const;
 

@@ -10,27 +10,27 @@ const CONTACT_OPERATION_OPTIONS = [
   {
     value: "search",
     name: "Search For A Contact",
-    action: "Search a contact by any field.",
+    action: "Search for a contact in Superchat",
   },
   {
     value: "delete",
     name: "Delete A Contact",
-    action: "Delete a contact in Superchat.",
+    action: "Delete a contact in Superchat",
   },
   {
     value: "create",
     name: "Create A Contact",
-    action: "Create a new contact in Superchat.",
+    action: "Create a new contact in Superchat",
   },
   {
     value: "update",
     name: "Update A Contact",
-    action: "Update an existing contact in Superchat.",
+    action: "Update an existing contact in Superchat",
   },
   {
     value: "listConversations",
     name: "List Conversations",
-    action: "List all conversations of a contact.",
+    action: "List all conversations of a contact in Superchat",
   },
 ] as const;
 

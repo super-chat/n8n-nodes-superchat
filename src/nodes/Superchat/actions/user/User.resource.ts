@@ -6,7 +6,7 @@ const USER_OPERATION_OPTIONS = [
   {
     value: "me",
     name: "Identify Yourself",
-    action: "Retrieve the information about yourself as a superchat user",
+    action: "Retrieve information about yourself as a Superchat user",
   },
 ] as const;
 
