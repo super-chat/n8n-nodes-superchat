@@ -255,7 +255,7 @@ export class SuperchatTrigger implements INodeType {
             value: "gender" satisfies ContactWriteDefaultAttributeField,
           },
         ],
-        default: "first_name" satisfies ContactWriteDefaultAttributeField,
+        default: [] as ContactWriteDefaultAttributeField[],
         description:
           "Only listen for updated contacts based on the changed built-in attributes",
         typeOptions: {
