@@ -9,6 +9,7 @@ import { BASE_URL } from "../shared";
 export class SuperchatApi implements ICredentialType {
   name = "superchatApi";
   displayName = "Superchat API";
+  icon = "file:superchat.svg" as const;
 
   documentationUrl =
     "https://developers.superchat.com/reference/authentication";
