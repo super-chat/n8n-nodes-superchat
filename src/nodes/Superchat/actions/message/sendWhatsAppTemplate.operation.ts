@@ -30,7 +30,7 @@ const properties: INodeProperties[] = [
     displayName: "Channel ID",
     name: "channelId",
     type: "resourceLocator",
-    default: "",
+    default: { mode: "list" },
     description: "The ID of the channel to send the message from",
     required: true,
     modes: [
@@ -56,7 +56,7 @@ const properties: INodeProperties[] = [
     displayName: "Template ID",
     name: "templateId",
     type: "resourceLocator",
-    default: "",
+    default: { mode: "list" },
     description: "The ID of the WhatsApp template you want to use",
     required: true,
     modes: [
@@ -82,7 +82,7 @@ const properties: INodeProperties[] = [
     displayName: "Header File ID",
     name: "headerFileId",
     type: "resourceLocator",
-    default: "",
+    default: { mode: "list" },
     description:
       "The ID of the file you want to use as a header in the template (Only set this if the template has a header)",
     modes: [

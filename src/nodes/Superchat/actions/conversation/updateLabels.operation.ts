@@ -36,7 +36,7 @@ const properties: INodeProperties[] = [
             displayName: "ID",
             name: "id",
             type: "resourceLocator",
-            default: "",
+            default: { mode: "list" },
             description: "A label ID",
             modes: [
               {

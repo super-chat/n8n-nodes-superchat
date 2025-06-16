@@ -30,7 +30,7 @@ const properties: INodeProperties[] = [
     displayName: "Channel ID",
     name: "channelId",
     type: "resourceLocator",
-    default: "",
+    default: { mode: "list" },
     description: "The ID of the channel to send the message from",
     required: true,
     modes: [
@@ -91,7 +91,7 @@ const properties: INodeProperties[] = [
             displayName: "ID",
             name: "id",
             type: "resourceLocator",
-            default: "",
+            default: { mode: "list" },
             description: "A file ID",
             modes: [
               {
