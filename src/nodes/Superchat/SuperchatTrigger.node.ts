@@ -1,6 +1,7 @@
 import {
   type IDataObject,
   type IHookFunctions,
+  INodeParameterResourceLocator,
   type INodeType,
   type INodeTypeDescription,
   type IWebhookFunctions,
@@ -341,27 +342,43 @@ export class SuperchatTrigger implements INodeType {
                 ? conversationStatuses
                 : (["open", "done", "snoozed"] as const);
 
-            const channelIds = this.getNodeParameter("channelIds", "") as {
-              values: { id: string }[];
+            const channelIdsParamValue = this.getNodeParameter(
+              "channelIds",
+              ""
+            ) as {
+              values: {
+                id: INodeParameterResourceLocator;
+              }[];
             };
 
-            const inboxIds = this.getNodeParameter("inboxIds", "") as {
-              values: { id: string }[];
+            const inboxIdsParamValue = this.getNodeParameter(
+              "inboxIds",
+              ""
+            ) as {
+              values: { id: INodeParameterResourceLocator }[];
             };
+
+            const channelIds = channelIdsParamValue.values.flatMap(
+              ({ id: { value } }) => (typeof value === "string" ? [value] : [])
+            );
+
+            const inboxIds = inboxIdsParamValue.values.flatMap(
+              ({ id: { value } }) => (typeof value === "string" ? [value] : [])
+            );
 
             const filters: WebhookEventFilterWriteDTO[] = [];
 
-            if (channelIds.values.length > 0) {
+            if (channelIds.length > 0) {
               filters.push({
                 type: "channel",
-                ids: channelIds.values.map(({ id }) => id),
+                ids: channelIds,
               });
             }
 
-            if (inboxIds.values.length > 0) {
+            if (inboxIds.length > 0) {
               filters.push({
                 type: "inbox",
-                ids: inboxIds.values.map(({ id }) => id),
+                ids: inboxIds,
               });
             }
 
@@ -396,23 +413,30 @@ export class SuperchatTrigger implements INodeType {
                   })
                 )
                 .with("contact_updated", (type): WebhookEventWriteDTO => {
-                  const customAttributeIds = this.getNodeParameter(
+                  const customAttributeIdsParamValue = this.getNodeParameter(
                     "customAttributeIds",
                     ""
                   ) as {
-                    values: { id: string }[];
+                    values: { id: INodeParameterResourceLocator }[];
                   };
+
                   const builtinAttributes = this.getNodeParameter(
                     "builtinAttributes",
                     ""
                   ) as ContactWriteDefaultAttributeField[];
 
+                  const customAttributeIds =
+                    customAttributeIdsParamValue.values.flatMap(
+                      ({ id: { value } }) =>
+                        typeof value === "string" ? [value] : []
+                    );
+
                   const filters: WebhookEventFilterWriteDTO[] = [];
 
-                  if (customAttributeIds.values.length > 0) {
+                  if (customAttributeIds.length > 0) {
                     filters.push({
                       type: "custom_attribute",
-                      ids: customAttributeIds.values.map(({ id }) => id),
+                      ids: customAttributeIds,
                     });
                   }
 
@@ -433,30 +457,45 @@ export class SuperchatTrigger implements INodeType {
                   "message_outbound",
                   "message_failed",
                   (type): WebhookEventWriteDTO => {
-                    const channelIds = this.getNodeParameter(
+                    const channelIdsParamValue = this.getNodeParameter(
                       "channelIds",
                       ""
                     ) as {
-                      values: { id: string }[];
+                      values: {
+                        id: INodeParameterResourceLocator;
+                      }[];
                     };
 
-                    const inboxIds = this.getNodeParameter("inboxIds", "") as {
-                      values: { id: string }[];
+                    const inboxIdsParamValue = this.getNodeParameter(
+                      "inboxIds",
+                      ""
+                    ) as {
+                      values: { id: INodeParameterResourceLocator }[];
                     };
+
+                    const channelIds = channelIdsParamValue.values.flatMap(
+                      ({ id: { value } }) =>
+                        typeof value === "string" ? [value] : []
+                    );
+
+                    const inboxIds = inboxIdsParamValue.values.flatMap(
+                      ({ id: { value } }) =>
+                        typeof value === "string" ? [value] : []
+                    );
 
                     const filters: WebhookEventFilterWriteDTO[] = [];
 
-                    if (channelIds.values.length > 0) {
+                    if (channelIds.length > 0) {
                       filters.push({
                         type: "channel",
-                        ids: channelIds.values.map(({ id }) => id),
+                        ids: channelIds,
                       });
                     }
 
-                    if (inboxIds.values.length > 0) {
+                    if (inboxIds.length > 0) {
                       filters.push({
                         type: "inbox",
-                        ids: inboxIds.values.map(({ id }) => id),
+                        ids: inboxIds,
                       });
                     }
 

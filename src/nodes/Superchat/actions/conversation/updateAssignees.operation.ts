@@ -1,6 +1,7 @@
 import {
   type IExecuteFunctions,
   type INodeExecutionData,
+  INodeParameterResourceLocator,
   type INodeProperties,
   updateDisplayOptions,
 } from "n8n-workflow";
@@ -80,12 +81,19 @@ export async function execute(
   const returnData: INodeExecutionData[] = [];
 
   const id = this.getNodeParameter("id", i) as string;
-  const assignedUserIds = this.getNodeParameter("assignedUserIds", i) as {
-    values: { id: string }[];
+  const assignedUserIdsParamValue = this.getNodeParameter(
+    "assignedUserIds",
+    i
+  ) as {
+    values: { id: INodeParameterResourceLocator }[];
   };
 
+  const assignedUserIds = assignedUserIdsParamValue.values.flatMap(
+    ({ id: { value } }) => (typeof value === "string" ? [value] : [])
+  );
+
   const body = {
-    assigned_users: assignedUserIds.values.map(({ id }) => id),
+    assigned_users: assignedUserIds,
   } satisfies PAUpdateConversationDTO;
 
   const responseData = await superchatJsonApiRequest.call(

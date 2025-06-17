@@ -1,6 +1,7 @@
 import {
   type IExecuteFunctions,
   type INodeExecutionData,
+  INodeParameterResourceLocator,
   type INodeProperties,
   updateDisplayOptions,
 } from "n8n-workflow";
@@ -129,13 +130,15 @@ export async function execute(
 
   const senderName = this.getNodeParameter("senderName", i) as string;
   const identifier = this.getNodeParameter("identifier", i) as string;
-  const channelId = this.getNodeParameter("channelId", i) as string;
+  const channelId = (
+    this.getNodeParameter("channelId", i) as INodeParameterResourceLocator
+  ).value as string;
   const content = this.getNodeParameter("content", i) as
     | {
         text: { value: string };
       }
     | {
-        media: { fileId: string };
+        media: { id: INodeParameterResourceLocator };
       };
 
   const body = {
@@ -152,7 +155,7 @@ export async function execute(
           }
         : {
             type: "media",
-            file_id: content.media.fileId,
+            file_id: content.media.id.value as string,
           },
   } satisfies PASendMessageDTO;
 

@@ -1,6 +1,7 @@
 import {
   type IExecuteFunctions,
   type INodeExecutionData,
+  INodeParameterResourceLocator,
   type INodeProperties,
   updateDisplayOptions,
 } from "n8n-workflow";
@@ -151,9 +152,15 @@ export async function execute(
 
   const senderName = this.getNodeParameter("senderName", i) as string;
   const identifier = this.getNodeParameter("identifier", i) as string;
-  const channelId = this.getNodeParameter("channelId", i) as string;
-  const templateId = this.getNodeParameter("templateId", i) as string;
-  const headerFileId = this.getNodeParameter("headerFileId", i) as string;
+  const channelId = (
+    this.getNodeParameter("channelId", i) as INodeParameterResourceLocator
+  ).value as string;
+  const templateId = (
+    this.getNodeParameter("templateId", i) as INodeParameterResourceLocator
+  ).value as string;
+  const headerFileId = (
+    this.getNodeParameter("headerFileId", i) as INodeParameterResourceLocator
+  ).value as string;
   const variables = this.getNodeParameter("variables", i) as {
     values: { value: string }[];
   };
