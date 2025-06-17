@@ -8,6 +8,7 @@ import { ConversationType } from "../../../types/ConversationType";
 import { PageableResponse } from "../../../types/PageableResponse";
 import { PAMessageChannelConfigDTO } from "../../../types/PAMessageChannelConfigDTO";
 import { superchatJsonApiRequest } from "../GenericFunctions";
+import { OperationKeyByResource, ResourceKey } from "../Superchat.node";
 
 function formatConversationType(input: ConversationType) {
   return match(input)
@@ -27,6 +28,10 @@ export async function messageChannelSearch(
   filter?: string | undefined,
   paginationToken?: string
 ): Promise<INodeListSearchResult> {
+  const currentNodeParams = this.getCurrentNodeParameters();
+
+  const resource = currentNodeParams?.resource as ResourceKey | undefined;
+
   const res = (await superchatJsonApiRequest.call(
     this,
     "GET",
@@ -37,13 +42,32 @@ export async function messageChannelSearch(
     }
   )) as PageableResponse<PAMessageChannelConfigDTO>;
 
-  const results = res.results.map(
-    (channel) =>
-      ({
-        name: `${formatConversationType(channel.type)}: ${channel.name}`,
-        value: channel.id,
-      }) satisfies INodeListSearchItems
-  );
+  const results = res.results
+    .filter((channel) => {
+      if (resource === "message") {
+        const operation =
+          currentNodeParams?.operation as OperationKeyByResource<
+            typeof resource
+          >;
+
+        if (operation === "sendWhatsAppTemplate") {
+          return channel.type === "whats_app";
+        }
+
+        if (operation === "sendMail") {
+          return channel.type === "mail";
+        }
+      }
+
+      return true;
+    })
+    .map(
+      (channel) =>
+        ({
+          name: `${formatConversationType(channel.type)}: ${channel.name}`,
+          value: channel.id,
+        }) satisfies INodeListSearchItems
+    );
 
   return {
     results,

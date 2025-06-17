@@ -82,7 +82,7 @@ const RESOURCE_OPTIONS = [
 
 export type ResourceKey = (typeof RESOURCE_OPTIONS)[number]["value"];
 
-type OperationKeyByResource<R extends ResourceKey> = {
+export type OperationKeyByResource<R extends ResourceKey> = {
   user: UserOperationKey;
   contact: ContactOperationKey;
   message: MessageOperationKey;

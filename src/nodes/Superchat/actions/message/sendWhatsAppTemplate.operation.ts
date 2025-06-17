@@ -60,6 +60,9 @@ const properties: INodeProperties[] = [
     default: { mode: "list" },
     description: "The ID of the WhatsApp template you want to use",
     required: true,
+    typeOptions: {
+      loadOptionsDependsOn: ["channelId"],
+    },
     modes: [
       {
         displayName: "ID",
@@ -86,6 +89,9 @@ const properties: INodeProperties[] = [
     default: { mode: "list" },
     description:
       "The ID of the file you want to use as a header in the template (Only set this if the template has a header)",
+    typeOptions: {
+      loadOptionsDependsOn: ["templateId"],
+    },
     modes: [
       {
         displayName: "ID",

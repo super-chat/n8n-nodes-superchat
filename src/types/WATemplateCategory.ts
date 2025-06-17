@@ -1,0 +1,17 @@
+export type WATemplateCategory =
+  | "account_update"
+  | "payment_update"
+  | "personal_finance_update"
+  | "shipping_update"
+  | "reservation_update"
+  | "issue_resolution"
+  | "appointment_update"
+  | "transportation_update"
+  | "ticket_update"
+  | "alert_update"
+  | "auto_reply"
+  | "transactional"
+  | "marketing"
+  | "otp"
+  | "authentication"
+  | "utility";
