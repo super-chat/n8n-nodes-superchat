@@ -19,7 +19,8 @@
     "declaration": true,
     "sourceMap": true,
     "skipLibCheck": true,
-    "outDir": "./dist/"
+    "outDir": "./dist/",
+    "emitDeclarationOnly": true
   },
   "include": ["./src/**/*", "./src/**/*.json"]
 }

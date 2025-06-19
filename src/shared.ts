@@ -1,11 +1,16 @@
-export const BASE_URL = "https://api.superchat.com/v1.0";
-
-// Support using `process.env.N8N_VERSION`
+// `process.env.N8N_VERSION` will be set by n8n
+// ``process.define.SUPERCHAT_API_DOMAIN`` needs to be handled by the bundler
 declare var process: {
   env: {
     N8N_VERSION: any;
   };
+
+  define: {
+    SUPERCHAT_API_DOMAIN: string;
+  };
 };
+
+export const BASE_URL = `https://${process.define.SUPERCHAT_API_DOMAIN}/v1.0`;
 
 // Helper function to get n8n version that can be mocked in tests
 export const getN8NVersion = (): string => {

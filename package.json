@@ -21,8 +21,8 @@
   },
   "main": "index.js",
   "scripts": {
-    "build": "tsc && gulp build:icons",
-    "dev": "tsc --watch",
+    "build": "tsup && tsc && gulp copy",
+    "dev": "tsup --watch",
     "format": "prettier src --write",
     "lint": "eslint ./src/**/*.ts package.json",
     "lintfix": "eslint ./src/**/*.ts package.json --fix",
@@ -34,7 +34,7 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/Superchat.credentials.js"
+      "dist/credentials/SuperchatApi.credentials.js"
     ],
     "nodes": [
       "dist/nodes/Superchat/Superchat.node.js",
@@ -48,6 +48,7 @@
     "gulp": "^5.0.0",
     "prettier": "^3.5.3",
     "prettier-plugin-organize-imports": "^4.1.0",
+    "tsup": "^8.5.0",
     "typescript": "^5.8.2"
   },
   "peerDependencies": {

@@ -1,3 +1,8 @@
+# Developing against staging / a local API
+
+You can set the `SUPERCHAT_API_DOMAIN` environment variable when running the `pnpm build` or `pnpm dev` commands,
+to override the production API domain (`api.superchat.com`).
+
 # Run you code locally
 
 See the [n8n docs](https://docs.n8n.io/integrations/creating-nodes/test/run-node-locally/) on running this node locally.
