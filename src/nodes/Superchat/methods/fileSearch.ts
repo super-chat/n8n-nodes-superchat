@@ -22,13 +22,15 @@ export async function fileSearch(
     }
   )) as PageableResponse<PAFileDTO>;
 
-  const results = res.results.map(
-    (label) =>
-      ({
-        name: label.name,
-        value: label.id,
-      }) satisfies INodeListSearchItems
-  );
+  const results = res.results
+    .map(
+      (label) =>
+        ({
+          name: label.name,
+          value: label.id,
+        }) satisfies INodeListSearchItems
+    )
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   return {
     results,

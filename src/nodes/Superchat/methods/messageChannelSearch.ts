@@ -67,7 +67,8 @@ export async function messageChannelSearch(
           name: `${formatConversationType(channel.type)}: ${channel.name}`,
           value: channel.id,
         }) satisfies INodeListSearchItems
-    );
+    )
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   return {
     results,

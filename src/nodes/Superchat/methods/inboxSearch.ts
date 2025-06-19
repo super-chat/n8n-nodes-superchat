@@ -22,13 +22,15 @@ export async function inboxSearch(
     }
   )) as PageableResponse<PAInboxDTO>;
 
-  const results = res.results.map(
-    (inbox) =>
-      ({
-        name: inbox.name,
-        value: inbox.id,
-      }) satisfies INodeListSearchItems
-  );
+  const results = res.results
+    .map(
+      (inbox) =>
+        ({
+          name: inbox.name,
+          value: inbox.id,
+        }) satisfies INodeListSearchItems
+    )
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   return {
     results,

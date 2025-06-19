@@ -75,7 +75,9 @@ export async function templateSearch(
           name: template.name,
           value: template.id,
         }) satisfies INodeListSearchItems
-    );
+    )
+    .sort((a, b) => a.name.localeCompare(b.name));
+
   return {
     results,
     paginationToken: res.pagination.next_cursor,

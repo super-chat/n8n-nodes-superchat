@@ -22,15 +22,17 @@ export async function userSearch(
     }
   )) as PageableResponse<PAUserDTO>;
 
-  const results = res.results.map(
-    (user) =>
-      ({
-        name:
-          [user.first_name, user.last_name].filter(Boolean).join(" ") +
-          ` (${user.email})`,
-        value: user.id,
-      }) satisfies INodeListSearchItems
-  );
+  const results = res.results
+    .map(
+      (user) =>
+        ({
+          name:
+            [user.first_name, user.last_name].filter(Boolean).join(" ") +
+            ` (${user.email})`,
+          value: user.id,
+        }) satisfies INodeListSearchItems
+    )
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   return {
     results,
