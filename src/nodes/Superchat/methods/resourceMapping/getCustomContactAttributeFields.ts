@@ -35,12 +35,14 @@ export async function getCustomContactAttributeFields(
       const attributeType = attribute.type;
 
       if (attributeType === "single_select") {
-        const options = attribute.option_values.map(
-          (option): INodePropertyOptions => ({
-            name: option.value,
-            value: option.value,
-          })
-        );
+        const options = [...attribute.option_values]
+          .map(
+            (option): INodePropertyOptions => ({
+              name: option.value,
+              value: option.value,
+            })
+          )
+          .sort((a, b) => a.name.localeCompare(b.name));
 
         return [
           {
