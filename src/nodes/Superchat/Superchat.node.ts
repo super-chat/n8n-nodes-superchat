@@ -52,32 +52,32 @@ const RESOURCE_OPTIONS = [
   {
     name: "User",
     value: "user",
-    description: "A Superchat user",
+    description: "A user",
   },
   {
     name: "Contact",
     value: "contact",
-    description: "A Superchat contact",
+    description: "A contact",
   },
   {
     name: "Message",
     value: "message",
-    description: "A message in Superchat",
+    description: "A message",
   },
   {
     name: "Conversation",
     value: "conversation",
-    description: "A conversation in Superchat",
+    description: "A conversation",
   },
   {
     name: "Note",
     value: "note",
-    description: "A note in Superchat",
+    description: "A note",
   },
   {
     name: "File",
     value: "file",
-    description: "A file in Superchat",
+    description: "A file",
   },
 ] as const;
 

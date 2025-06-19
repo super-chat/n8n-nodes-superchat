@@ -8,17 +8,17 @@ const NOTE_OPERATION_OPTIONS = [
   {
     value: "create",
     name: "Create A Conversation Note",
-    action: "Create a conversation note in Superchat",
+    action: "Create a conversation note",
   },
   {
     value: "get",
     name: "Get A Conversation Note By ID",
-    action: "Retrieve a conversation note in Superchat",
+    action: "Retrieve a conversation note",
   },
   {
     value: "delete",
     name: "Delete A Conversation Note",
-    action: "Delete a conversation note in Superchat",
+    action: "Delete a conversation note",
   },
 ] as const;
 

@@ -10,27 +10,27 @@ const CONVERSATION_OPERATION_OPTIONS = [
   {
     value: "get",
     name: "Get A Conversation By ID",
-    action: "Retrieve a conversation in Superchat",
+    action: "Retrieve a conversation",
   },
   {
     value: "updateLabels",
     name: "Update Labels",
-    action: "Update the labels of a conversation in Superchat",
+    action: "Update the labels of a conversation",
   },
   {
     value: "updateStatus",
     name: "Update Status",
-    action: "Update the status of a conversation in Superchat",
+    action: "Update the status of a conversation",
   },
   {
     value: "updateAssignees",
     name: "Update Assigned Users",
-    action: "Update the assignees of a conversation in Superchat",
+    action: "Update the assignees of a conversation",
   },
   {
     value: "delete",
     name: "Delete A Conversation",
-    action: "Delete a conversation in Superchat",
+    action: "Delete a conversation",
   },
 ] as const;
 
