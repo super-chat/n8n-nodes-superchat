@@ -132,7 +132,7 @@ const properties: INodeProperties[] = [
             type: "string",
             default: "",
             description: "A variable value",
-            hint: "The amount of variables must match the template definition",
+            hint: "The number and order of variables must match the template definition. Dynamic URL suffices are handled as variables, too.",
           },
         ],
       },
