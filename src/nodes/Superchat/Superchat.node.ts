@@ -16,6 +16,7 @@ import * as ContactSearchOperation from "./actions/contact/search.operation";
 import * as ContactUpdateOperation from "./actions/contact/update.operation";
 import * as ConversationResource from "./actions/conversation/Conversation.resource";
 import { ConversationOperationKey } from "./actions/conversation/Conversation.resource";
+import * as ConversationDeleteOperation from "./actions/conversation/delete.operation";
 import * as ConversationGetOperation from "./actions/conversation/get.operation";
 import * as ConversationUpdateAssigneesOperation from "./actions/conversation/updateAssignees.operation";
 import * as ConversationUpdateLabelsOperation from "./actions/conversation/updateLabels.operation";
@@ -213,6 +214,7 @@ export class Superchat implements INodeType {
         "contact:update": ContactUpdateOperation.execute,
         "contact:listConversations": ContactListConversationsOperation.execute,
         "conversation:get": ConversationGetOperation.execute,
+        "conversation:delete": ConversationDeleteOperation.execute,
         "conversation:updateLabels": ConversationUpdateLabelsOperation.execute,
         "conversation:updateStatus": ConversationUpdateStatusOperation.execute,
         "conversation:updateAssignees":

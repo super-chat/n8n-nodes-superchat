@@ -1,5 +1,6 @@
 import type { INodeProperties } from "n8n-workflow";
 import { ResourceKey } from "../../Superchat.node";
+import * as deleteOperation from "./delete.operation";
 import * as getOperation from "./get.operation";
 import * as updateAssigneesOperation from "./updateAssignees.operation";
 import * as updateLabelsOperation from "./updateLabels.operation";
@@ -26,6 +27,11 @@ const CONVERSATION_OPERATION_OPTIONS = [
     name: "Update Assigned Users",
     action: "Update the assignees of a conversation in Superchat",
   },
+  {
+    value: "delete",
+    name: "Delete A Conversation",
+    action: "Delete a conversation in Superchat",
+  },
 ] as const;
 
 export type ConversationOperationKey =
@@ -39,6 +45,7 @@ const OPERATION_DESCRIPTIONS: Record<
   updateLabels: updateLabelsOperation.description,
   updateStatus: updateStatusOperation.description,
   updateAssignees: updateAssigneesOperation.description,
+  delete: deleteOperation.description,
 };
 
 export const description = [
