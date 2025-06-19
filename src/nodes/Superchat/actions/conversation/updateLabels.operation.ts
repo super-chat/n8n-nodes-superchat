@@ -5,9 +5,10 @@ import {
   type INodeProperties,
   updateDisplayOptions,
 } from "n8n-workflow";
+import { SearchFunction } from "../../../../definitions";
 import { PAUpdateConversationDTO } from "../../../../types/PAUpdateConversationDTO";
 import { superchatJsonApiRequest } from "../../GenericFunctions";
-import { ResourceKey, SearchFunction } from "../../Superchat.node";
+import { ResourceKey } from "../../Superchat.node";
 import { ConversationOperationKey } from "./Conversation.resource";
 
 const properties: INodeProperties[] = [

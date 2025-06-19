@@ -9,12 +9,12 @@ import {
   NodeConnectionType,
 } from "n8n-workflow";
 import { match } from "ts-pattern";
+import { LIST_SEARCH_METHODS, SearchFunction } from "../../definitions";
 import { ContactWriteDefaultAttributeField } from "../../types/ContactWriteDefaultAttributeField";
 import { WebhookEventFilterWriteDTO } from "../../types/WebhookEventFilterWriteDTO";
 import { WebhookEventType } from "../../types/WebhookEventType";
 import { WebhookEventWriteDTO } from "../../types/WebhookEventWriteDTO";
 import { superchatJsonApiRequest } from "./GenericFunctions";
-import { LIST_SEARCH_METHODS, SearchFunction } from "./Superchat.node";
 
 type ConversationStatus = "open" | "done" | "snoozed";
 

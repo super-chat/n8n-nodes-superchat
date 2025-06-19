@@ -7,6 +7,7 @@ import {
   NodeConnectionType,
 } from "n8n-workflow";
 import { match } from "ts-pattern";
+import { LIST_SEARCH_METHODS } from "../../definitions";
 import * as ContactResource from "./actions/contact/Contact.resource";
 import { ContactOperationKey } from "./actions/contact/Contact.resource";
 import * as ContactCreateOperation from "./actions/contact/create.operation";
@@ -39,14 +40,7 @@ import { NoteOperationKey } from "./actions/note/Note.resource";
 import * as UserMeOperation from "./actions/user/me.operation";
 import * as UserResource from "./actions/user/User.resource";
 import { UserOperationKey } from "./actions/user/User.resource";
-import { customAttributeSearch } from "./methods/customAttributeSearch";
-import { fileSearch } from "./methods/fileSearch";
-import { inboxSearch } from "./methods/inboxSearch";
-import { labelSearch } from "./methods/labelSearch";
-import { messageChannelSearch } from "./methods/messageChannelSearch";
 import { getCustomContactAttributeFields } from "./methods/resourceMapping/getCustomContactAttributeFields";
-import { templateSearch } from "./methods/templateSearch";
-import { userSearch } from "./methods/userSearch";
 
 const RESOURCE_OPTIONS = [
   {
@@ -111,18 +105,6 @@ function getIdentifierForResource<R extends ResourceKey>(
   ) as OperationKeyByResource<R>;
   return `${resource}:${operation}` as const;
 }
-
-export const LIST_SEARCH_METHODS = {
-  templateSearch,
-  messageChannelSearch,
-  inboxSearch,
-  userSearch,
-  labelSearch,
-  fileSearch,
-  customAttributeSearch,
-} as const;
-
-export type SearchFunction = keyof typeof LIST_SEARCH_METHODS;
 
 export const RESOURCE_MAPPING_METHODS = {
   getCustomContactAttributeFields,
