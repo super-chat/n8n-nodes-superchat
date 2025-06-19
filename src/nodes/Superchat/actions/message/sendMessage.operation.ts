@@ -97,11 +97,11 @@ const properties: INodeProperties[] = [
         displayName: "Media",
         values: [
           {
-            displayName: "ID",
+            displayName: "File",
             name: "id",
             type: "resourceLocator",
             default: { mode: "list" },
-            description: "A file ID",
+            description: "A file",
             modes: [
               {
                 displayName: "ID",

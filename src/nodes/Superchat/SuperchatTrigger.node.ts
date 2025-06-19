@@ -111,11 +111,11 @@ export class SuperchatTrigger implements INodeType {
             name: "values",
             values: [
               {
-                displayName: "ID",
+                displayName: "Channel",
                 name: "id",
                 type: "resourceLocator",
                 default: { mode: "list" },
-                description: "A channel ID",
+                description: "A message channel",
                 hint: "Only applicable for inbound message, outbound message, failed message or conversation status change events",
                 modes: [
                   {
@@ -159,11 +159,11 @@ export class SuperchatTrigger implements INodeType {
             name: "values",
             values: [
               {
-                displayName: "ID",
+                displayName: "Inbox",
                 name: "id",
                 type: "resourceLocator",
                 default: { mode: "list" },
-                description: "An inbox ID",
+                description: "An inbox",
                 hint: "Only applicable for inbound message, outbound message, failed message or conversation status change events",
                 modes: [
                   {
@@ -206,11 +206,11 @@ export class SuperchatTrigger implements INodeType {
             name: "values",
             values: [
               {
-                displayName: "ID",
+                displayName: "Custom Attribute",
                 name: "id",
                 type: "resourceLocator",
                 default: { mode: "list" },
-                description: "A custom attribute ID",
+                description: "A custom attribute",
                 hint: "Only applicable for contact updated events",
                 modes: [
                   {

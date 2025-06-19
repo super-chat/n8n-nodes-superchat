@@ -34,11 +34,11 @@ const properties: INodeProperties[] = [
         name: "values",
         values: [
           {
-            displayName: "ID",
+            displayName: "Label",
             name: "id",
             type: "resourceLocator",
             default: { mode: "list" },
-            description: "A label ID",
+            description: "A label",
             modes: [
               {
                 displayName: "ID",
