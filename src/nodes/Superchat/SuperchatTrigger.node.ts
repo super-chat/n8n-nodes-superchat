@@ -237,60 +237,92 @@ export class SuperchatTrigger implements INodeType {
         ],
       },
 
-      // eslint-disable-next-line n8n-nodes-base/node-param-default-missing
       {
         displayName: "Filter by Built-in Attribute",
         name: "builtinAttributes",
-        type: "options",
-        options: [
-          {
-            name: "Fist Name",
-            value: "first_name" satisfies ContactWriteDefaultAttributeField,
-          },
-          {
-            name: "Last Name",
-            value: "last_name" satisfies ContactWriteDefaultAttributeField,
-          },
-          {
-            name: "Gender",
-            value: "gender" satisfies ContactWriteDefaultAttributeField,
-          },
-        ],
-        default: [] as ContactWriteDefaultAttributeField[],
+        type: "fixedCollection",
+        default: { values: [] },
+        placeholder: "Add Built-in Attribute",
         description:
-          "Only listen for updated contacts based on the changed built-in attributes",
+          "Only listen for updated contacts based on the changed custom attributes",
         typeOptions: {
           multipleValues: true,
         },
-        hint: "Only applicable for contact updated events",
+        options: [
+          {
+            displayName: "Values",
+            name: "values",
+            values: [
+              {
+                displayName: "Built-in Attribute",
+                name: "id",
+                type: "options",
+                // eslint-disable-next-line n8n-nodes-base/node-param-default-wrong-for-options
+                default: "",
+                hint: "Only applicable for contact updated events",
+                options: [
+                  {
+                    name: "Fist Name",
+                    value:
+                      "first_name" satisfies ContactWriteDefaultAttributeField,
+                  },
+                  {
+                    name: "Last Name",
+                    value:
+                      "last_name" satisfies ContactWriteDefaultAttributeField,
+                  },
+                  {
+                    name: "Gender",
+                    value: "gender" satisfies ContactWriteDefaultAttributeField,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       },
 
-      // eslint-disable-next-line n8n-nodes-base/node-param-default-missing
       {
         displayName: "Filter by Conversation Status",
         name: "conversationStatus",
-        type: "options",
-        options: [
-          {
-            name: "Done",
-            value: "done" satisfies ConversationStatus,
-          },
-          {
-            name: "Open",
-            value: "open" satisfies ConversationStatus,
-          },
-          {
-            name: "Snoozed",
-            value: "snoozed" satisfies ConversationStatus,
-          },
-        ],
+        type: "fixedCollection",
+        default: { values: [] },
+        placeholder: "Add Conversation Status",
         description:
           "Only listen for conversation status changes based on the status they changed to",
         typeOptions: {
           multipleValues: true,
         },
-        hint: "Only applicable for conversation status changed events",
-        default: [] as ConversationStatus[],
+        options: [
+          {
+            displayName: "Values",
+            name: "values",
+            values: [
+              {
+                displayName: "Conversation Status",
+                name: "id",
+                type: "options",
+                // eslint-disable-next-line n8n-nodes-base/node-param-default-wrong-for-options
+                default: "",
+                hint: "Only applicable for conversation status changed events",
+                options: [
+                  {
+                    name: "Done",
+                    value: "done" satisfies ConversationStatus,
+                  },
+                  {
+                    name: "Open",
+                    value: "open" satisfies ConversationStatus,
+                  },
+                  {
+                    name: "Snoozed",
+                    value: "snoozed" satisfies ConversationStatus,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       },
     ],
   };
@@ -332,15 +364,14 @@ export class SuperchatTrigger implements INodeType {
 
         const events = match(topic)
           .with("conversation_status_changed", (): WebhookEventWriteDTO[] => {
-            const conversationStatuses = this.getNodeParameter(
+            const conversationStatusParamValue = this.getNodeParameter(
               "conversationStatus",
               ""
-            ) as ConversationStatus[];
-
-            const actualStatuses =
-              conversationStatuses.length > 0
-                ? conversationStatuses
-                : (["open", "done", "snoozed"] as const);
+            ) as {
+              values: {
+                id: string;
+              }[];
+            };
 
             const channelIdsParamValue = this.getNodeParameter(
               "channelIds",
@@ -358,6 +389,27 @@ export class SuperchatTrigger implements INodeType {
               values: { id: INodeParameterResourceLocator }[];
             };
 
+            const conversationStatuses =
+              conversationStatusParamValue.values.flatMap(({ id: value }) => {
+                if (typeof value !== "string") {
+                  return [];
+                }
+
+                if (value === ("open" satisfies ConversationStatus)) {
+                  return ["open" as const];
+                }
+
+                if (value === ("done" satisfies ConversationStatus)) {
+                  return ["done" as const];
+                }
+
+                if (value === ("snoozed" satisfies ConversationStatus)) {
+                  return ["snoozed" as const];
+                }
+
+                return [];
+              });
+
             const channelIds = channelIdsParamValue.values.flatMap(
               ({ id: { value } }) => (typeof value === "string" ? [value] : [])
             );
@@ -365,6 +417,11 @@ export class SuperchatTrigger implements INodeType {
             const inboxIds = inboxIdsParamValue.values.flatMap(
               ({ id: { value } }) => (typeof value === "string" ? [value] : [])
             );
+
+            const actualStatuses =
+              conversationStatuses.length > 0
+                ? conversationStatuses
+                : (["open", "done", "snoozed"] as const);
 
             const filters: WebhookEventFilterWriteDTO[] = [];
 
@@ -420,10 +477,44 @@ export class SuperchatTrigger implements INodeType {
                     values: { id: INodeParameterResourceLocator }[];
                   };
 
-                  const builtinAttributes = this.getNodeParameter(
+                  const builtinAttributesParamValue = this.getNodeParameter(
                     "builtinAttributes",
                     ""
-                  ) as ContactWriteDefaultAttributeField[];
+                  ) as {
+                    values: { id: string }[];
+                  };
+
+                  const builtinAttributes =
+                    builtinAttributesParamValue.values.flatMap(
+                      ({ id: value }) => {
+                        if (typeof value !== "string") {
+                          return [];
+                        }
+
+                        if (
+                          value ===
+                          ("first_name" satisfies ContactWriteDefaultAttributeField)
+                        ) {
+                          return ["first_name" as const];
+                        }
+
+                        if (
+                          value ===
+                          ("last_name" satisfies ContactWriteDefaultAttributeField)
+                        ) {
+                          return ["last_name" as const];
+                        }
+
+                        if (
+                          value ===
+                          ("gender" satisfies ContactWriteDefaultAttributeField)
+                        ) {
+                          return ["gender" as const];
+                        }
+
+                        return [];
+                      }
+                    );
 
                   const customAttributeIds =
                     customAttributeIdsParamValue.values.flatMap(
