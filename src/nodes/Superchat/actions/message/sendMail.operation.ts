@@ -54,6 +54,21 @@ const properties: INodeProperties[] = [
     ],
   },
   {
+    displayName: "Reply To (Message ID)",
+    name: "replyToMessageId",
+    type: "resourceLocator",
+    default: { mode: "id" },
+    description: "The ID of the message to reply to",
+    modes: [
+      {
+        displayName: "ID",
+        name: "id",
+        type: "string",
+        hint: "Enter an ID",
+      },
+    ],
+  },
+  {
     displayName: "Subject",
     name: "subject",
     type: "string",
@@ -140,6 +155,12 @@ export async function execute(
   const channelId = (
     this.getNodeParameter("channelId", i) as INodeParameterResourceLocator
   ).value as string;
+  const replyToMessageId = (
+    this.getNodeParameter(
+      "replyToMessageId",
+      i
+    ) as INodeParameterResourceLocator
+  ).value as string;
   const html = this.getNodeParameter("html", i) as string;
   const text = this.getNodeParameter("text", i) as string;
   const subject = this.getNodeParameter("subject", i) as string;
@@ -164,6 +185,7 @@ export async function execute(
       html: html === "" ? undefined : html,
       files: fileIds.map((fileId) => ({ id: fileId })),
     },
+    in_reply_to: replyToMessageId === "" ? undefined : replyToMessageId,
   } satisfies PASendMessageDTO;
 
   const responseData = await superchatJsonApiRequest.call(
