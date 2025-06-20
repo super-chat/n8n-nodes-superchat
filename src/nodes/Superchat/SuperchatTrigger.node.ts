@@ -380,25 +380,7 @@ export class SuperchatTrigger implements INodeType {
 
             const conversationStatuses = (
               conversationStatusParamValue.values ?? []
-            ).flatMap(({ id: value }) => {
-              if (typeof value !== "string") {
-                return [];
-              }
-
-              if (value === ("open" satisfies ConversationStatus)) {
-                return ["open" as const];
-              }
-
-              if (value === ("done" satisfies ConversationStatus)) {
-                return ["done" as const];
-              }
-
-              if (value === ("snoozed" satisfies ConversationStatus)) {
-                return ["snoozed" as const];
-              }
-
-              return [];
-            });
+            ).map(({ id: value }) => value);
 
             const channelIds = (channelIdsParamValue.values ?? []).flatMap(
               ({ id: { value } }) => (typeof value === "string" ? [value] : [])
@@ -472,34 +454,7 @@ export class SuperchatTrigger implements INodeType {
 
                   const builtinAttributes = (
                     builtinAttributesParamValue.values ?? []
-                  ).flatMap(({ id: value }) => {
-                    if (typeof value !== "string") {
-                      return [];
-                    }
-
-                    if (
-                      value ===
-                      ("first_name" satisfies ContactWriteDefaultAttributeField)
-                    ) {
-                      return ["first_name" as const];
-                    }
-
-                    if (
-                      value ===
-                      ("last_name" satisfies ContactWriteDefaultAttributeField)
-                    ) {
-                      return ["last_name" as const];
-                    }
-
-                    if (
-                      value ===
-                      ("gender" satisfies ContactWriteDefaultAttributeField)
-                    ) {
-                      return ["gender" as const];
-                    }
-
-                    return [];
-                  });
+                  ).map(({ id: value }) => value);
 
                   const customAttributeIds = (
                     customAttributeIdsParamValue.values ?? []
