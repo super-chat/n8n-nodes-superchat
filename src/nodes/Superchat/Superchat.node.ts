@@ -8,6 +8,7 @@ import {
 } from "n8n-workflow";
 import { match } from "ts-pattern";
 import { LIST_SEARCH_METHODS } from "../../definitions";
+import { createTypesafeParameterGetter } from "../../magic";
 import * as ContactResource from "./actions/contact/Contact.resource";
 import { ContactOperationKey } from "./actions/contact/Contact.resource";
 import * as ContactCreateOperation from "./actions/contact/create.operation";
@@ -112,6 +113,21 @@ export const RESOURCE_MAPPING_METHODS = {
 
 export type ResourceMappingFunction = keyof typeof RESOURCE_MAPPING_METHODS;
 
+const properties = [
+  // eslint-disable-next-line n8n-nodes-base/node-param-default-missing
+  {
+    displayName: "Resource",
+    name: "resource",
+    type: "options",
+    options: [...RESOURCE_OPTIONS],
+    default: "user" satisfies ResourceKey,
+    noDataExpression: true,
+    required: true,
+  },
+
+  ...Object.values(RESOURCE_PROPERTIES).flat(),
+] as const satisfies INodeProperties[];
+
 export class Superchat implements INodeType {
   methods = {
     listSearch: LIST_SEARCH_METHODS,
@@ -140,27 +156,16 @@ export class Superchat implements INodeType {
       },
     ],
 
-    properties: [
-      // eslint-disable-next-line n8n-nodes-base/node-param-default-missing
-      {
-        displayName: "Resource",
-        name: "resource",
-        type: "options",
-        options: [...RESOURCE_OPTIONS],
-        default: "user" satisfies ResourceKey,
-        noDataExpression: true,
-        required: true,
-      },
-
-      ...Object.values(RESOURCE_PROPERTIES).flat(),
-    ],
+    properties: properties,
   };
 
   async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+    const getNodeParameter = createTypesafeParameterGetter(properties);
+
     const items = this.getInputData();
     const returnData: any[] = [];
 
-    const resource = this.getNodeParameter("resource", 0) as ResourceKey;
+    const resource = getNodeParameter(this, "resource", 0);
 
     const identifier = match(resource)
       .with("user", (resource) => {

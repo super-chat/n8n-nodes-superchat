@@ -4,11 +4,12 @@ import {
   type INodeProperties,
   updateDisplayOptions,
 } from "n8n-workflow";
+import { createTypesafeParameterGetter } from "../../../../magic";
 import { superchatJsonApiRequest } from "../../GenericFunctions";
 import { ResourceKey } from "../../Superchat.node";
 import { NoteOperationKey } from "./Note.resource";
 
-const properties: INodeProperties[] = [
+const properties = [
   {
     displayName: "Conversation ID",
     name: "conversationId",
@@ -25,7 +26,7 @@ const properties: INodeProperties[] = [
     required: true,
     description: "ID of the note",
   },
-];
+] as const satisfies INodeProperties[];
 
 export const description = updateDisplayOptions(
   {
@@ -41,10 +42,12 @@ export async function execute(
   this: IExecuteFunctions,
   i: number
 ): Promise<INodeExecutionData[]> {
+  const getNodeParameter = createTypesafeParameterGetter(properties);
+
   const returnData: INodeExecutionData[] = [];
 
-  const conversationId = this.getNodeParameter("conversationId", i) as string;
-  const noteId = this.getNodeParameter("noteId", i) as string;
+  const conversationId = getNodeParameter(this, "conversationId", i);
+  const noteId = getNodeParameter(this, "noteId", i);
 
   const responseData = await superchatJsonApiRequest.call(
     this,

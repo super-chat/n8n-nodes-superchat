@@ -1,17 +1,17 @@
 import {
   type IExecuteFunctions,
   type INodeExecutionData,
-  INodeParameterResourceLocator,
   type INodeProperties,
   updateDisplayOptions,
 } from "n8n-workflow";
 import { SearchFunction } from "../../../../definitions";
+import { createTypesafeParameterGetter } from "../../../../magic";
 import { PASendMessageDTO } from "../../../../types/PASendMessageDTO";
 import { superchatJsonApiRequest } from "../../GenericFunctions";
 import { ResourceKey } from "../../Superchat.node";
 import { MessageOperationKey } from "./Message.resource";
 
-const properties: INodeProperties[] = [
+const properties = [
   {
     displayName: "Sender Name",
     name: "senderName",
@@ -139,7 +139,7 @@ const properties: INodeProperties[] = [
       },
     ],
   },
-];
+] as const satisfies INodeProperties[];
 
 export const description = updateDisplayOptions(
   {
@@ -155,22 +155,17 @@ export async function execute(
   this: IExecuteFunctions,
   i: number
 ): Promise<INodeExecutionData[]> {
+  const getNodeParameter = createTypesafeParameterGetter(properties);
+
   const returnData: INodeExecutionData[] = [];
 
-  const senderName = this.getNodeParameter("senderName", i) as string;
-  const identifier = this.getNodeParameter("identifier", i) as string;
-  const channelId = (
-    this.getNodeParameter("channelId", i) as INodeParameterResourceLocator
-  ).value as string;
-  const templateId = (
-    this.getNodeParameter("templateId", i) as INodeParameterResourceLocator
-  ).value as string;
-  const headerFileId = (
-    this.getNodeParameter("headerFileId", i) as INodeParameterResourceLocator
-  ).value as string;
-  const variables = this.getNodeParameter("variables", i) as {
-    values: { value: string }[];
-  };
+  const senderName = getNodeParameter(this, "senderName", i);
+  const identifier = getNodeParameter(this, "identifier", i);
+  const channelId = getNodeParameter(this, "channelId", i).value as string;
+  const templateId = getNodeParameter(this, "templateId", i).value as string;
+  const headerFileId = getNodeParameter(this, "headerFileId", i)
+    .value as string;
+  const variables = getNodeParameter(this, "variables", i);
 
   const body = {
     to: [{ identifier }],
@@ -182,7 +177,7 @@ export async function execute(
       type: "whats_app_template",
       template_id: templateId,
       file: headerFileId === "" ? undefined : { id: headerFileId },
-      variables: variables.values.map((v, i) => ({
+      variables: (variables.values ?? []).map((v, i) => ({
         position: i,
         value: v.value,
       })),

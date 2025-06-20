@@ -4,13 +4,14 @@ import {
   type INodeProperties,
   updateDisplayOptions,
 } from "n8n-workflow";
+import { createTypesafeParameterGetter } from "../../../../magic";
 import { PASearchContactDTO } from "../../../../types/PASearchContactDTO";
 import { PASearchContactQueryExpression } from "../../../../types/PASearchContactQueryExpression";
 import { superchatJsonApiRequest } from "../../GenericFunctions";
 import { ResourceKey } from "../../Superchat.node";
 import { ContactOperationKey } from "./Contact.resource";
 
-const properties: INodeProperties[] = [
+const properties = [
   // eslint-disable-next-line n8n-nodes-base/node-param-default-missing
   {
     displayName: "Search Field",
@@ -45,7 +46,7 @@ const properties: INodeProperties[] = [
     required: true,
     description: "Value to search for",
   },
-];
+] as const satisfies INodeProperties[];
 
 export const description = updateDisplayOptions(
   {
@@ -61,13 +62,12 @@ export async function execute(
   this: IExecuteFunctions,
   i: number
 ): Promise<INodeExecutionData[]> {
+  const getNodeParameter = createTypesafeParameterGetter(properties);
+
   const returnData: INodeExecutionData[] = [];
 
-  const field = this.getNodeParameter(
-    "field",
-    i
-  ) as PASearchContactQueryExpression["field"];
-  const value = this.getNodeParameter("value", i) as string;
+  const field = getNodeParameter(this, "field", i);
+  const value = getNodeParameter(this, "value", i);
 
   const body = {
     query: {

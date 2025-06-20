@@ -1,7 +1,7 @@
 import {
   type IDataObject,
   type IHookFunctions,
-  INodeParameterResourceLocator,
+  INodeProperties,
   type INodeType,
   type INodeTypeDescription,
   type IWebhookFunctions,
@@ -10,6 +10,7 @@ import {
 } from "n8n-workflow";
 import { match } from "ts-pattern";
 import { LIST_SEARCH_METHODS, SearchFunction } from "../../definitions";
+import { createTypesafeParameterGetter } from "../../magic";
 import { ContactWriteDefaultAttributeField } from "../../types/ContactWriteDefaultAttributeField";
 import { WebhookEventFilterWriteDTO } from "../../types/WebhookEventFilterWriteDTO";
 import { WebhookEventType } from "../../types/WebhookEventType";
@@ -51,6 +52,246 @@ const TOPIC_OPTIONS = [
 
 export type Topic = (typeof TOPIC_OPTIONS)[number]["value"];
 
+const properties = [
+  // eslint-disable-next-line n8n-nodes-base/node-param-default-missing
+  {
+    displayName: "Trigger On",
+    name: "topic",
+    type: "options",
+    default: "contact_created" satisfies WebhookEventType,
+    options: [...TOPIC_OPTIONS],
+  },
+
+  {
+    displayName: "Filter by Channel",
+    name: "channelIds",
+    type: "fixedCollection",
+    default: { values: [] },
+    placeholder: "Add Channel",
+    description:
+      "Only listen for inbound messages, outbound messages, failed messages or conversation status changes on specified channels",
+    typeOptions: {
+      multipleValues: true,
+    },
+    options: [
+      {
+        displayName: "Values",
+        name: "values",
+        values: [
+          {
+            displayName: "Channel",
+            name: "id",
+            type: "resourceLocator",
+            default: { mode: "list" },
+            description: "A message channel",
+            hint: "Only applicable for inbound message, outbound message, failed message or conversation status change events",
+            modes: [
+              {
+                displayName: "ID",
+                name: "id",
+                type: "string",
+                hint: "Enter an ID",
+              },
+              {
+                displayName: "List",
+                name: "list",
+                type: "list",
+                typeOptions: {
+                  searchListMethod:
+                    "messageChannelSearch" satisfies SearchFunction,
+                  searchable: false,
+                  searchFilterRequired: false,
+                },
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    displayName: "Filter by Inbox",
+    name: "inboxIds",
+    type: "fixedCollection",
+    default: { values: [] },
+    placeholder: "Add Channel",
+    description:
+      "Only listen for inbound messages, outbound messages, failed messages or conversation status changes on specified inboxes",
+    typeOptions: {
+      multipleValues: true,
+    },
+    options: [
+      {
+        displayName: "Values",
+        name: "values",
+        values: [
+          {
+            displayName: "Inbox",
+            name: "id",
+            type: "resourceLocator",
+            default: { mode: "list" },
+            description: "An inbox",
+            hint: "Only applicable for inbound message, outbound message, failed message or conversation status change events",
+            modes: [
+              {
+                displayName: "ID",
+                name: "id",
+                type: "string",
+                hint: "Enter an ID",
+              },
+              {
+                displayName: "List",
+                name: "list",
+                type: "list",
+                typeOptions: {
+                  searchListMethod: "inboxSearch" satisfies SearchFunction,
+                  searchable: false,
+                  searchFilterRequired: false,
+                },
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    displayName: "Filter by Custom Attribute",
+    name: "customAttributeIds",
+    type: "fixedCollection",
+    default: { values: [] },
+    placeholder: "Add Custom Attribute",
+    description:
+      "Only listen for updated contacts based on the changed custom attributes",
+    typeOptions: {
+      multipleValues: true,
+    },
+    options: [
+      {
+        displayName: "Values",
+        name: "values",
+        values: [
+          {
+            displayName: "Custom Attribute",
+            name: "id",
+            type: "resourceLocator",
+            default: { mode: "list" },
+            description: "A custom attribute",
+            hint: "Only applicable for contact updated events",
+            modes: [
+              {
+                displayName: "ID",
+                name: "id",
+                type: "string",
+                hint: "Enter an ID",
+              },
+              {
+                displayName: "List",
+                name: "list",
+                type: "list",
+                typeOptions: {
+                  searchListMethod:
+                    "customAttributeSearch" satisfies SearchFunction,
+                  searchable: false,
+                  searchFilterRequired: false,
+                },
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    displayName: "Filter by Built-in Attribute",
+    name: "builtinAttributes",
+    type: "fixedCollection",
+    default: { values: [] },
+    placeholder: "Add Built-in Attribute",
+    description:
+      "Only listen for updated contacts based on the changed custom attributes",
+    typeOptions: {
+      multipleValues: true,
+    },
+    options: [
+      {
+        displayName: "Values",
+        name: "values",
+        values: [
+          {
+            displayName: "Built-in Attribute",
+            name: "id",
+            type: "options",
+            // eslint-disable-next-line n8n-nodes-base/node-param-default-wrong-for-options
+            default: "",
+            hint: "Only applicable for contact updated events",
+            options: [
+              {
+                name: "Fist Name",
+                value: "first_name" satisfies ContactWriteDefaultAttributeField,
+              },
+              {
+                name: "Last Name",
+                value: "last_name" satisfies ContactWriteDefaultAttributeField,
+              },
+              {
+                name: "Gender",
+                value: "gender" satisfies ContactWriteDefaultAttributeField,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    displayName: "Filter by Conversation Status",
+    name: "conversationStatus",
+    type: "fixedCollection",
+    default: { values: [] },
+    placeholder: "Add Conversation Status",
+    description:
+      "Only listen for conversation status changes based on the status they changed to",
+    typeOptions: {
+      multipleValues: true,
+    },
+    options: [
+      {
+        displayName: "Values",
+        name: "values",
+        values: [
+          {
+            displayName: "Conversation Status",
+            name: "id",
+            type: "options",
+            // eslint-disable-next-line n8n-nodes-base/node-param-default-wrong-for-options
+            default: "",
+            hint: "Only applicable for conversation status changed events",
+            options: [
+              {
+                name: "Done",
+                value: "done" satisfies ConversationStatus,
+              },
+              {
+                name: "Open",
+                value: "open" satisfies ConversationStatus,
+              },
+              {
+                name: "Snoozed",
+                value: "snoozed" satisfies ConversationStatus,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+] as const satisfies INodeProperties[];
+
 export class SuperchatTrigger implements INodeType {
   methods = {
     listSearch: LIST_SEARCH_METHODS,
@@ -84,255 +325,17 @@ export class SuperchatTrigger implements INodeType {
         path: "webhook",
       },
     ],
-    properties: [
-      // eslint-disable-next-line n8n-nodes-base/node-param-default-missing
-      {
-        displayName: "Trigger On",
-        name: "topic",
-        type: "options",
-        default: "contact_created" satisfies WebhookEventType,
-        options: [...TOPIC_OPTIONS],
-      },
-
-      {
-        displayName: "Filter by Channel",
-        name: "channelIds",
-        type: "fixedCollection",
-        default: { values: [] },
-        placeholder: "Add Channel",
-        description:
-          "Only listen for inbound messages, outbound messages, failed messages or conversation status changes on specified channels",
-        typeOptions: {
-          multipleValues: true,
-        },
-        options: [
-          {
-            displayName: "Values",
-            name: "values",
-            values: [
-              {
-                displayName: "Channel",
-                name: "id",
-                type: "resourceLocator",
-                default: { mode: "list" },
-                description: "A message channel",
-                hint: "Only applicable for inbound message, outbound message, failed message or conversation status change events",
-                modes: [
-                  {
-                    displayName: "ID",
-                    name: "id",
-                    type: "string",
-                    hint: "Enter an ID",
-                  },
-                  {
-                    displayName: "List",
-                    name: "list",
-                    type: "list",
-                    typeOptions: {
-                      searchListMethod:
-                        "messageChannelSearch" satisfies SearchFunction,
-                      searchable: false,
-                      searchFilterRequired: false,
-                    },
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-
-      {
-        displayName: "Filter by Inbox",
-        name: "inboxIds",
-        type: "fixedCollection",
-        default: { values: [] },
-        placeholder: "Add Channel",
-        description:
-          "Only listen for inbound messages, outbound messages, failed messages or conversation status changes on specified inboxes",
-        typeOptions: {
-          multipleValues: true,
-        },
-        options: [
-          {
-            displayName: "Values",
-            name: "values",
-            values: [
-              {
-                displayName: "Inbox",
-                name: "id",
-                type: "resourceLocator",
-                default: { mode: "list" },
-                description: "An inbox",
-                hint: "Only applicable for inbound message, outbound message, failed message or conversation status change events",
-                modes: [
-                  {
-                    displayName: "ID",
-                    name: "id",
-                    type: "string",
-                    hint: "Enter an ID",
-                  },
-                  {
-                    displayName: "List",
-                    name: "list",
-                    type: "list",
-                    typeOptions: {
-                      searchListMethod: "inboxSearch" satisfies SearchFunction,
-                      searchable: false,
-                      searchFilterRequired: false,
-                    },
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-
-      {
-        displayName: "Filter by Custom Attribute",
-        name: "customAttributeIds",
-        type: "fixedCollection",
-        default: { values: [] },
-        placeholder: "Add Custom Attribute",
-        description:
-          "Only listen for updated contacts based on the changed custom attributes",
-        typeOptions: {
-          multipleValues: true,
-        },
-        options: [
-          {
-            displayName: "Values",
-            name: "values",
-            values: [
-              {
-                displayName: "Custom Attribute",
-                name: "id",
-                type: "resourceLocator",
-                default: { mode: "list" },
-                description: "A custom attribute",
-                hint: "Only applicable for contact updated events",
-                modes: [
-                  {
-                    displayName: "ID",
-                    name: "id",
-                    type: "string",
-                    hint: "Enter an ID",
-                  },
-                  {
-                    displayName: "List",
-                    name: "list",
-                    type: "list",
-                    typeOptions: {
-                      searchListMethod:
-                        "customAttributeSearch" satisfies SearchFunction,
-                      searchable: false,
-                      searchFilterRequired: false,
-                    },
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-
-      {
-        displayName: "Filter by Built-in Attribute",
-        name: "builtinAttributes",
-        type: "fixedCollection",
-        default: { values: [] },
-        placeholder: "Add Built-in Attribute",
-        description:
-          "Only listen for updated contacts based on the changed custom attributes",
-        typeOptions: {
-          multipleValues: true,
-        },
-        options: [
-          {
-            displayName: "Values",
-            name: "values",
-            values: [
-              {
-                displayName: "Built-in Attribute",
-                name: "id",
-                type: "options",
-                // eslint-disable-next-line n8n-nodes-base/node-param-default-wrong-for-options
-                default: "",
-                hint: "Only applicable for contact updated events",
-                options: [
-                  {
-                    name: "Fist Name",
-                    value:
-                      "first_name" satisfies ContactWriteDefaultAttributeField,
-                  },
-                  {
-                    name: "Last Name",
-                    value:
-                      "last_name" satisfies ContactWriteDefaultAttributeField,
-                  },
-                  {
-                    name: "Gender",
-                    value: "gender" satisfies ContactWriteDefaultAttributeField,
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-
-      {
-        displayName: "Filter by Conversation Status",
-        name: "conversationStatus",
-        type: "fixedCollection",
-        default: { values: [] },
-        placeholder: "Add Conversation Status",
-        description:
-          "Only listen for conversation status changes based on the status they changed to",
-        typeOptions: {
-          multipleValues: true,
-        },
-        options: [
-          {
-            displayName: "Values",
-            name: "values",
-            values: [
-              {
-                displayName: "Conversation Status",
-                name: "id",
-                type: "options",
-                // eslint-disable-next-line n8n-nodes-base/node-param-default-wrong-for-options
-                default: "",
-                hint: "Only applicable for conversation status changed events",
-                options: [
-                  {
-                    name: "Done",
-                    value: "done" satisfies ConversationStatus,
-                  },
-                  {
-                    name: "Open",
-                    value: "open" satisfies ConversationStatus,
-                  },
-                  {
-                    name: "Snoozed",
-                    value: "snoozed" satisfies ConversationStatus,
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    ],
+    properties: properties,
   };
 
   webhookMethods = {
     default: {
       async checkExists(this: IHookFunctions): Promise<boolean> {
+        const getNodeParameter = createTypesafeParameterGetter(properties);
+
         const webhookUrl = this.getNodeWebhookUrl("default")!!;
         const webhookData = this.getWorkflowStaticData("node");
-        const topic = this.getNodeParameter("topic") as WebhookEventType;
+        const topic = getNodeParameter(this, "topic");
 
         const webhookId = webhookData.webhookId;
 
@@ -358,63 +361,50 @@ export class SuperchatTrigger implements INodeType {
         return false;
       },
       async create(this: IHookFunctions): Promise<boolean> {
+        const getNodeParameter = createTypesafeParameterGetter(properties);
+
         const webhookData = this.getWorkflowStaticData("node");
-        const topic = this.getNodeParameter("topic") as Topic;
+        const topic = getNodeParameter(this, "topic");
         const webhookUrl = this.getNodeWebhookUrl("default")!!;
 
         const events = match(topic)
           .with("conversation_status_changed", (): WebhookEventWriteDTO[] => {
-            const conversationStatusParamValue = this.getNodeParameter(
-              "conversationStatus",
-              ""
-            ) as {
-              values: {
-                id: string;
-              }[];
-            };
+            const conversationStatusParamValue = getNodeParameter(
+              this,
+              "conversationStatus"
+            );
 
-            const channelIdsParamValue = this.getNodeParameter(
-              "channelIds",
-              ""
-            ) as {
-              values: {
-                id: INodeParameterResourceLocator;
-              }[];
-            };
+            const channelIdsParamValue = getNodeParameter(this, "channelIds");
 
-            const inboxIdsParamValue = this.getNodeParameter(
-              "inboxIds",
-              ""
-            ) as {
-              values: { id: INodeParameterResourceLocator }[];
-            };
+            const inboxIdsParamValue = getNodeParameter(this, "inboxIds");
 
-            const conversationStatuses =
-              conversationStatusParamValue.values.flatMap(({ id: value }) => {
-                if (typeof value !== "string") {
-                  return [];
-                }
-
-                if (value === ("open" satisfies ConversationStatus)) {
-                  return ["open" as const];
-                }
-
-                if (value === ("done" satisfies ConversationStatus)) {
-                  return ["done" as const];
-                }
-
-                if (value === ("snoozed" satisfies ConversationStatus)) {
-                  return ["snoozed" as const];
-                }
-
+            const conversationStatuses = (
+              conversationStatusParamValue.values ?? []
+            ).flatMap(({ id: value }) => {
+              if (typeof value !== "string") {
                 return [];
-              });
+              }
 
-            const channelIds = channelIdsParamValue.values.flatMap(
+              if (value === ("open" satisfies ConversationStatus)) {
+                return ["open" as const];
+              }
+
+              if (value === ("done" satisfies ConversationStatus)) {
+                return ["done" as const];
+              }
+
+              if (value === ("snoozed" satisfies ConversationStatus)) {
+                return ["snoozed" as const];
+              }
+
+              return [];
+            });
+
+            const channelIds = (channelIdsParamValue.values ?? []).flatMap(
               ({ id: { value } }) => (typeof value === "string" ? [value] : [])
             );
 
-            const inboxIds = inboxIdsParamValue.values.flatMap(
+            const inboxIds = (inboxIdsParamValue.values ?? []).flatMap(
               ({ id: { value } }) => (typeof value === "string" ? [value] : [])
             );
 
@@ -470,57 +460,52 @@ export class SuperchatTrigger implements INodeType {
                   })
                 )
                 .with("contact_updated", (type): WebhookEventWriteDTO => {
-                  const customAttributeIdsParamValue = this.getNodeParameter(
-                    "customAttributeIds",
-                    ""
-                  ) as {
-                    values: { id: INodeParameterResourceLocator }[];
-                  };
+                  const customAttributeIdsParamValue = getNodeParameter(
+                    this,
+                    "customAttributeIds"
+                  );
 
-                  const builtinAttributesParamValue = this.getNodeParameter(
-                    "builtinAttributes",
-                    ""
-                  ) as {
-                    values: { id: string }[];
-                  };
+                  const builtinAttributesParamValue = getNodeParameter(
+                    this,
+                    "builtinAttributes"
+                  );
 
-                  const builtinAttributes =
-                    builtinAttributesParamValue.values.flatMap(
-                      ({ id: value }) => {
-                        if (typeof value !== "string") {
-                          return [];
-                        }
+                  const builtinAttributes = (
+                    builtinAttributesParamValue.values ?? []
+                  ).flatMap(({ id: value }) => {
+                    if (typeof value !== "string") {
+                      return [];
+                    }
 
-                        if (
-                          value ===
-                          ("first_name" satisfies ContactWriteDefaultAttributeField)
-                        ) {
-                          return ["first_name" as const];
-                        }
+                    if (
+                      value ===
+                      ("first_name" satisfies ContactWriteDefaultAttributeField)
+                    ) {
+                      return ["first_name" as const];
+                    }
 
-                        if (
-                          value ===
-                          ("last_name" satisfies ContactWriteDefaultAttributeField)
-                        ) {
-                          return ["last_name" as const];
-                        }
+                    if (
+                      value ===
+                      ("last_name" satisfies ContactWriteDefaultAttributeField)
+                    ) {
+                      return ["last_name" as const];
+                    }
 
-                        if (
-                          value ===
-                          ("gender" satisfies ContactWriteDefaultAttributeField)
-                        ) {
-                          return ["gender" as const];
-                        }
+                    if (
+                      value ===
+                      ("gender" satisfies ContactWriteDefaultAttributeField)
+                    ) {
+                      return ["gender" as const];
+                    }
 
-                        return [];
-                      }
-                    );
+                    return [];
+                  });
 
-                  const customAttributeIds =
-                    customAttributeIdsParamValue.values.flatMap(
-                      ({ id: { value } }) =>
-                        typeof value === "string" ? [value] : []
-                    );
+                  const customAttributeIds = (
+                    customAttributeIdsParamValue.values ?? []
+                  ).flatMap(({ id: { value } }) =>
+                    typeof value === "string" ? [value] : []
+                  );
 
                   const filters: WebhookEventFilterWriteDTO[] = [];
 
@@ -548,28 +533,23 @@ export class SuperchatTrigger implements INodeType {
                   "message_outbound",
                   "message_failed",
                   (type): WebhookEventWriteDTO => {
-                    const channelIdsParamValue = this.getNodeParameter(
-                      "channelIds",
-                      ""
-                    ) as {
-                      values: {
-                        id: INodeParameterResourceLocator;
-                      }[];
-                    };
-
-                    const inboxIdsParamValue = this.getNodeParameter(
-                      "inboxIds",
-                      ""
-                    ) as {
-                      values: { id: INodeParameterResourceLocator }[];
-                    };
-
-                    const channelIds = channelIdsParamValue.values.flatMap(
-                      ({ id: { value } }) =>
-                        typeof value === "string" ? [value] : []
+                    const channelIdsParamValue = getNodeParameter(
+                      this,
+                      "channelIds"
                     );
 
-                    const inboxIds = inboxIdsParamValue.values.flatMap(
+                    const inboxIdsParamValue = getNodeParameter(
+                      this,
+                      "inboxIds"
+                    );
+
+                    const channelIds = (
+                      channelIdsParamValue.values ?? []
+                    ).flatMap(({ id: { value } }) =>
+                      typeof value === "string" ? [value] : []
+                    );
+
+                    const inboxIds = (inboxIdsParamValue.values ?? []).flatMap(
                       ({ id: { value } }) =>
                         typeof value === "string" ? [value] : []
                     );

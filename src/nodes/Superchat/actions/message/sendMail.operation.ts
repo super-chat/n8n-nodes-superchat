@@ -1,17 +1,17 @@
 import {
   type IExecuteFunctions,
   type INodeExecutionData,
-  INodeParameterResourceLocator,
   type INodeProperties,
   updateDisplayOptions,
 } from "n8n-workflow";
 import { SearchFunction } from "../../../../definitions";
+import { createTypesafeParameterGetter } from "../../../../magic";
 import { PASendMessageDTO } from "../../../../types/PASendMessageDTO";
 import { superchatJsonApiRequest } from "../../GenericFunctions";
 import { ResourceKey } from "../../Superchat.node";
 import { MessageOperationKey } from "./Message.resource";
 
-const properties: INodeProperties[] = [
+const properties = [
   {
     displayName: "Sender Name",
     name: "senderName",
@@ -133,7 +133,7 @@ const properties: INodeProperties[] = [
       },
     ],
   },
-];
+] as const satisfies INodeProperties[];
 
 export const description = updateDisplayOptions(
   {
@@ -149,28 +149,22 @@ export async function execute(
   this: IExecuteFunctions,
   i: number
 ): Promise<INodeExecutionData[]> {
+  const getNodeParameter = createTypesafeParameterGetter(properties);
+
   const returnData: INodeExecutionData[] = [];
 
-  const senderName = this.getNodeParameter("senderName", i) as string;
-  const identifier = this.getNodeParameter("identifier", i) as string;
-  const channelId = (
-    this.getNodeParameter("channelId", i) as INodeParameterResourceLocator
-  ).value as string;
-  const replyToMessageId = (
-    this.getNodeParameter(
-      "replyToMessageId",
-      i
-    ) as INodeParameterResourceLocator
-  ).value as string;
-  const html = this.getNodeParameter("html", i) as string;
-  const text = this.getNodeParameter("text", i) as string;
-  const subject = this.getNodeParameter("subject", i) as string;
-  const fileIdsParamValue = this.getNodeParameter("fileIds", i) as {
-    values: { id: INodeParameterResourceLocator }[];
-  };
+  const senderName = getNodeParameter(this, "senderName", i);
+  const identifier = getNodeParameter(this, "identifier", i);
+  const channelId = getNodeParameter(this, "channelId", i).value as string;
+  const replyToMessageId = getNodeParameter(this, "replyToMessageId", i)
+    .value as string;
+  const html = getNodeParameter(this, "html", i);
+  const text = getNodeParameter(this, "text", i);
+  const subject = getNodeParameter(this, "subject", i);
+  const fileIdsParamValue = getNodeParameter(this, "fileIds", i);
 
-  const fileIds = fileIdsParamValue.values.flatMap(({ id: { value } }) =>
-    typeof value === "string" ? [value] : []
+  const fileIds = (fileIdsParamValue.values ?? []).flatMap(
+    ({ id: { value } }) => (typeof value === "string" ? [value] : [])
   );
 
   const body = {

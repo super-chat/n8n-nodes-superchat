@@ -4,12 +4,13 @@ import {
   type INodeProperties,
   updateDisplayOptions,
 } from "n8n-workflow";
+import { createTypesafeParameterGetter } from "../../../../magic";
 import { PACreateNoteDTO } from "../../../../types/PACreateNoteDTO";
 import { superchatJsonApiRequest } from "../../GenericFunctions";
 import { ResourceKey } from "../../Superchat.node";
 import { NoteOperationKey } from "./Note.resource";
 
-const properties: INodeProperties[] = [
+const properties = [
   {
     displayName: "Conversation ID",
     name: "conversationId",
@@ -26,7 +27,7 @@ const properties: INodeProperties[] = [
     description: "The content of the note",
     required: true,
   },
-];
+] as const satisfies INodeProperties[];
 
 export const description = updateDisplayOptions(
   {
@@ -42,10 +43,12 @@ export async function execute(
   this: IExecuteFunctions,
   i: number
 ): Promise<INodeExecutionData[]> {
+  const getNodeParameter = createTypesafeParameterGetter(properties);
+
   const returnData: INodeExecutionData[] = [];
 
-  const conversationId = this.getNodeParameter("conversationId", i) as string;
-  const content = this.getNodeParameter("content", i) as string;
+  const conversationId = getNodeParameter(this, "conversationId", i);
+  const content = getNodeParameter(this, "content", i);
 
   const body = {
     content,

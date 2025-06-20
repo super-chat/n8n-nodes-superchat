@@ -4,11 +4,12 @@ import {
   type INodeProperties,
   updateDisplayOptions,
 } from "n8n-workflow";
+import { createTypesafeParameterGetter } from "../../../../magic";
 import { superchatFormDataApiRequest } from "../../GenericFunctions";
 import { ResourceKey } from "../../Superchat.node";
 import { FileOperationKey } from "./File.resource";
 
-const properties: INodeProperties[] = [
+const properties = [
   {
     displayName: "Input Data Field Name",
     name: "binaryPropertyName",
@@ -18,7 +19,7 @@ const properties: INodeProperties[] = [
     description:
       "The name of the input field containing the binary file data to be uploaded",
   },
-];
+] as const satisfies INodeProperties[];
 
 export const description = updateDisplayOptions(
   {
@@ -34,9 +35,11 @@ export async function execute(
   this: IExecuteFunctions,
   i: number
 ): Promise<INodeExecutionData[]> {
+  const getNodeParameter = createTypesafeParameterGetter(properties);
+
   const returnData: INodeExecutionData[] = [];
 
-  const binaryPropertyName = this.getNodeParameter("binaryPropertyName", i);
+  const binaryPropertyName = getNodeParameter(this, "binaryPropertyName", i);
   const { fileName, mimeType } = this.helpers.assertBinaryData(
     i,
     binaryPropertyName

@@ -4,13 +4,14 @@ import {
   type INodeProperties,
   updateDisplayOptions,
 } from "n8n-workflow";
+import { createTypesafeParameterGetter } from "../../../../magic";
 import { ConversationStatus } from "../../../../types/ConversationStatus";
 import { PAUpdateConversationDTO } from "../../../../types/PAUpdateConversationDTO";
 import { superchatJsonApiRequest } from "../../GenericFunctions";
 import { ResourceKey } from "../../Superchat.node";
 import { ConversationOperationKey } from "./Conversation.resource";
 
-const properties: INodeProperties[] = [
+const properties = [
   {
     displayName: "ID",
     name: "id",
@@ -42,7 +43,7 @@ const properties: INodeProperties[] = [
     description:
       "The date and time until the conversation is snoozed. Only required if status is 'snoozed'.",
   },
-];
+] as const satisfies INodeProperties[];
 
 export const description = updateDisplayOptions(
   {
@@ -58,11 +59,13 @@ export async function execute(
   this: IExecuteFunctions,
   i: number
 ): Promise<INodeExecutionData[]> {
+  const getNodeParameter = createTypesafeParameterGetter(properties);
+
   const returnData: INodeExecutionData[] = [];
 
-  const id = this.getNodeParameter("id", i) as string;
-  const status = this.getNodeParameter("status", i) as ConversationStatus;
-  const snoozedUntil = this.getNodeParameter("snoozedUntil", i) as string;
+  const id = getNodeParameter(this, "id", i);
+  const status = getNodeParameter(this, "status", i);
+  const snoozedUntil = getNodeParameter(this, "snoozedUntil", i);
 
   const body = {
     status,

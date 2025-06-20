@@ -1,17 +1,17 @@
 import {
   type IExecuteFunctions,
   type INodeExecutionData,
-  INodeParameterResourceLocator,
   type INodeProperties,
   updateDisplayOptions,
 } from "n8n-workflow";
 import { SearchFunction } from "../../../../definitions";
+import { createTypesafeParameterGetter } from "../../../../magic";
 import { PAUpdateConversationDTO } from "../../../../types/PAUpdateConversationDTO";
 import { superchatJsonApiRequest } from "../../GenericFunctions";
 import { ResourceKey } from "../../Superchat.node";
 import { ConversationOperationKey } from "./Conversation.resource";
 
-const properties: INodeProperties[] = [
+const properties = [
   {
     displayName: "ID",
     name: "id",
@@ -63,7 +63,7 @@ const properties: INodeProperties[] = [
       },
     ],
   },
-];
+] as const satisfies INodeProperties[];
 
 export const description = updateDisplayOptions(
   {
@@ -79,15 +79,15 @@ export async function execute(
   this: IExecuteFunctions,
   i: number
 ): Promise<INodeExecutionData[]> {
+  const getNodeParameter = createTypesafeParameterGetter(properties);
+
   const returnData: INodeExecutionData[] = [];
 
-  const id = this.getNodeParameter("id", i) as string;
-  const labelIdsParamValue = this.getNodeParameter("labelIds", i) as {
-    values: { id: INodeParameterResourceLocator }[];
-  };
+  const id = getNodeParameter(this, "id", i);
+  const labelIdsParamValue = getNodeParameter(this, "labelIds", i);
 
-  const labelIds = labelIdsParamValue.values.flatMap(({ id: { value } }) =>
-    typeof value === "string" ? [value] : []
+  const labelIds = (labelIdsParamValue.values ?? []).flatMap(
+    ({ id: { value } }) => (typeof value === "string" ? [value] : [])
   );
 
   const body = {

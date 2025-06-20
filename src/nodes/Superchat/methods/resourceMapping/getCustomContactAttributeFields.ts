@@ -117,6 +117,7 @@ export async function getCustomAttributesNodeParameter(
 
   const customAttributes = customAttributeRes.results;
 
+  // TODO: Move this into the node itself and pass it as an argument to the function
   const customAttributesResourceMapperValue = this.getNodeParameter(
     "customAttributes",
     itemIndex

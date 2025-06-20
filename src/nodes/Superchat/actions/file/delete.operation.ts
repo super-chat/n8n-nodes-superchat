@@ -4,11 +4,12 @@ import {
   type INodeProperties,
   updateDisplayOptions,
 } from "n8n-workflow";
+import { createTypesafeParameterGetter } from "../../../../magic";
 import { superchatJsonApiRequest } from "../../GenericFunctions";
 import { ResourceKey } from "../../Superchat.node";
 import { FileOperationKey } from "./File.resource";
 
-const properties: INodeProperties[] = [
+const properties = [
   {
     displayName: "ID",
     name: "id",
@@ -17,7 +18,7 @@ const properties: INodeProperties[] = [
     required: true,
     description: "ID of the file to delete",
   },
-];
+] as const satisfies INodeProperties[];
 
 export const description = updateDisplayOptions(
   {
@@ -33,9 +34,11 @@ export async function execute(
   this: IExecuteFunctions,
   i: number
 ): Promise<INodeExecutionData[]> {
+  const getNodeParameter = createTypesafeParameterGetter(properties);
+
   const returnData: INodeExecutionData[] = [];
 
-  const id = this.getNodeParameter("id", i) as string;
+  const id = getNodeParameter(this, "id", i);
 
   const responseData = await superchatJsonApiRequest.call(
     this,

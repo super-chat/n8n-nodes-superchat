@@ -4,6 +4,7 @@ import {
   type INodeProperties,
   updateDisplayOptions,
 } from "n8n-workflow";
+import { createTypesafeParameterGetter } from "../../../../magic";
 import { ContactHandleType } from "../../../../types/ContactHandleType";
 import { Gender } from "../../../../types/Gender";
 import { PAUpdateContactDTO } from "../../../../types/PAUpdateContactDTO";
@@ -13,7 +14,7 @@ import { getCustomAttributesNodeParameter } from "../../methods/resourceMapping/
 import { ResourceKey, ResourceMappingFunction } from "../../Superchat.node";
 import { ContactOperationKey } from "./Contact.resource";
 
-const properties: INodeProperties[] = [
+const properties = [
   {
     displayName: "ID",
     name: "id",
@@ -126,7 +127,7 @@ const properties: INodeProperties[] = [
       },
     },
   },
-];
+] as const satisfies INodeProperties[];
 
 export const description = updateDisplayOptions(
   {
@@ -142,18 +143,16 @@ export async function execute(
   this: IExecuteFunctions,
   i: number
 ): Promise<INodeExecutionData[]> {
+  const getNodeParameter = createTypesafeParameterGetter(properties);
+
   const returnData: INodeExecutionData[] = [];
 
-  const id = this.getNodeParameter("id", i) as string;
-  const firstName = this.getNodeParameter("firstName", i) as string;
-  const lastName = this.getNodeParameter("lastName", i) as string;
-  const gender = this.getNodeParameter("gender", i) as Gender | "noop";
-  const emails = this.getNodeParameter("emails", i) as {
-    values: { value: string }[];
-  };
-  const phoneNumbers = this.getNodeParameter("phoneNumbers", i) as {
-    values: { value: string }[];
-  };
+  const id = getNodeParameter(this, "id", i);
+  const firstName = getNodeParameter(this, "firstName", i);
+  const lastName = getNodeParameter(this, "lastName", i);
+  const gender = getNodeParameter(this, "gender", i);
+  const emails = getNodeParameter(this, "emails", i);
+  const phoneNumbers = getNodeParameter(this, "phoneNumbers", i);
 
   const customAttributes = await getCustomAttributesNodeParameter.call(
     this,
@@ -162,14 +161,14 @@ export async function execute(
   );
 
   const handles = [
-    ...emails.values.map(
+    ...(emails.values ?? []).map(
       ({ value }) =>
         ({
           type: "mail" satisfies ContactHandleType,
           value,
         }) satisfies PAWriteContactHandleDTO
     ),
-    ...phoneNumbers.values.map(
+    ...(phoneNumbers.values ?? []).map(
       ({ value }) =>
         ({
           type: "phone" satisfies ContactHandleType,

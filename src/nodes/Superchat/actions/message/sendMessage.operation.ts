@@ -6,12 +6,13 @@ import {
   updateDisplayOptions,
 } from "n8n-workflow";
 import { SearchFunction } from "../../../../definitions";
+import { createTypesafeParameterGetter } from "../../../../magic";
 import { PASendMessageDTO } from "../../../../types/PASendMessageDTO";
 import { superchatJsonApiRequest } from "../../GenericFunctions";
 import { ResourceKey } from "../../Superchat.node";
 import { MessageOperationKey } from "./Message.resource";
 
-const properties: INodeProperties[] = [
+const properties = [
   {
     displayName: "Sender Name",
     name: "senderName",
@@ -126,7 +127,7 @@ const properties: INodeProperties[] = [
       },
     ],
   },
-];
+] as const satisfies INodeProperties[];
 
 export const description = updateDisplayOptions(
   {
@@ -142,26 +143,17 @@ export async function execute(
   this: IExecuteFunctions,
   i: number
 ): Promise<INodeExecutionData[]> {
+  const getNodeParameter = createTypesafeParameterGetter(properties);
+
   const returnData: INodeExecutionData[] = [];
 
-  const senderName = this.getNodeParameter("senderName", i) as string;
-  const identifier = this.getNodeParameter("identifier", i) as string;
-  const channelId = (
-    this.getNodeParameter("channelId", i) as INodeParameterResourceLocator
-  ).value as string;
-  const replyToMessageId = (
-    this.getNodeParameter(
-      "replyToMessageId",
-      i
-    ) as INodeParameterResourceLocator
-  ).value as string;
-  const content = this.getNodeParameter("content", i) as
-    | {
-        text: { value: string };
-      }
-    | {
-        media: { id: INodeParameterResourceLocator };
-      };
+  const senderName = getNodeParameter(this, "senderName", i);
+  const identifier = getNodeParameter(this, "identifier", i);
+  const channelId = getNodeParameter(this, "channelId", i).value as string;
+  const replyToMessageId = getNodeParameter(this, "replyToMessageId", i)
+    .value as string;
+
+  const content = getNodeParameter(this, "content", i);
 
   const body = {
     to: [{ identifier }],
@@ -173,11 +165,13 @@ export async function execute(
       "text" in content
         ? {
             type: "text",
-            body: content.text.value,
+            body: (content.text?.value as string | undefined) ?? "",
           }
         : {
             type: "media",
-            file_id: content.media.id.value as string,
+            file_id:
+              ((content.media?.id as INodeParameterResourceLocator | undefined)
+                ?.value as string | undefined) ?? "",
           },
     in_reply_to: replyToMessageId === "" ? undefined : replyToMessageId,
   } satisfies PASendMessageDTO;
