@@ -27,6 +27,7 @@ const properties = [
     default: "",
     description: "Should be either a phone number or a Contact ID",
     required: true,
+    placeholder: "e.g. +4915212345678",
   },
   {
     displayName: "Channel ID",

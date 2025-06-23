@@ -19,6 +19,7 @@ const properties = [
     default: "Sent from n8n",
     description: "This value will be visible beneath the message in Superchat",
     required: true,
+    placeholder: "e.g. Sent from n8n",
   },
   {
     displayName: "To (Email Address or Contact ID)",
@@ -27,6 +28,7 @@ const properties = [
     default: "",
     description: "Should be either an email address, or a Contact ID",
     required: true,
+    placeholder: "e.g. nathan@example.com",
   },
   {
     displayName: "Channel ID",

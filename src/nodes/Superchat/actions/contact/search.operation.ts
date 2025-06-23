@@ -45,6 +45,7 @@ const properties = [
     default: "",
     required: true,
     description: "Value to search for",
+    placeholder: "e.g. nathan@example.com",
   },
 ] as const satisfies INodeProperties[];
 

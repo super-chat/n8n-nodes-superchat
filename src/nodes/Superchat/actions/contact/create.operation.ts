@@ -21,6 +21,7 @@ const properties = [
     type: "string",
     default: "",
     description: "The first name of the contact",
+    placeholder: "e.g. Nathan",
   },
   {
     displayName: "Last Name",
@@ -28,6 +29,7 @@ const properties = [
     type: "string",
     default: "",
     description: "The last name of the contact",
+    placeholder: "e.g. Smith",
   },
   // eslint-disable-next-line n8n-nodes-base/node-param-default-missing
   {
@@ -63,6 +65,7 @@ const properties = [
             type: "string",
             default: "",
             description: "An email address",
+            placeholder: "e.g. nathan@example.com",
           },
         ],
       },
@@ -89,6 +92,7 @@ const properties = [
             type: "string",
             default: "",
             description: "A phone number",
+            placeholder: "e.g. +4915212345678",
           },
         ],
       },

@@ -29,6 +29,7 @@ const properties = [
     description:
       "Should be either a phone number, email address, or a Contact ID",
     required: true,
+    placeholder: "e.g. nathan@example.com",
   },
   {
     displayName: "Channel ID",
