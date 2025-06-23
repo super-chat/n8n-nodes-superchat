@@ -41,10 +41,8 @@ export const description = updateDisplayOptions(
 export async function execute(
   this: IExecuteFunctions,
   i: number
-): Promise<INodeExecutionData[]> {
+): Promise<INodeExecutionData> {
   const getNodeParameter = createTypesafeParameterGetter(properties);
-
-  const returnData: INodeExecutionData[] = [];
 
   const conversationId = getNodeParameter(this, "conversationId", i);
   const noteId = getNodeParameter(this, "noteId", i);
@@ -56,7 +54,5 @@ export async function execute(
     {}
   );
 
-  returnData.push(responseData);
-
-  return returnData;
+  return responseData;
 }

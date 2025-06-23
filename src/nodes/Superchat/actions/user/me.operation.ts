@@ -23,16 +23,13 @@ export const description = updateDisplayOptions(
 export async function execute(
   this: IExecuteFunctions,
   i: number
-): Promise<INodeExecutionData[]> {
-  const returnData: INodeExecutionData[] = [];
-
+): Promise<INodeExecutionData> {
   const responseData = await superchatJsonApiRequest.call(
     this,
     "GET",
     "/me",
     {}
   );
-  returnData.push(responseData);
 
-  return returnData;
+  return responseData;
 }

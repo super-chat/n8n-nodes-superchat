@@ -34,10 +34,8 @@ export const description = updateDisplayOptions(
 export async function execute(
   this: IExecuteFunctions,
   i: number
-): Promise<INodeExecutionData[]> {
+): Promise<INodeExecutionData> {
   const getNodeParameter = createTypesafeParameterGetter(properties);
-
-  const returnData: INodeExecutionData[] = [];
 
   const binaryPropertyName = getNodeParameter(this, "binaryPropertyName", i);
   const { fileName, mimeType } = this.helpers.assertBinaryData(
@@ -66,7 +64,5 @@ export async function execute(
     body
   );
 
-  returnData.push(responseData);
-
-  return returnData;
+  return responseData;
 }

@@ -42,10 +42,8 @@ export const description = updateDisplayOptions(
 export async function execute(
   this: IExecuteFunctions,
   i: number
-): Promise<INodeExecutionData[]> {
+): Promise<INodeExecutionData> {
   const getNodeParameter = createTypesafeParameterGetter(properties);
-
-  const returnData: INodeExecutionData[] = [];
 
   const conversationId = getNodeParameter(this, "conversationId", i);
   const content = getNodeParameter(this, "content", i);
@@ -60,7 +58,6 @@ export async function execute(
     `/conversations/${conversationId}/notes`,
     body
   );
-  returnData.push(responseData);
 
-  return returnData;
+  return responseData;
 }
