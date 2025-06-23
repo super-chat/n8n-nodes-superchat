@@ -5,10 +5,10 @@ declare var process: any;
 const SUPERCHAT_API_DOMAIN =
   process.env.SUPERCHAT_API_DOMAIN || "api.superchat.com";
 
-export default defineConfig({
+export default defineConfig((options) => ({
   entry: ["src/**/*.ts"],
   sourcemap: true,
-  clean: true,
+  clean: options.clean ?? false,
   target: "es2019",
   bundle: false,
   format: ["cjs"],
@@ -16,4 +16,4 @@ export default defineConfig({
   define: {
     "process.define.SUPERCHAT_API_DOMAIN": `"${SUPERCHAT_API_DOMAIN}"`,
   },
-});
+}));
