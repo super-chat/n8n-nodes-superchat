@@ -7,12 +7,12 @@ import * as sendWhatsAppTemplateOperation from "./sendWhatsAppTemplate.operation
 const MESSAGE_OPERATION_OPTIONS = [
   {
     value: "sendMessage",
-    name: "Send A Message",
+    name: "Send Message",
     action: "Send a message",
   },
   {
     value: "sendMail",
-    name: "Send An Email",
+    name: "Send Email",
     action: "Send an email",
   },
   {

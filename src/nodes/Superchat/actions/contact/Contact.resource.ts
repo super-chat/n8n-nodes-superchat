@@ -9,28 +9,28 @@ import * as updateOperation from "./update.operation";
 const CONTACT_OPERATION_OPTIONS = [
   {
     value: "search",
-    name: "Search For A Contact",
+    name: "Search For Contact",
     action: "Search for a contact",
   },
   {
     value: "delete",
-    name: "Delete A Contact",
+    name: "Delete Contact",
     action: "Delete a contact",
   },
   {
     value: "create",
-    name: "Create A Contact",
+    name: "Create Contact",
     action: "Create a new contact",
   },
   {
     value: "update",
-    name: "Update A Contact",
+    name: "Update Contact",
     action: "Update an existing contact",
   },
   {
     value: "listConversations",
-    name: "List Conversations",
-    action: "List all conversations of a contact",
+    name: "Get Many Conversations",
+    action: "Get many conversations of a contact",
   },
 ] as const;
 

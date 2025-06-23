@@ -7,17 +7,17 @@ import * as downloadOperation from "./download.operation";
 const FILE_OPERATION_OPTIONS = [
   {
     value: "create",
-    name: "Create A File",
+    name: "Create File",
     action: "Create a file",
   },
   {
     value: "delete",
-    name: "Delete A File",
+    name: "Delete File",
     action: "Delete a file",
   },
   {
     value: "download",
-    name: "Download A File",
+    name: "Download File",
     action: "Download a file",
   },
 ] as const;

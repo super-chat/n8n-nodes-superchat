@@ -9,7 +9,7 @@ import * as updateStatusOperation from "./updateStatus.operation";
 const CONVERSATION_OPERATION_OPTIONS = [
   {
     value: "get",
-    name: "Get A Conversation By ID",
+    name: "Get Conversation By ID",
     action: "Retrieve a conversation",
   },
   {
@@ -29,7 +29,7 @@ const CONVERSATION_OPERATION_OPTIONS = [
   },
   {
     value: "delete",
-    name: "Delete A Conversation",
+    name: "Delete Conversation",
     action: "Delete a conversation",
   },
 ] as const;

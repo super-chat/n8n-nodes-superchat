@@ -7,17 +7,17 @@ import * as getOperation from "./get.operation";
 const NOTE_OPERATION_OPTIONS = [
   {
     value: "create",
-    name: "Create A Conversation Note",
+    name: "Create Conversation Note",
     action: "Create a conversation note",
   },
   {
     value: "get",
-    name: "Get A Conversation Note By ID",
+    name: "Get Conversation Note By ID",
     action: "Retrieve a conversation note",
   },
   {
     value: "delete",
-    name: "Delete A Conversation Note",
+    name: "Delete Conversation Note",
     action: "Delete a conversation note",
   },
 ] as const;
