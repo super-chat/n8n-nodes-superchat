@@ -47,12 +47,12 @@ export async function execute(
   const conversationId = getNodeParameter(this, "conversationId", i);
   const noteId = getNodeParameter(this, "noteId", i);
 
-  const responseData = await superchatJsonApiRequest.call(
+  await superchatJsonApiRequest.call(
     this,
     "DELETE",
     `/conversations/${conversationId}/notes/${noteId}`,
     {}
   );
 
-  return responseData;
+  return { json: { deleted: true } };
 }

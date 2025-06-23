@@ -38,12 +38,7 @@ export async function execute(
 
   const id = getNodeParameter(this, "id", i);
 
-  const responseData = await superchatJsonApiRequest.call(
-    this,
-    "DELETE",
-    `/files/${id}`,
-    {}
-  );
+  await superchatJsonApiRequest.call(this, "DELETE", `/files/${id}`, {});
 
-  return responseData;
+  return { json: { deleted: true } };
 }

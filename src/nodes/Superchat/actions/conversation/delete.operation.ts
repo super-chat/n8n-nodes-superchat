@@ -38,12 +38,12 @@ export async function execute(
 
   const id = getNodeParameter(this, "id", i);
 
-  const responseData = await superchatJsonApiRequest.call(
+  await superchatJsonApiRequest.call(
     this,
     "DELETE",
     `/conversations/${id}`,
     {}
   );
 
-  return responseData;
+  return { json: { deleted: true } };
 }
