@@ -10,11 +10,19 @@ import {
 } from "n8n-workflow";
 import { BASE_URL, N8N_VERSION, NODE_VERSION } from "../../shared";
 
-const BASE_HEADERS = {
-  "X-Superchat-Platform": "n8n",
-  "X-Superchat-n8n-Version": N8N_VERSION,
-  "X-Superchat-n8n-Node-Version": NODE_VERSION,
-};
+function getBaseHeaders(
+  this: IHookFunctions | IExecuteFunctions | ILoadOptionsFunctions
+) {
+  return {
+    "X-Superchat-Platform": "n8n",
+    "X-Superchat-n8n-Version": N8N_VERSION,
+    "X-Superchat-n8n-Node-Version": NODE_VERSION,
+    "X-Superchat-n8n-Instance-Id": this.getInstanceId(),
+    "X-Superchat-n8n-Node-Id": this.getNode().id,
+    "X-Superchat-n8n-Execution-Id": this.getExecutionId(),
+    "X-Superchat-n8n-Workflow-Id": this.getWorkflow().id,
+  };
+}
 
 /**
  * Make an API request with a multipart/form-data body to Superchat
@@ -27,7 +35,7 @@ export async function superchatFormDataApiRequest(
 ): Promise<any> {
   const options: IRequestOptions = {
     headers: {
-      ...BASE_HEADERS,
+      ...getBaseHeaders.call(this),
       Accept: "application/json",
       "Content-Type": "multipart/form-data",
     },
@@ -71,7 +79,7 @@ export async function superchatJsonApiRequest(
 
   const options: IRequestOptions = {
     headers: {
-      ...BASE_HEADERS,
+      ...getBaseHeaders.call(this),
       Accept: "application/json",
     },
     method,
