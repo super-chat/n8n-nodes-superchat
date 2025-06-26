@@ -310,7 +310,7 @@ export class SuperchatTrigger implements INodeType {
       name: "Superchat Trigger",
     },
     inputs: [],
-    outputs: [NodeConnectionType.Main],
+    outputs: ["main" satisfies NodeConnectionType],
     credentials: [
       {
         name: "superchatApi",
