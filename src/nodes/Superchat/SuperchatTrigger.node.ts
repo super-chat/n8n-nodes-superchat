@@ -8,13 +8,13 @@ import {
   type IWebhookResponseData,
   NodeConnectionType,
 } from "n8n-workflow";
-import { match } from "ts-pattern";
 import { LIST_SEARCH_METHODS, SearchFunction } from "../../definitions";
 import { createTypesafeParameterGetter } from "../../magic";
 import { ContactWriteDefaultAttributeField } from "../../types/ContactWriteDefaultAttributeField";
 import { WebhookEventFilterWriteDTO } from "../../types/WebhookEventFilterWriteDTO";
 import { WebhookEventType } from "../../types/WebhookEventType";
 import { WebhookEventWriteDTO } from "../../types/WebhookEventWriteDTO";
+import { assertUnreachable } from "../../typescript";
 import { superchatJsonApiRequest } from "./GenericFunctions";
 
 type ConversationStatus = "open" | "done" | "snoozed";
@@ -367,8 +367,8 @@ export class SuperchatTrigger implements INodeType {
         const topic = getNodeParameter(this, "topic");
         const webhookUrl = this.getNodeWebhookUrl("default")!!;
 
-        const events = match(topic)
-          .with("conversation_status_changed", (): WebhookEventWriteDTO[] => {
+        const events = (() => {
+          if (topic === "conversation_status_changed") {
             const conversationStatusParamValue = getNodeParameter(
               this,
               "conversationStatus"
@@ -423,120 +423,119 @@ export class SuperchatTrigger implements INodeType {
                 filters,
               })
             );
-          })
-          .with(
-            "contact_created",
-            "contact_updated",
-            "note_created",
-            "message_inbound",
-            "message_outbound",
-            "message_failed",
-            (topic) => {
-              const event = match(topic)
-                .with(
-                  "note_created",
-                  "contact_created",
-                  (type): WebhookEventWriteDTO => ({
-                    type,
-                    filters: [],
-                  })
-                )
-                .with("contact_updated", (type): WebhookEventWriteDTO => {
-                  const customAttributeIdsParamValue = getNodeParameter(
-                    this,
-                    "customAttributeIds"
-                  );
+          }
 
-                  const builtinAttributesParamValue = getNodeParameter(
-                    this,
-                    "builtinAttributes"
-                  );
+          if (
+            topic === "contact_created" ||
+            topic === "contact_updated" ||
+            topic === "note_created" ||
+            topic === "message_inbound" ||
+            topic === "message_outbound" ||
+            topic === "message_failed"
+          ) {
+            const event = (() => {
+              if (topic === "note_created" || topic === "contact_created") {
+                return {
+                  type: topic,
+                  filters: [],
+                };
+              }
 
-                  const builtinAttributes = (
-                    builtinAttributesParamValue.values ?? []
-                  ).map(({ id: value }) => value);
+              if (topic === "contact_updated") {
+                const customAttributeIdsParamValue = getNodeParameter(
+                  this,
+                  "customAttributeIds"
+                );
 
-                  const customAttributeIds = (
-                    customAttributeIdsParamValue.values ?? []
-                  ).flatMap(({ id: { value } }) =>
+                const builtinAttributesParamValue = getNodeParameter(
+                  this,
+                  "builtinAttributes"
+                );
+
+                const builtinAttributes = (
+                  builtinAttributesParamValue.values ?? []
+                ).map(({ id: value }) => value);
+
+                const customAttributeIds = (
+                  customAttributeIdsParamValue.values ?? []
+                ).flatMap(({ id: { value } }) =>
+                  typeof value === "string" ? [value] : []
+                );
+
+                const filters: WebhookEventFilterWriteDTO[] = [];
+
+                if (customAttributeIds.length > 0) {
+                  filters.push({
+                    type: "custom_attribute",
+                    ids: customAttributeIds,
+                  });
+                }
+
+                if (builtinAttributes.length > 0) {
+                  filters.push({
+                    type: "default_attribute",
+                    attributes: builtinAttributes,
+                  });
+                }
+
+                return {
+                  type: topic,
+                  filters,
+                };
+              }
+
+              if (
+                topic === "message_failed" ||
+                topic === "message_inbound" ||
+                topic === "message_outbound"
+              ) {
+                const channelIdsParamValue = getNodeParameter(
+                  this,
+                  "channelIds"
+                );
+
+                const inboxIdsParamValue = getNodeParameter(this, "inboxIds");
+
+                const channelIds = (channelIdsParamValue.values ?? []).flatMap(
+                  ({ id: { value } }) =>
                     typeof value === "string" ? [value] : []
-                  );
+                );
 
-                  const filters: WebhookEventFilterWriteDTO[] = [];
+                const inboxIds = (inboxIdsParamValue.values ?? []).flatMap(
+                  ({ id: { value } }) =>
+                    typeof value === "string" ? [value] : []
+                );
 
-                  if (customAttributeIds.length > 0) {
-                    filters.push({
-                      type: "custom_attribute",
-                      ids: customAttributeIds,
-                    });
-                  }
+                const filters: WebhookEventFilterWriteDTO[] = [];
 
-                  if (builtinAttributes.length > 0) {
-                    filters.push({
-                      type: "default_attribute",
-                      attributes: builtinAttributes,
-                    });
-                  }
+                if (channelIds.length > 0) {
+                  filters.push({
+                    type: "channel",
+                    ids: channelIds,
+                  });
+                }
 
-                  return {
-                    type,
-                    filters,
-                  };
-                })
-                .with(
-                  "message_inbound",
-                  "message_outbound",
-                  "message_failed",
-                  (type): WebhookEventWriteDTO => {
-                    const channelIdsParamValue = getNodeParameter(
-                      this,
-                      "channelIds"
-                    );
+                if (inboxIds.length > 0) {
+                  filters.push({
+                    type: "inbox",
+                    ids: inboxIds,
+                  });
+                }
 
-                    const inboxIdsParamValue = getNodeParameter(
-                      this,
-                      "inboxIds"
-                    );
+                return {
+                  type: topic,
+                  filters,
+                };
+              }
 
-                    const channelIds = (
-                      channelIdsParamValue.values ?? []
-                    ).flatMap(({ id: { value } }) =>
-                      typeof value === "string" ? [value] : []
-                    );
+              return assertUnreachable(topic);
+            })();
 
-                    const inboxIds = (inboxIdsParamValue.values ?? []).flatMap(
-                      ({ id: { value } }) =>
-                        typeof value === "string" ? [value] : []
-                    );
+            return [event];
+          }
 
-                    const filters: WebhookEventFilterWriteDTO[] = [];
-
-                    if (channelIds.length > 0) {
-                      filters.push({
-                        type: "channel",
-                        ids: channelIds,
-                      });
-                    }
-
-                    if (inboxIds.length > 0) {
-                      filters.push({
-                        type: "inbox",
-                        ids: inboxIds,
-                      });
-                    }
-
-                    return {
-                      type,
-                      filters,
-                    };
-                  }
-                )
-                .exhaustive();
-
-              return [event];
-            }
-          )
-          .exhaustive();
+          return assertUnreachable(topic);
+        })();
 
         const body = {
           target_url: webhookUrl,

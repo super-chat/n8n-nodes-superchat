@@ -3,7 +3,6 @@ import {
   INodeListSearchItems,
   INodeListSearchResult,
 } from "n8n-workflow";
-import { match } from "ts-pattern";
 import { ConversationType } from "../../../types/ConversationType";
 import { PageableResponse } from "../../../types/PageableResponse";
 import { PAMessageChannelConfigDTO } from "../../../types/PAMessageChannelConfigDTO";
@@ -11,16 +10,16 @@ import { superchatJsonApiRequest } from "../GenericFunctions";
 import { OperationKeyByResource, ResourceKey } from "../Superchat.node";
 
 function formatConversationType(input: ConversationType) {
-  return match(input)
-    .with("whats_app", () => "WhatsApp")
-    .with("google_business_messaging", () => "Google Business Messaging")
-    .with("facebook_messenger", () => "Facebook Messenger")
-    .with("telegram", () => "Telegram")
-    .with("live_chat", () => "Live Chat")
-    .with("instagram", () => "Instagram")
-    .with("sms", () => "SMS")
-    .with("mail", () => "Mail")
-    .exhaustive();
+  return {
+    whats_app: "WhatsApp",
+    google_business_messaging: "Google Business Messaging",
+    facebook_messenger: "Facebook Messenger",
+    telegram: "Telegram",
+    live_chat: "Live Chat",
+    instagram: "Instagram",
+    sms: "SMS",
+    mail: "Mail",
+  }[input];
 }
 
 export async function messageChannelSearch(

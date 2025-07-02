@@ -53,8 +53,5 @@
   },
   "peerDependencies": {
     "n8n-workflow": "*"
-  },
-  "dependencies": {
-    "ts-pattern": "^5.7.1"
   }
 }

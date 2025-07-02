@@ -6,9 +6,9 @@ import {
   INodeTypeDescription,
   NodeConnectionType,
 } from "n8n-workflow";
-import { match } from "ts-pattern";
 import { LIST_SEARCH_METHODS } from "../../definitions";
 import { createTypesafeParameterGetter } from "../../magic";
+import { assertUnreachable } from "../../typescript";
 import * as ContactResource from "./actions/contact/Contact.resource";
 import { ContactOperationKey } from "./actions/contact/Contact.resource";
 import * as ContactCreateOperation from "./actions/contact/create.operation";
@@ -167,26 +167,28 @@ export class Superchat implements INodeType {
 
     const resource = getNodeParameter(this, "resource", 0);
 
-    const identifier = match(resource)
-      .with("user", (resource) => {
+    const identifier = (() => {
+      if (resource === "user") {
         return getIdentifierForResource(resource, this.getNodeParameter);
-      })
-      .with("message", (resource) => {
+      }
+      if (resource === "message") {
         return getIdentifierForResource(resource, this.getNodeParameter);
-      })
-      .with("contact", (resource) => {
+      }
+      if (resource === "contact") {
         return getIdentifierForResource(resource, this.getNodeParameter);
-      })
-      .with("conversation", (resource) => {
+      }
+      if (resource === "conversation") {
         return getIdentifierForResource(resource, this.getNodeParameter);
-      })
-      .with("file", (resource) => {
+      }
+      if (resource === "file") {
         return getIdentifierForResource(resource, this.getNodeParameter);
-      })
-      .with("note", (resource) => {
+      }
+      if (resource === "note") {
         return getIdentifierForResource(resource, this.getNodeParameter);
-      })
-      .exhaustive();
+      }
+
+      return assertUnreachable(resource);
+    })();
 
     const execute = (
       {
