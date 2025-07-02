@@ -1,3 +1,11 @@
+# Version v0.2.1
+
+No public facing changes were made in this release.
+
+Internal changes:
+
+- Remove `ts-pattern` dependency
+
 # Version v0.2.0
 
 Initial release of the Superchat node for n8n.
