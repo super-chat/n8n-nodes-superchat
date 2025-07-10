@@ -6,7 +6,11 @@ const SUPERCHAT_API_DOMAIN =
   process.env.SUPERCHAT_API_DOMAIN || "api.superchat.com";
 
 export default defineConfig((options) => ({
-  entry: ["src/**/*.ts"],
+  entry: [
+    "{credentials,nodes,types,utils}/**/*.ts",
+    "!**/*.d.ts",
+    "!**/*.test.ts",
+  ],
   sourcemap: true,
   clean: options.clean ?? false,
   target: "es2019",

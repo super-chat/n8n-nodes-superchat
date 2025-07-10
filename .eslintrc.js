@@ -41,7 +41,7 @@ module.exports = {
     },
 
     {
-      files: ["./src/credentials/**/*.ts"],
+      files: ["./credentials/**/*.ts"],
       plugins: ["eslint-plugin-n8n-nodes-base"],
       extends: ["plugin:n8n-nodes-base/credentials"],
       rules: {
@@ -62,7 +62,7 @@ module.exports = {
       },
     },
     {
-      files: ["./src/nodes/**/*.ts"],
+      files: ["./nodes/**/*.ts"],
       plugins: ["eslint-plugin-n8n-nodes-base"],
       extends: ["plugin:n8n-nodes-base/nodes"],
       rules: {

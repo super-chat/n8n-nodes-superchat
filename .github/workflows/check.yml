@@ -27,7 +27,7 @@ jobs:
         run: pnpm install
 
       - name: Check formatting
-        run: pnpm prettier src --check
+        run: pnpm prettier credentials/ nodes/ types/ utils/ --check
 
       - name: Lint
         run: pnpm lint

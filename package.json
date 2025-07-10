@@ -23,10 +23,10 @@
   "scripts": {
     "build": "tsup --clean && tsc && gulp copy",
     "dev": "gulp copy && tsup --watch",
-    "format": "prettier src --write",
-    "lint": "eslint ./src/**/*.ts package.json",
-    "lintfix": "eslint ./src/**/*.ts package.json --fix",
-    "prepublishOnly": "npm run build && npm run lint -c .eslintrc.prepublish.js ./src/**/*.ts package.json"
+    "format": "prettier credentials/ nodes/ types/ utils/ --write",
+    "lint": "eslint ./credentials/**/*.ts ./nodes/**/*.ts ./types/**/*.ts ./utils/**/*.ts package.json",
+    "lintfix": "eslint ./credentials/**/*.ts ./nodes/**/*.ts ./types/**/*.ts ./utils/**/*.ts package.json --fix",
+    "prepublishOnly": "npm run build && npm run lint -c .eslintrc.prepublish.js ./credentials/**/*.ts ./nodes/**/*.ts ./types/**/*.ts ./utils/**/*.ts package.json"
   },
   "files": [
     "dist"

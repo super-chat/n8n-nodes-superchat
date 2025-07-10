@@ -5,7 +5,7 @@ repos:
       - id: prettier
         name: prettier
         description: Check formatting
-        entry: pnpm prettier src --check
+        entry: pnpm prettier credentials/ nodes/ types/ utils/ --check
         language: system
         pass_filenames: false
 

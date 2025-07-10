@@ -22,5 +22,14 @@
     "outDir": "./dist/",
     "emitDeclarationOnly": true
   },
-  "include": ["./src/**/*", "./src/**/*.json"]
+  "include": [
+    "./credentials/**/*",
+    "./credentials/**/*.json",
+    "./nodes/**/*",
+    "./nodes/**/*.json",
+    "./utils/**/*",
+    "./utils/**/*.json",
+    "./types/**/*",
+    "./types/**/*.json"
+  ]
 }
