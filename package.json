@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-superchat",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Make customer communication your priority. Create real and long-term customer relationships with the messaging solution from Superchat.",
   "keywords": [
     "n8n-community-node-package"

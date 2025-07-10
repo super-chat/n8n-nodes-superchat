@@ -1,3 +1,11 @@
+# Version v0.2.2
+
+No public facing changes were made in this release.
+
+Internal changes:
+
+- Move code from src/ to root directory
+
 # Version v0.2.1
 
 No public facing changes were made in this release.
