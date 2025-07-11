@@ -28,4 +28,4 @@ export const getN8NVersion = (): string => {
 export const N8N_VERSION = getN8NVersion();
 
 // Make sure this matches the version in package.json
-export const NODE_VERSION = "0.2.2";
+export const NODE_VERSION = "0.2.3";
