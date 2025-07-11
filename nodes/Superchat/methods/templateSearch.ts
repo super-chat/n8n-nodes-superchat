@@ -63,7 +63,10 @@ export async function templateSearch(
           currentNodeParams?.operation as OperationKeyByResource<"message">;
 
         if (operation === "sendWhatsAppTemplate") {
-          return template.content.type === "whats_app_template";
+          return (
+            template.content.type === "whats_app_template" &&
+            template.status === "approved"
+          );
         }
       }
 
