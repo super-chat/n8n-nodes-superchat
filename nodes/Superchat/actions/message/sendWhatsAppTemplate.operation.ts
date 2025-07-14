@@ -85,35 +85,6 @@ const properties = [
     ],
   },
   {
-    displayName: "Header File ID",
-    name: "headerFileId",
-    type: "resourceLocator",
-    default: { mode: "list" },
-    description:
-      "The ID of the file you want to use as a header in the template (Only set this if the template has a header)",
-    typeOptions: {
-      loadOptionsDependsOn: ["templateId"],
-    },
-    modes: [
-      {
-        displayName: "ID",
-        name: "id",
-        type: "string",
-        hint: "Enter an ID",
-      },
-      {
-        displayName: "List",
-        name: "list",
-        type: "list",
-        typeOptions: {
-          searchListMethod: "fileSearch" satisfies SearchFunction,
-          searchable: false,
-          searchFilterRequired: false,
-        },
-      },
-    ],
-  },
-  {
     // eslint-disable-next-line n8n-nodes-base/node-param-display-name-miscased
     displayName: "Variables",
     name: "variables",
@@ -135,6 +106,45 @@ const properties = [
             default: "",
             description: "A variable value",
             hint: "The number and order of variables must match the template definition. Dynamic URL suffices are handled as variables, too.",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    displayName: "Options",
+    name: "otherOptions",
+    type: "collection",
+    default: {},
+    description: "Other options to set",
+    placeholder: "Add option",
+    options: [
+      {
+        displayName: "Header File ID",
+        name: "headerFileId",
+        type: "resourceLocator",
+        default: { mode: "list" },
+        description:
+          "The ID of the file you want to use as a header in the template (Only set this if the template has a header)",
+        typeOptions: {
+          loadOptionsDependsOn: ["templateId"],
+        },
+        modes: [
+          {
+            displayName: "ID",
+            name: "id",
+            type: "string",
+            hint: "Enter an ID",
+          },
+          {
+            displayName: "List",
+            name: "list",
+            type: "list",
+            typeOptions: {
+              searchListMethod: "fileSearch" satisfies SearchFunction,
+              searchable: false,
+              searchFilterRequired: false,
+            },
           },
         ],
       },
@@ -162,9 +172,10 @@ export async function execute(
   const identifier = getNodeParameter(this, "identifier", i);
   const channelId = getNodeParameter(this, "channelId", i).value as string;
   const templateId = getNodeParameter(this, "templateId", i).value as string;
-  const headerFileId = getNodeParameter(this, "headerFileId", i)
-    .value as string;
   const variables = getNodeParameter(this, "variables", i);
+
+  const otherOptions = getNodeParameter(this, "otherOptions", i);
+  const headerFileId = otherOptions.headerFileId?.value as string | undefined;
 
   const body = {
     to: [{ identifier }],
@@ -175,7 +186,10 @@ export async function execute(
     content: {
       type: "whats_app_template",
       template_id: templateId,
-      file: headerFileId === "" ? undefined : { id: headerFileId },
+      file:
+        headerFileId === undefined || headerFileId === ""
+          ? undefined
+          : { id: headerFileId },
       variables: (variables.values ?? []).map((v, i) => ({
         position: i,
         value: v.value,

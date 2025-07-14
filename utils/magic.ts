@@ -67,7 +67,12 @@ export type PropertyType<Property extends INodeProperties> = Property extends {
                   options: (infer X extends INodePropertyCollection)[];
                 }
               ? Partial<Record<X["name"], PropertyCollectionType<X, true>>>
-              : never;
+              : Property extends {
+                    readonly type: "collection";
+                    options: (infer X extends INodeProperties)[];
+                  }
+                ? Partial<Record<X["name"], PropertyType<X>>>
+                : never;
 
 function typesafeGetNodeParameter<
   Properties extends INodeProperties[],

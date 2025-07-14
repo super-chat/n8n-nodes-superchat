@@ -182,6 +182,23 @@ const EXAMPLE_PROPERTIES = [
       },
     ],
   },
+  {
+    displayName: "Options",
+    name: "otherOptions",
+    type: "collection",
+    default: {},
+    description: "Other options to set",
+    placeholder: "Add option",
+    options: [
+      {
+        displayName: "Sender Name",
+        name: "senderName",
+        type: "string",
+        default: "",
+        description: "The sender name",
+      },
+    ],
+  },
 ] as const satisfies INodeProperties[];
 
 type FirstNameProperty = FindPropertyByName<
@@ -315,6 +332,21 @@ const propertyGetter = createTypesafeParameterGetter(EXAMPLE_PROPERTIES);
       },
     ],
   };
+}
+
+{
+  // @ts-expect-error: otherOptions is not used
+  let otherOptions = propertyGetter(CTX, "otherOptions", 0);
+
+  otherOptions = {
+    senderName: "John Doe", // This is valid as the type is string
+  };
+
+  // @ts-expect-error: otherOptions is expected to be an object with senderName as string
+  otherOptions = "1231";
+
+  // @ts-expect-error: otherOptions is expected to be an object with senderName as string
+  otherOptions = { senderName: 123 }; // This is invalid as senderName should be a string not a number
 }
 
 {
