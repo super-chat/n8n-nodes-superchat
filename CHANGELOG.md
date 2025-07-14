@@ -1,3 +1,7 @@
+# Version v0.2.4
+
+Move the `headerFileId` parameter of the `sendWhatsAppTemplate` operation.
+
 # Version v0.2.3
 
 Only allow selecting approved templates for the `sendWhatsAppTemplate` operation.
