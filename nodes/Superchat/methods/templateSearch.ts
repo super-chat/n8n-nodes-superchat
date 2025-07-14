@@ -20,7 +20,7 @@ export async function templateSearch(
 
   let channelId: string | undefined = undefined;
 
-  if ((resource as ResourceKey) === "message") {
+  if (resource === "message") {
     const operation =
       currentNodeParams?.operation as OperationKeyByResource<"message">;
 
@@ -58,7 +58,7 @@ export async function templateSearch(
 
   const results = res.results
     .filter((template) => {
-      if ((resource as ResourceKey) === "message") {
+      if (resource === "message") {
         const operation =
           currentNodeParams?.operation as OperationKeyByResource<"message">;
 
