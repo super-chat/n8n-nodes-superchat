@@ -36,14 +36,14 @@ const properties = [
     name: "channelId",
     type: "resourceLocator",
     default: { mode: "list" },
-    description: "The ID of the channel to send the message from",
+    description:
+      "The ID of the channel to send the message from. Channel IDs start with 'mc_'.",
     required: true,
     modes: [
       {
         displayName: "ID",
         name: "id",
         type: "string",
-        hint: "Enter an ID",
       },
       {
         displayName: "List",
@@ -68,7 +68,7 @@ const properties = [
         displayName: "ID",
         name: "id",
         type: "string",
-        hint: "Enter an ID",
+        hint: "Enter a Message ID",
       },
     ],
   },
@@ -91,7 +91,8 @@ const properties = [
             displayName: "Value",
             name: "value",
             type: "string",
-            default: "The text content of the message",
+            default: "",
+            placeholder: "e.g. Hello from Superchat",
           },
         ],
       },
@@ -110,7 +111,7 @@ const properties = [
                 displayName: "ID",
                 name: "id",
                 type: "string",
-                hint: "Enter an ID",
+                hint: "Enter a File ID",
               },
               {
                 displayName: "List",

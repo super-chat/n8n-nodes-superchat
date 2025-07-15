@@ -13,12 +13,13 @@ import { ConversationOperationKey } from "./Conversation.resource";
 
 const properties = [
   {
-    displayName: "ID",
+    displayName: "Conversation ID",
     name: "id",
     type: "string",
     default: "",
     required: true,
-    description: "ID of the conversation",
+    placeholder: "e.g. cv_1234567890",
+    description: "Conversation IDs start with 'cv_'",
   },
   // eslint-disable-next-line n8n-nodes-base/node-param-default-missing
   {
@@ -32,6 +33,7 @@ const properties = [
       { name: "Archived", value: "archived" satisfies ConversationStatus },
       { name: "Snoozed", value: "snoozed" satisfies ConversationStatus },
     ],
+    hint: "Set 'Snoozed Until' if you snooze the conversation",
     default: "open" satisfies ConversationStatus,
     description: "The status of the conversation",
   },

@@ -35,14 +35,15 @@ const properties = [
     name: "channelId",
     type: "resourceLocator",
     default: { mode: "list" },
-    description: "The ID of the channel to send the message from",
+    description:
+      "The ID of the channel to send the message from. Channel IDs start with 'mc_'.",
     required: true,
     modes: [
       {
         displayName: "ID",
         name: "id",
         type: "string",
-        hint: "Enter an ID",
+        hint: "Enter a Channel ID",
       },
       {
         displayName: "List",
@@ -61,13 +62,14 @@ const properties = [
     name: "replyToMessageId",
     type: "resourceLocator",
     default: { mode: "id" },
-    description: "The ID of the message to reply to",
+    description:
+      "The ID of the message to reply to. Message IDs start with 'ms_'.",
     modes: [
       {
         displayName: "ID",
         name: "id",
         type: "string",
-        hint: "Enter an ID",
+        hint: "Enter a Message ID",
       },
     ],
   },
@@ -97,7 +99,7 @@ const properties = [
     name: "fileIds",
     type: "fixedCollection",
     default: { values: [] },
-    placeholder: "Add File",
+    placeholder: "e.g. fi_1234567890",
     typeOptions: {
       multipleValues: true,
     },
@@ -117,7 +119,7 @@ const properties = [
                 displayName: "ID",
                 name: "id",
                 type: "string",
-                hint: "Enter an ID",
+                hint: "Enter a File ID",
               },
               {
                 displayName: "List",

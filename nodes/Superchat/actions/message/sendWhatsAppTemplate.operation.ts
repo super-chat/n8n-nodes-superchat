@@ -41,7 +41,7 @@ const properties = [
         displayName: "ID",
         name: "id",
         type: "string",
-        hint: "Enter an ID",
+        hint: "Enter a Channel ID",
       },
       {
         displayName: "List",
@@ -70,7 +70,7 @@ const properties = [
         displayName: "ID",
         name: "id",
         type: "string",
-        hint: "Enter an ID",
+        hint: "Enter a Template ID",
       },
       {
         displayName: "List",
@@ -134,7 +134,7 @@ const properties = [
             displayName: "ID",
             name: "id",
             type: "string",
-            hint: "Enter an ID",
+            hint: "Enter a File ID",
           },
           {
             displayName: "List",

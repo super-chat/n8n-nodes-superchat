@@ -16,7 +16,9 @@ const properties = [
     type: "string",
     required: true,
     default: "",
-    description: "The ID of the contact whose conversations you want to list",
+    placeholder: "e.g. co_1234567890",
+    description:
+      "The ID of the contact whose conversations you want to list. Contact IDs start with 'co_'.",
   },
 ] as const satisfies INodeProperties[];
 

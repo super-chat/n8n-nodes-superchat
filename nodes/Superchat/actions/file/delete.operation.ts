@@ -11,12 +11,13 @@ import { FileOperationKey } from "./File.resource";
 
 const properties = [
   {
-    displayName: "ID",
+    displayName: "File ID",
     name: "id",
     type: "string",
     default: "",
     required: true,
-    description: "ID of the file to delete",
+    placeholder: "e.g. fi_1234567890",
+    description: "File IDs start with 'fi_'",
   },
 ] as const satisfies INodeProperties[];
 

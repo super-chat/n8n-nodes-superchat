@@ -37,11 +37,12 @@ const properties = [
     name: "gender",
     type: "options",
     options: [
+      { name: "Not Specified", value: "unknown" satisfies Gender },
       { name: "Female", value: "female" satisfies Gender },
       { name: "Male", value: "male" satisfies Gender },
       { name: "Diverse", value: "diverse" satisfies Gender },
     ],
-    default: "female" satisfies Gender,
+    default: "unknown" satisfies Gender,
     description: "The gender of the contact",
   },
   {
@@ -172,7 +173,7 @@ export async function execute(
   const body = {
     first_name: firstName,
     last_name: lastName,
-    gender,
+    gender: gender === "unknown" ? null : gender,
     handles,
     custom_attributes: customAttributes,
   } satisfies PACreateContactDTO;

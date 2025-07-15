@@ -11,12 +11,12 @@ import { ContactOperationKey } from "./Contact.resource";
 
 const properties = [
   {
-    displayName: "ID",
+    displayName: "Contact ID",
     name: "id",
     type: "string",
     default: "",
     required: true,
-    description: "ID of the contact to delete",
+    description: "Contact IDs start with 'co_'",
   },
 ] as const satisfies INodeProperties[];
 
