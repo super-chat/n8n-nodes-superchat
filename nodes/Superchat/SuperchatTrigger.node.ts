@@ -90,7 +90,7 @@ const properties = [
                 displayName: "ID",
                 name: "id",
                 type: "string",
-                hint: "Enter an ID",
+                hint: "Enter a Channel ID",
               },
               {
                 displayName: "List",
@@ -138,7 +138,7 @@ const properties = [
                 displayName: "ID",
                 name: "id",
                 type: "string",
-                hint: "Enter an ID",
+                hint: "Enter an Inbox ID",
               },
               {
                 displayName: "List",
@@ -185,7 +185,7 @@ const properties = [
                 displayName: "ID",
                 name: "id",
                 type: "string",
-                hint: "Enter an ID",
+                hint: "Enter a Custom Attribute ID",
               },
               {
                 displayName: "List",

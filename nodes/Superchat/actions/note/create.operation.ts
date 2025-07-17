@@ -16,7 +16,9 @@ const properties = [
     name: "conversationId",
     type: "string",
     default: "",
-    description: "The ID of the conversation to create the note in",
+    description:
+      "The ID of the conversation to create the note in. Conversation IDs start with 'cv_'.",
+    placeholder: "e.g. cv_1234567890",
     required: true,
   },
   {

@@ -83,7 +83,7 @@ const EXAMPLE_PROPERTIES = [
         displayName: "ID",
         name: "id",
         type: "string",
-        hint: "Enter an ID",
+        hint: "Enter a Channel ID",
       },
       {
         displayName: "List",
@@ -122,7 +122,7 @@ const EXAMPLE_PROPERTIES = [
                 displayName: "ID",
                 name: "id",
                 type: "string",
-                hint: "Enter an ID",
+                hint: "Enter a Label ID",
               },
               {
                 displayName: "List",

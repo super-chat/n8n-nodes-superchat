@@ -16,7 +16,9 @@ const properties = [
     type: "string",
     default: "",
     required: true,
-    description: "ID of the conversation the note belongs to",
+    description:
+      "The ID of the conversation the note belongs to. Conversation IDs start with 'cv_'.",
+    placeholder: "e.g. cv_1234567890",
   },
   {
     displayName: "Note ID",
@@ -24,7 +26,8 @@ const properties = [
     type: "string",
     default: "",
     required: true,
-    description: "ID of the note",
+    description: "Note IDs start with 'no_'",
+    placeholder: "e.g. no_1234567890",
   },
 ] as const satisfies INodeProperties[];
 

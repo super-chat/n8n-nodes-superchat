@@ -11,12 +11,13 @@ import { ConversationOperationKey } from "./Conversation.resource";
 
 const properties = [
   {
-    displayName: "ID",
+    displayName: "Conversation ID",
     name: "id",
     type: "string",
     default: "",
     required: true,
-    description: "ID of the conversation",
+    placeholder: "e.g. cv_1234567890",
+    description: "Conversation IDs start with 'cv_'",
   },
 ] as const satisfies INodeProperties[];
 
