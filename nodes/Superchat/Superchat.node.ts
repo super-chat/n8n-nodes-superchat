@@ -219,10 +219,22 @@ export class Superchat implements INodeType {
     )[identifier];
 
     for (let i = 0; i < items.length; i++) {
-      const result = await execute.call(this, i);
-      returnData.push(result);
+      try {
+        const result = await execute.call(this, i);
+        const executionData = this.helpers.constructExecutionMetaData(
+          this.helpers.returnJsonArray(result),
+          { itemData: { item: i } }
+        );
+        returnData.push(executionData);
+      } catch (error) {
+        if (this.continueOnFail()) {
+          returnData.push({ error: error.message, json: {} });
+          continue;
+        }
+        throw error;
+      }
     }
 
-    return [this.helpers.returnJsonArray(returnData)];
+    return returnData;
   }
 }
