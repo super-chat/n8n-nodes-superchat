@@ -147,6 +147,7 @@ export class Superchat implements INodeType {
     defaults: {
       name: "Superchat",
     },
+    usableAsTool: true,
     inputs: ["main" satisfies NodeConnectionType],
     outputs: ["main" satisfies NodeConnectionType],
     credentials: [
