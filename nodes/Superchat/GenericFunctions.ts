@@ -3,8 +3,8 @@ import {
   IExecuteFunctions,
   IHookFunctions,
   IHttpRequestMethods,
+  IHttpRequestOptions,
   ILoadOptionsFunctions,
-  IRequestOptions,
   JsonObject,
   NodeApiError,
 } from "n8n-workflow";
@@ -32,20 +32,20 @@ export async function superchatFormDataApiRequest(
   endpoint: string,
   body: IDataObject
 ): Promise<any> {
-  const options: IRequestOptions = {
+  const options: IHttpRequestOptions = {
     headers: {
       ...getBaseHeaders.call(this),
       Accept: "application/json",
       "Content-Type": "multipart/form-data",
     },
     method,
-    uri: `${BASE_URL}${endpoint}`,
+    url: `${BASE_URL}${endpoint}`,
     json: true,
     body,
   };
 
   try {
-    const responseData = await this.helpers.requestWithAuthentication.call(
+    const responseData = await this.helpers.httpRequestWithAuthentication.call(
       this,
       "superchatApi",
       options
@@ -76,14 +76,14 @@ export async function superchatJsonApiRequest(
     query = {};
   }
 
-  const options: IRequestOptions = {
+  const options: IHttpRequestOptions = {
     headers: {
       ...getBaseHeaders.call(this),
       Accept: "application/json",
     },
     method,
     qs: query,
-    uri: `${BASE_URL}${endpoint}`,
+    url: `${BASE_URL}${endpoint}`,
     json: body && "formData" in body ? false : true,
   };
 
@@ -92,7 +92,7 @@ export async function superchatJsonApiRequest(
   }
 
   try {
-    const responseData = await this.helpers.requestWithAuthentication.call(
+    const responseData = await this.helpers.httpRequestWithAuthentication.call(
       this,
       "superchatApi",
       options
