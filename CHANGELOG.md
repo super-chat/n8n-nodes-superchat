@@ -1,3 +1,14 @@
+# Version v0.2.5
+
+- Update the names and placeholder values of some fields.
+- Add `usableAsTool` to the Superchat Node.
+- Implement the `continueOnFail` method.
+
+Internal changes:
+
+- Remove the usage of `process.env` and `process.define`.
+- Use the `httpRequestWithAuthentication` method instead of the deprecated `requestWithAuthentication` method.
+
 # Version v0.2.4
 
 Move the `headerFileId` parameter of the `sendWhatsAppTemplate` operation.

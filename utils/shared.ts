@@ -8,4 +8,4 @@ declare var meta: {
 export const BASE_URL = `https://${meta.injected.SUPERCHAT_API_DOMAIN}/v1.0`;
 
 // Make sure this matches the version in package.json
-export const NODE_VERSION = "0.2.4";
+export const NODE_VERSION = "0.2.5";
