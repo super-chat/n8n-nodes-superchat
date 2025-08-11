@@ -8,14 +8,13 @@ import {
   JsonObject,
   NodeApiError,
 } from "n8n-workflow";
-import { BASE_URL, N8N_VERSION, NODE_VERSION } from "../../utils/shared";
+import { BASE_URL, NODE_VERSION } from "../../utils/shared";
 
 function getBaseHeaders(
   this: IHookFunctions | IExecuteFunctions | ILoadOptionsFunctions
 ) {
   return {
     "X-Superchat-Platform": "n8n",
-    "X-Superchat-n8n-Version": N8N_VERSION,
     "X-Superchat-n8n-Node-Version": NODE_VERSION,
     "X-Superchat-n8n-Instance-Id": this.getInstanceId(),
     "X-Superchat-n8n-Node-Id": this.getNode().id,
