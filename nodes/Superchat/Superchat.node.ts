@@ -143,7 +143,8 @@ export class Superchat implements INodeType {
     version: 1,
     subtitle:
       '={{$parameter["resource"].toTitleCase() + ": " + $parameter["operation"].toTitleCase()}}',
-    description: "Retrieve data from the Superchat API",
+    description:
+      "Receive and send messages from WhatsApp, Instagram, Messenger, E-Mail, SMS, via Live Chat and Telegram.",
     defaults: {
       name: "Superchat",
     },
