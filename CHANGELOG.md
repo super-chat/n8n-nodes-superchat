@@ -1,3 +1,7 @@
+# Version v0.2.6
+
+Updated the description of the Superchat Node.
+
 # Version v0.2.5
 
 - Update the names and placeholder values of some fields.
