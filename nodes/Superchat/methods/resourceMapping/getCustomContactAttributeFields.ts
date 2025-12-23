@@ -137,10 +137,6 @@ export async function getCustomAttributesNodeParameter(
       }
 
       if (attribute.type === "multi_select") {
-        if (value === null || typeof value !== "string") {
-          return [];
-        }
-
         if (value === null) {
           return [
             {
@@ -148,6 +144,10 @@ export async function getCustomAttributesNodeParameter(
               value: [],
             },
           ];
+        }
+
+        if (typeof value !== "string") {
+          return [];
         }
 
         return [
@@ -159,10 +159,6 @@ export async function getCustomAttributesNodeParameter(
       }
 
       if (attribute.type === "datetime" || attribute.type === "dateonly") {
-        if (value === null || typeof value !== "string") {
-          return [];
-        }
-
         if (value === null) {
           return [
             {
@@ -170,6 +166,10 @@ export async function getCustomAttributesNodeParameter(
               value: null,
             },
           ];
+        }
+
+        if (typeof value !== "string") {
+          return [];
         }
 
         const date = new Date(value);
