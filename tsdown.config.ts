@@ -18,6 +18,6 @@ export default defineConfig((options) => ({
   format: ["cjs" as const],
   outDir: "dist",
   define: {
-    "meta.injected.SUPERCHAT_API_DOMAIN": `"${SUPERCHAT_API_DOMAIN}"`,
+    __SUPERCHAT_API_DOMAIN: JSON.stringify(SUPERCHAT_API_DOMAIN),
   },
 }));
