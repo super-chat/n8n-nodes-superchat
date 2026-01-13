@@ -14,7 +14,7 @@ export default defineConfig((options) => ({
   sourcemap: true,
   clean: options.clean ?? false,
   target: "es2019",
-  bundle: false,
+  unbundle: true,
   format: ["cjs" as const],
   outDir: "dist",
   define: {
