@@ -1,4 +1,4 @@
-import { defineConfig } from "tsup";
+import { defineConfig } from "tsdown";
 
 declare var process: any;
 
@@ -14,10 +14,10 @@ export default defineConfig((options) => ({
   sourcemap: true,
   clean: options.clean ?? false,
   target: "es2019",
-  bundle: false,
-  format: ["cjs"],
+  unbundle: true,
+  format: ["cjs" as const],
   outDir: "dist",
   define: {
-    "meta.injected.SUPERCHAT_API_DOMAIN": `"${SUPERCHAT_API_DOMAIN}"`,
+    __SUPERCHAT_API_DOMAIN: JSON.stringify(SUPERCHAT_API_DOMAIN),
   },
 }));

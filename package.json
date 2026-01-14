@@ -21,8 +21,8 @@
   },
   "main": "index.js",
   "scripts": {
-    "build": "tsup --clean && tsc && gulp copy",
-    "dev": "gulp copy && tsup --watch",
+    "build": "tsdown --clean && tsc && gulp copy",
+    "dev": "gulp copy && tsdown --watch",
     "format": "prettier credentials/ nodes/ types/ utils/ --write",
     "lint": "eslint ./credentials/**/*.ts ./nodes/**/*.ts ./types/**/*.ts ./utils/**/*.ts package.json",
     "lintfix": "eslint ./credentials/**/*.ts ./nodes/**/*.ts ./types/**/*.ts ./utils/**/*.ts package.json --fix",
@@ -48,7 +48,7 @@
     "gulp": "^5.0.0",
     "prettier": "^3.5.3",
     "prettier-plugin-organize-imports": "^4.1.0",
-    "tsup": "^8.5.0",
+    "tsdown": "0.20.0-beta.1",
     "typescript": "^5.8.2"
   },
   "peerDependencies": {
