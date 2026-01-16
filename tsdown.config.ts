@@ -16,6 +16,8 @@ export default defineConfig((options) => ({
   target: "es2019",
   unbundle: true,
   format: ["cjs" as const],
+  // n8n custom loader only scans for *.node.js / *.credentials.js
+  outExtensions: () => ({ js: ".js" }),
   outDir: "dist",
   define: {
     __SUPERCHAT_API_DOMAIN: JSON.stringify(SUPERCHAT_API_DOMAIN),
