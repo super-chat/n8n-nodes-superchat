@@ -1,3 +1,12 @@
+# Version v0.3.0
+
+- Add support for note attachments.
+- Allow `null` as a value for all contact attributes.
+
+Internal changes:
+
+- Migrate from tsup to tsdown for build tooling.
+
 # Version v0.2.6
 
 Updated the description of the Superchat Node.
