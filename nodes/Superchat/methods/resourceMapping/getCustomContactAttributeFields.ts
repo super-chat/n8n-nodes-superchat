@@ -146,14 +146,52 @@ export async function getCustomAttributesNodeParameter(
           ];
         }
 
+        if (Array.isArray(value)) {
+          const normalizedValues = value.filter(
+            (entry): entry is string => typeof entry === "string"
+          );
+
+          return [
+            {
+              id: customAttributeId,
+              value: normalizedValues,
+            } satisfies PAWriteContactAttributeValueDTO,
+          ];
+        }
+
         if (typeof value !== "string") {
+          return [];
+        }
+
+        const trimmedValue = value.trim();
+
+        if (!trimmedValue.startsWith("[")) {
+          return [
+            {
+              id: customAttributeId,
+              value: trimmedValue === "" ? [] : [trimmedValue],
+            } satisfies PAWriteContactAttributeValueDTO,
+          ];
+        }
+
+        let parsedValue: unknown;
+
+        try {
+          parsedValue = JSON.parse(trimmedValue) as unknown;
+        } catch {
+          return [];
+        }
+
+        if (!Array.isArray(parsedValue)) {
           return [];
         }
 
         return [
           {
             id: customAttributeId,
-            value: JSON.parse(value) as string[],
+            value: parsedValue.filter(
+              (entry): entry is string => typeof entry === "string"
+            ),
           } satisfies PAWriteContactAttributeValueDTO,
         ];
       }
