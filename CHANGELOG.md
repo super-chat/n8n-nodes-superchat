@@ -1,3 +1,10 @@
+# Version v0.3.1
+
+- Fix creating multiple branches during node execution
+
+Internal changes:
+- Upgrade build tooling dependency versions 
+
 # Version v0.3.0
 
 - Add support for note attachments.
