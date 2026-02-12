@@ -1,4 +1,4 @@
-# Version v0.3.1
+# Version v0.4.0
 
 - Fix creating multiple branches during node execution
 
