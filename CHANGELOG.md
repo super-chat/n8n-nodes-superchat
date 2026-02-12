@@ -1,3 +1,10 @@
+# Version v0.4.0
+
+- Fix creating multiple branches during node execution
+
+Internal changes:
+- Upgrade dependencies 
+
 # Version v0.3.0
 
 - Add support for note attachments.
