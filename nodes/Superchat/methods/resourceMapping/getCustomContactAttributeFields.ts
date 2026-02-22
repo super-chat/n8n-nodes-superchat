@@ -164,33 +164,28 @@ export async function getCustomAttributesNodeParameter(
 
         const trimmedValue = value.trim();
 
-        if (!trimmedValue.startsWith("[")) {
-          return [
-            {
-              id: customAttributeId,
-              value: trimmedValue === "" ? [] : [trimmedValue],
-            } satisfies PAWriteContactAttributeValueDTO,
-          ];
-        }
-
         let parsedValue: unknown;
-
         try {
           parsedValue = JSON.parse(trimmedValue) as unknown;
         } catch {
-          return [];
+          // not valid JSON — fall through to treat as single value
         }
 
-        if (!Array.isArray(parsedValue)) {
-          return [];
+        if (Array.isArray(parsedValue)) {
+          return [
+            {
+              id: customAttributeId,
+              value: parsedValue.filter(
+                (entry): entry is string => typeof entry === "string"
+              ),
+            } satisfies PAWriteContactAttributeValueDTO,
+          ];
         }
 
         return [
           {
             id: customAttributeId,
-            value: parsedValue.filter(
-              (entry): entry is string => typeof entry === "string"
-            ),
+            value: trimmedValue === "" ? [] : [trimmedValue],
           } satisfies PAWriteContactAttributeValueDTO,
         ];
       }
