@@ -20,7 +20,7 @@
     "node": ">=20.15"
   },
   "main": "index.js",
-  "packageManager": "pnpm@8.15.9",
+  "packageManager": "pnpm@10.32.1",
   "scripts": {
     "build": "tsdown --clean && tsc && gulp copy",
     "dev": "gulp copy && tsdown --watch",
