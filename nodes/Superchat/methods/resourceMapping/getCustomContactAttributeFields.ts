@@ -34,7 +34,7 @@ export async function getCustomContactAttributeFields(
     (attribute): ResourceMapperField[] => {
       const attributeType = attribute.type;
 
-      if (attributeType === "single_select") {
+      if (attributeType === "single_select" || attributeType === "multi_select") {
         const options = [...attribute.option_values]
           .map(
             (option): INodePropertyOptions => ({
@@ -64,7 +64,6 @@ export async function getCustomContactAttributeFields(
           datetime: "dateTime",
           text: "string",
           number: "number",
-          multi_select: "array",
         } as const
       )[attributeType];
 
@@ -146,14 +145,47 @@ export async function getCustomAttributesNodeParameter(
           ];
         }
 
+        if (Array.isArray(value)) {
+          const normalizedValues = value.filter(
+            (entry): entry is string => typeof entry === "string"
+          );
+
+          return [
+            {
+              id: customAttributeId,
+              value: normalizedValues,
+            } satisfies PAWriteContactAttributeValueDTO,
+          ];
+        }
+
         if (typeof value !== "string") {
           return [];
+        }
+
+        const trimmedValue = value.trim();
+
+        let parsedValue: unknown;
+        try {
+          parsedValue = JSON.parse(trimmedValue) as unknown;
+        } catch {
+          // not valid JSON — fall through to treat as single value
+        }
+
+        if (Array.isArray(parsedValue)) {
+          return [
+            {
+              id: customAttributeId,
+              value: parsedValue.filter(
+                (entry): entry is string => typeof entry === "string"
+              ),
+            } satisfies PAWriteContactAttributeValueDTO,
+          ];
         }
 
         return [
           {
             id: customAttributeId,
-            value: JSON.parse(value) as string[],
+            value: trimmedValue === "" ? [] : [trimmedValue],
           } satisfies PAWriteContactAttributeValueDTO,
         ];
       }
