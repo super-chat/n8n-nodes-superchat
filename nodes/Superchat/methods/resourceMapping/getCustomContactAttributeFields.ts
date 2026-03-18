@@ -34,7 +34,10 @@ export async function getCustomContactAttributeFields(
     (attribute): ResourceMapperField[] => {
       const attributeType = attribute.type;
 
-      if (attributeType === "single_select" || attributeType === "multi_select") {
+      if (
+        attributeType === "single_select" ||
+        attributeType === "multi_select"
+      ) {
         const options = [...attribute.option_values]
           .map(
             (option): INodePropertyOptions => ({
