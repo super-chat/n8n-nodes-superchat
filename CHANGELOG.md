@@ -1,3 +1,10 @@
+# Version v0.5.0
+
+- Support multi-select custom attributes on contact operations
+
+Internal changes:
+- Upgrade dependencies 
+
 # Version v0.4.0
 
 - Fix creating multiple branches during node execution
