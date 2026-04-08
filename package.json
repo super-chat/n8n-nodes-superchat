@@ -32,6 +32,11 @@
   "files": [
     "dist"
   ],
+  "pnpm": {
+    "overrides": {
+      "lodash": "4.18.1"
+    }
+  },
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [

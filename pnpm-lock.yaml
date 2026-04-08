@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  lodash: 4.18.1
+
 importers:
 
   .:
@@ -1167,8 +1170,8 @@ packages:
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
 
-  lodash@4.17.23:
-    resolution: {integrity: sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==}
+  lodash@4.18.1:
+    resolution: {integrity: sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q==}
 
   lower-case@2.0.2:
     resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}
@@ -1857,7 +1860,7 @@ snapshots:
       isolated-vm: 6.1.2
       js-base64: 3.7.2
       jssha: 3.3.1
-      lodash: 4.17.23
+      lodash: 4.18.1
       luxon: 3.7.2
       md5: 2.3.0
       title-case: 3.0.3
@@ -2876,7 +2879,7 @@ snapshots:
 
   lodash.merge@4.6.2: {}
 
-  lodash@4.17.23: {}
+  lodash@4.18.1: {}
 
   lower-case@2.0.2:
     dependencies:
@@ -2936,7 +2939,7 @@ snapshots:
       js-base64: 3.7.2
       jsonrepair: 3.13.2
       jssha: 3.3.1
-      lodash: 4.17.23
+      lodash: 4.18.1
       luxon: 3.7.2
       md5: 2.3.0
       recast: 0.22.0
