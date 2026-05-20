@@ -34,6 +34,7 @@
   ],
   "pnpm": {
     "overrides": {
+      "n8n-workflow@2.16.0>lodash": ">=4.18.1",
       "n8n-workflow@2.16.0>zod": ">=4.4.0"
     }
   },
