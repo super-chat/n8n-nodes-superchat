@@ -5,9 +5,8 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@n8n/expression-runtime@0.8.0>lodash': '>=4.18.1'
-  n8n-workflow@2.16.0>lodash: '>=4.18.1'
-  n8n-workflow@2.16.0>zod: '>=4.4.0'
+  lodash: '>=4.18.1'
+  zod: '>=4.4.0'
 
 importers:
 
