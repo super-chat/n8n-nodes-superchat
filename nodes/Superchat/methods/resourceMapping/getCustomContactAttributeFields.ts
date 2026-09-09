@@ -6,11 +6,9 @@ import {
   ResourceMapperFields,
   ResourceMapperValue,
 } from "n8n-workflow";
-import { PageableResponse } from "../../../../types/PageableResponse";
-import { PAListContactAttributeDTO } from "../../../../types/PAListContactAttributeDTO";
 import { PAWriteContactAttributeValueDTO } from "../../../../types/PAWriteContactAttributeValueDTO";
-import { superchatJsonApiRequest } from "../../GenericFunctions";
 import { ResourceKey } from "../../Superchat.node";
+import { getAllCustomAttributes } from "../customAttributeSearch";
 
 export async function getCustomContactAttributeFields(
   this: ILoadOptionsFunctions
@@ -18,17 +16,7 @@ export async function getCustomContactAttributeFields(
   const resource = this.getCurrentNodeParameter("resource") as ResourceKey;
   if (resource !== "contact") return { fields: [] };
 
-  const customAttributeRes = (await superchatJsonApiRequest.call(
-    this,
-    "GET",
-    "/custom-attributes",
-    undefined,
-    {
-      size: 1000,
-    }
-  )) as PageableResponse<PAListContactAttributeDTO>;
-
-  const customAttributes = customAttributeRes.results;
+  const customAttributes = await getAllCustomAttributes.call(this);
 
   const fields = customAttributes.flatMap(
     (attribute): ResourceMapperField[] => {
@@ -107,17 +95,7 @@ export async function getCustomAttributesNodeParameter(
   parameterName: string,
   itemIndex: number
 ) {
-  const customAttributeRes = (await superchatJsonApiRequest.call(
-    this,
-    "GET",
-    "/custom-attributes",
-    undefined,
-    {
-      size: 1000,
-    }
-  )) as PageableResponse<PAListContactAttributeDTO>;
-
-  const customAttributes = customAttributeRes.results;
+  const customAttributes = await getAllCustomAttributes.call(this);
 
   // TODO: Move this into the node itself and pass it as an argument to the function
   const customAttributesResourceMapperValue = this.getNodeParameter(
