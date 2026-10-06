@@ -12,6 +12,7 @@ This is an n8n community node. It lets you integrate **Superchat** into your n8n
 [Credentials](#credentials)  
 [Compatibility](#compatibility)  
 [Usage](#usage)  
+[Trigger](#trigger)<br>
 [Resources](#resources)
 
 ---
@@ -90,9 +91,36 @@ Tested with:
 
 ---
 
+## Trigger
+
+The Superchat Trigger receives Superchat webhook events and outputs the webhook body by default.
+
+To also access webhook request headers, enable **Include Request Metadata**. When enabled, the trigger keeps the event body fields at the top level and adds request metadata under `_request`:
+
+```json
+{
+  "...eventBody": "...",
+  "_request": {
+    "headers": {
+      "x-superchat-event-id": "...",
+      "webhook-id": "..."
+    }
+  }
+}
+```
+
+You can use these headers for idempotency checks in n8n workflows, for example:
+
+```txt
+{{$json._request.headers["x-superchat-event-id"]}}
+```
+
+When **Include Request Metadata** is disabled, the output remains unchanged and contains only the webhook body.
+
+---
+
 ## Resources
 
 - [Superchat API Documentation](https://developers.superchat.com/) 
 - [Getting Started Guide](https://developers.superchat.com/docs/getting-started-send-your-first-message)
 - [Superchat Help Centre](https://help.superchat.com)
-

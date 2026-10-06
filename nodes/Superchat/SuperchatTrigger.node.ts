@@ -297,7 +297,7 @@ const properties = [
     type: "boolean",
     default: false,
     description:
-      "Whether to include webhook request headers alongside the event body",
+      "Whether to include webhook request headers under _request.headers alongside the event body",
   },
 ] as const satisfies INodeProperties[];
 

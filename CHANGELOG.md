@@ -1,3 +1,7 @@
+# Version v0.6.0
+
+- Add optional request header metadata to Superchat Trigger output.
+
 # Version v0.5.0
 
 - Support multi-select custom attributes on contact operations
