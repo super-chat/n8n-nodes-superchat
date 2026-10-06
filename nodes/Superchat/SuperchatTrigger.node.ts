@@ -290,6 +290,15 @@ const properties = [
       },
     ],
   },
+
+  {
+    displayName: "Include Request Metadata",
+    name: "includeRequestMetadata",
+    type: "boolean",
+    default: false,
+    description:
+      "Whether to include webhook request headers alongside the event body",
+  },
 ] as const satisfies INodeProperties[];
 
 export class SuperchatTrigger implements INodeType {
@@ -584,6 +593,22 @@ export class SuperchatTrigger implements INodeType {
 
   async webhook(this: IWebhookFunctions): Promise<IWebhookResponseData> {
     const req = this.getRequestObject();
+    const includeRequestMetadata = this.getNodeParameter(
+      "includeRequestMetadata"
+    ) as boolean;
+
+    if (includeRequestMetadata) {
+      return {
+        workflowData: [
+          this.helpers.returnJsonArray({
+            ...(req.body as IDataObject),
+            _request: {
+              headers: req.headers as IDataObject,
+            },
+          }),
+        ],
+      };
+    }
 
     return {
       workflowData: [this.helpers.returnJsonArray(req.body as IDataObject)],
